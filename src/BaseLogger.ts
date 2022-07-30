@@ -41,8 +41,8 @@ export abstract class BaseLogger implements Logger {
 	protected static _lastTimestamp: number = Date.now();
 
 	protected readonly _applicationName?: string;
-	protected readonly _context: string;
-	protected readonly _minLevel: LogLevel;
+	protected _context: string;
+	protected _minLevel: LogLevel;
 	protected readonly _pid: boolean;
 	protected readonly _colors: boolean;
 	protected readonly _timestamps: boolean;
@@ -67,6 +67,14 @@ export abstract class BaseLogger implements Logger {
 		this._timestamps = timestamps;
 		this._prettifyObjects = prettifyObjects;
 		this._timeDiff = timeDiff;
+	}
+
+	setContext(context: string): void {
+		this._context = context;
+	}
+
+	setLevel(level: LogLevel | keyof typeof LogLevel | string): void {
+		this._minLevel = resolveLogLevel(level);
 	}
 
 	abstract log(level: LogLevel, ...args: unknown[]): void;
@@ -103,8 +111,9 @@ export abstract class BaseLogger implements Logger {
 		return COLORS[type](str);
 	}
 
-	protected static _updateAndGetTimestampDiff(): string {
-		const result = BaseLogger._wrapWithColor('ACCENT', ` +${Date.now() - BaseLogger._lastTimestamp}ms`);
+	protected static _updateAndGetTimestampDiff(colors: boolean = true): string {
+		const timeDiff = ` +${Date.now() - BaseLogger._lastTimestamp}ms`;
+		const result = colors ? BaseLogger._wrapWithColor('ACCENT', timeDiff) : timeDiff;
 		BaseLogger._lastTimestamp = Date.now();
 		return result;
 	}
