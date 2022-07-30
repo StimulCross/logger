@@ -9,7 +9,15 @@ export class BrowserLogger extends BaseLogger {
 		}
 
 		const logFn = LogLevelToConsoleFunction[level];
+		let builtMessage: string = `[${this._context}]`;
 
-		logFn(`[${this._context}]`, ...args);
+		const message = args.map((arg: unknown) => String(arg)).join(' ');
+		builtMessage += message;
+
+		if (this._timeDiff) {
+			builtMessage += BaseLogger._updateAndGetTimestampDiff(false);
+		}
+
+		logFn(builtMessage);
 	}
 }

@@ -62,7 +62,14 @@ export class NodeLogger extends BaseLogger {
 		builtMessage += useColors ? COLORS.ACCENT(context) : context;
 
 		builtMessage += message;
-		builtMessage = BaseLogger._wrapWithColor(level, builtMessage);
+
+		if (this._timeDiff) {
+			builtMessage += BaseLogger._updateAndGetTimestampDiff();
+		}
+
+		if (useColors) {
+			builtMessage = BaseLogger._wrapWithColor(level, builtMessage);
+		}
 
 		logFn(builtMessage);
 	}
