@@ -1,12 +1,13 @@
 import * as isNode from 'detect-node';
 
 export enum LogLevel {
-	CRITICAL,
+	FATAL,
 	ERROR,
 	WARNING,
+	SUCCESS,
 	INFO,
-	DEBUG = 4,
-	TRACE = 7
+	DEBUG,
+	TRACE
 }
 
 export function resolveLogLevel(level: string | keyof typeof LogLevel | LogLevel): LogLevel {
@@ -38,11 +39,11 @@ export type LogLevelMap<T> = { [severity in LogLevel]: T };
 // Node 8+ defines console.debug as noop, and earlier versions don't define it at all
 const debugFunction = isNode ? console.log.bind(console) : console.debug.bind(console);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const LogLevelToConsoleFunction: LogLevelMap<(message?: any, ...optionalParams: any[]) => void> = {
-	[LogLevel.CRITICAL]: console.error.bind(console),
+export const LogLevelToConsoleFunction: LogLevelMap<(...args: unknown[]) => void> = {
+	[LogLevel.FATAL]: console.error.bind(console),
 	[LogLevel.ERROR]: console.error.bind(console),
 	[LogLevel.WARNING]: console.warn.bind(console),
+	[LogLevel.SUCCESS]: console.info.bind(console),
 	[LogLevel.INFO]: console.info.bind(console),
 	[LogLevel.DEBUG]: debugFunction.bind(console),
 	[LogLevel.TRACE]: console.trace.bind(console)

@@ -1,87 +1,93 @@
-import { mapOptional } from '@d-fischer/shared-utils';
 import { getMinLogLevelFromEnv } from './getMinLogLevelFromEnv';
 import type { Logger } from './Logger';
 import type { LoggerOptions } from './LoggerOptions';
 import { LogLevel, resolveLogLevel } from './LogLevel';
 
 export interface LoggerOverrideConfig {
-	log: (level: LogLevel, message: string) => void;
-
-	// convenience overrides
-	crit?: (message: string) => void;
-	error?: (message: string) => void;
-	warn?: (message: string) => void;
-	info?: (message: string) => void;
-	debug?: (message: string) => void;
-	trace?: (message: string) => void;
+	log: (level: LogLevel, ...args: unknown[]) => void;
+	fatal?: (...args: unknown[]) => void;
+	error?: (...args: unknown[]) => void;
+	warn?: (...args: unknown[]) => void;
+	success?: (...args: unknown[]) => void;
+	info?: (...args: unknown[]) => void;
+	debug?: (...args: unknown[]) => void;
+	trace?: (...args: unknown[]) => void;
 }
 
-export type LoggerOverride = LoggerOverrideConfig | ((level: LogLevel, message: string) => void);
+export type LoggerOverride = LoggerOverrideConfig | ((level: LogLevel, ...args: unknown[]) => void);
 
 export class CustomLoggerWrapper implements Logger {
 	private readonly _minLevel?: LogLevel;
 	private readonly _override: LoggerOverrideConfig;
 
-	constructor({ name, minLevel, custom }: LoggerOptions) {
-		this._minLevel = mapOptional(minLevel, lv => resolveLogLevel(lv)) ?? getMinLogLevelFromEnv(name);
+	constructor({ context, minLevel, custom }: LoggerOptions) {
+		this._minLevel = minLevel ? resolveLogLevel(minLevel) : getMinLogLevelFromEnv(context) ?? LogLevel.SUCCESS;
 		this._override = typeof custom === 'function' ? { log: custom } : custom!;
 	}
 
-	log(level: LogLevel, message: string): void {
+	log(level: LogLevel, ...args: unknown[]): void {
 		if (this._shouldLog(level)) {
-			this._override.log(level, message);
+			this._override.log(level, ...args);
 		}
 	}
 
-	crit(message: string): void {
-		if (!this._override.crit) {
-			this.log(LogLevel.CRITICAL, message);
-		} else if (this._shouldLog(LogLevel.CRITICAL)) {
-			this._override.crit(message);
+	fatal(...args: unknown[]): void {
+		if (!this._override.fatal) {
+			this.log(LogLevel.FATAL, ...args);
+		} else if (this._shouldLog(LogLevel.FATAL)) {
+			this._override.fatal(...args);
 		}
 	}
 
-	error(message: string): void {
+	error(...args: unknown[]): void {
 		if (!this._override.error) {
-			this.log(LogLevel.ERROR, message);
+			this.log(LogLevel.ERROR, ...args);
 		} else if (this._shouldLog(LogLevel.ERROR)) {
-			this._override.error(message);
+			this._override.error(...args);
 		}
 	}
 
-	warn(message: string): void {
+	warn(...args: unknown[]): void {
 		if (!this._override.warn) {
-			this.log(LogLevel.WARNING, message);
+			this.log(LogLevel.WARNING, ...args);
 		} else if (this._shouldLog(LogLevel.WARNING)) {
-			this._override.warn(message);
+			this._override.warn(...args);
 		}
 	}
 
-	info(message: string): void {
+	success(...args: unknown[]): void {
+		if (!this._override.warn) {
+			this.log(LogLevel.SUCCESS, ...args);
+		} else if (this._shouldLog(LogLevel.SUCCESS)) {
+			this._override.warn(...args);
+		}
+	}
+
+	info(...args: unknown[]): void {
 		if (!this._override.info) {
-			this.log(LogLevel.INFO, message);
+			this.log(LogLevel.INFO, ...args);
 		} else if (this._shouldLog(LogLevel.INFO)) {
-			this._override.info(message);
+			this._override.info(...args);
 		}
 	}
 
-	debug(message: string): void {
+	debug(...args: unknown[]): void {
 		if (!this._override.debug) {
-			this.log(LogLevel.DEBUG, message);
+			this.log(LogLevel.DEBUG, ...args);
 		} else if (this._shouldLog(LogLevel.DEBUG)) {
-			this._override.debug(message);
+			this._override.debug(...args);
 		}
 	}
 
-	trace(message: string): void {
+	trace(...args: unknown[]): void {
 		if (!this._override.trace) {
-			this.log(LogLevel.TRACE, message);
+			this.log(LogLevel.TRACE, ...args);
 		} else if (this._shouldLog(LogLevel.TRACE)) {
-			this._override.trace(message);
+			this._override.trace(...args);
 		}
 	}
 
-	private _shouldLog(level: LogLevel) {
+	private _shouldLog(level: LogLevel): boolean {
 		return this._minLevel === undefined || this._minLevel >= level;
 	}
 }

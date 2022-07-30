@@ -25,7 +25,7 @@ if (defaultIndex !== -1) {
 	data.splice(defaultIndex);
 }
 
-function isPrefix(value: string[], prefix: string[]) {
+function isPrefix(value: string[], prefix: string[]): boolean {
 	return prefix.length <= value.length && prefix.every((item, i) => item === value[i]);
 }
 

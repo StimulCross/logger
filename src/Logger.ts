@@ -1,13 +1,12 @@
 import type { LogLevel } from './LogLevel';
 
 export interface Logger {
-	log: (level: LogLevel, message: string) => void;
-
-	// convenience
-	crit: (message: string) => void;
-	error: (message: string) => void;
-	warn: (message: string) => void;
-	info: (message: string) => void;
-	debug: (message: string) => void;
-	trace: (message: string) => void;
+	log: (level: LogLevel, ...args: unknown[]) => void;
+	fatal: (...args: unknown[]) => void;
+	error: (...args: unknown[]) => void;
+	warn: (...args: unknown[]) => void;
+	success: (...args: unknown[]) => void;
+	info: (...args: unknown[]) => void;
+	debug: (...args: unknown[]) => void;
+	trace: (...args: unknown[]) => void;
 }

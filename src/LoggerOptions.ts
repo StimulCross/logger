@@ -2,10 +2,13 @@ import type { LoggerOverride } from './CustomLoggerWrapper';
 import type { LogLevel } from './LogLevel';
 
 export interface LoggerOptions {
-	name: string;
+	applicationName?: string;
+	context: string;
 	minLevel?: LogLevel | keyof typeof LogLevel | string;
+	pid?: boolean;
 	colors?: boolean;
-	emoji?: boolean;
 	timestamps?: boolean;
 	custom?: LoggerOverride;
+	prettifyObjects?: boolean;
+	timeDiff?: boolean;
 }

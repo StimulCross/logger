@@ -8,8 +8,8 @@ node_modules/
 .yarn-integrity
 .env
 /.idea
-/lib
-/es
+lib
+es
 package-lock.json
 yarn.lock
 *.code-workspace
