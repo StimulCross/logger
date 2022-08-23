@@ -11,54 +11,54 @@ export interface Logger {
 	 * the log will be ignored.
 	 * @param args Any data to print.
 	 */
-	log: (level: LogLevel, ...args: unknown[]) => void;
+	log(level: LogLevel, ...args: unknown[]): void;
 
 	/**
 	 * Prints fatal message to the console.
 	 *
 	 * @param args Any data to print.
 	 */
-	fatal: (...args: unknown[]) => void;
+	fatal(...args: unknown[]): void;
 
 	/**
 	 * Prints error message to the console.
 	 *
 	 * @param args Any data to print.
 	 */
-	error: (...args: unknown[]) => void;
+	error(...args: unknown[]): void;
 
 	/**
 	 * Prints warning message to the console.
 	 *
 	 * @param args Any data to print.
 	 */
-	warn: (...args: unknown[]) => void;
+	warn(...args: unknown[]): void;
 
 	/**
 	 * Prints success message to the console.
 	 *
 	 * @param args Any data to print.
 	 */
-	success: (...args: unknown[]) => void;
+	success(...args: unknown[]): void;
 
 	/**
 	 * Prints info message to the console.
 	 *
 	 * @param args Any data to print.
 	 */
-	info: (...args: unknown[]) => void;
+	info(...args: unknown[]): void;
 
 	/**
 	 * Prints debug message to the console.
 	 *
 	 * @param args Any data to print.
 	 */
-	debug: (...args: unknown[]) => void;
+	debug(...args: unknown[]): void;
 
 	/**
 	 * Prints trace message to the console.
 	 *
 	 * @param args Any data to print.
 	 */
-	trace: (...args: unknown[]) => void;
+	trace(...args: unknown[]): void;
 }
