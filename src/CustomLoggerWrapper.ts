@@ -21,12 +21,24 @@ export type LoggerOverride = LoggerOverrideConfig | ((level: LogLevel, ...args: 
 
 /** @internal */
 export class CustomLoggerWrapper implements Logger {
-	private readonly _minLevel?: LogLevel;
+	private _context: string;
+	private _minLevel: LogLevel;
 	private readonly _override: LoggerOverrideConfig;
 
 	constructor({ context, minLevel, custom }: LoggerOptions) {
-		this._minLevel = minLevel ? resolveLogLevel(minLevel) : getMinLogLevelFromEnv(context) ?? LogLevel.SUCCESS;
+		this._context = context;
+		this._minLevel = minLevel
+			? resolveLogLevel(minLevel)
+			: getMinLogLevelFromEnv(this._context) ?? LogLevel.SUCCESS;
 		this._override = typeof custom === 'function' ? { log: custom } : custom!;
+	}
+
+	setContext(context: string): void {
+		this._context = context;
+	}
+
+	setMinLevel(level: LogLevel | keyof typeof LogLevel | string): void {
+		this._minLevel = resolveLogLevel(level);
 	}
 
 	log(level: LogLevel, ...args: unknown[]): void {
@@ -92,6 +104,6 @@ export class CustomLoggerWrapper implements Logger {
 	}
 
 	private _shouldLog(level: LogLevel): boolean {
-		return this._minLevel === undefined || this._minLevel >= level;
+		return this._minLevel >= level;
 	}
 }
