@@ -61,4 +61,18 @@ export interface Logger {
 	 * @param args Any data to print.
 	 */
 	trace(...args: unknown[]): void;
+
+	/**
+	 * Sets the logger context.
+	 *
+	 * @param context Context to set.
+	 */
+	setContext(context: string): void;
+
+	/**
+	 * Sets the minimum log level.
+	 *
+	 * @param level The level to set.
+	 */
+	setMinLevel(level: LogLevel | keyof typeof LogLevel | string): void;
 }
