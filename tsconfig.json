@@ -14,7 +14,8 @@
 		"noUnusedLocals": true,
 		"experimentalDecorators": true,
 		"importHelpers": true,
-		"isolatedModules": true
+		"isolatedModules": true,
+		"esModuleInterop": true
 	},
 	"exclude": ["node_modules", "lib", "es"]
 }
