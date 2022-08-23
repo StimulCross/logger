@@ -30,6 +30,7 @@ function isPrefix(value: string[], prefix: string[]): boolean {
 	return prefix.length <= value.length && prefix.every((item, i) => item === value[i]);
 }
 
+/** @internal */
 export function getMinLogLevelFromEnv(name: string): LogLevel | undefined {
 	const nameSplit = name.split(':');
 	for (const [nsParts, level] of data) {

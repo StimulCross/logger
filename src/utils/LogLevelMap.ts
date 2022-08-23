@@ -3,8 +3,10 @@ import { LogLevel } from '../LogLevel';
 import type { StylingFunction } from './StylingFunction';
 import { createBgWrapper, createColorWrapper, createModifierWrapper } from './StylingFunction';
 
+/** @internal */
 export type LogLevelMap<T> = { [severity in LogLevel]: T };
 
+/** @internal */
 export const LogLevelToConsoleFunction: LogLevelMap<(...args: unknown[]) => void> = {
 	[LogLevel.FATAL]: console.error.bind(console),
 	[LogLevel.ERROR]: console.error.bind(console),
@@ -14,6 +16,8 @@ export const LogLevelToConsoleFunction: LogLevelMap<(...args: unknown[]) => void
 	[LogLevel.DEBUG]: isNode ? console.log.bind(console) : console.debug.bind(console),
 	[LogLevel.TRACE]: console.trace.bind(console)
 };
+
+/** @internal */
 export const LogLevelToType = {
 	[LogLevel.FATAL]: ' FATAL ',
 	[LogLevel.ERROR]: 'ERROR  ',
@@ -23,6 +27,8 @@ export const LogLevelToType = {
 	[LogLevel.DEBUG]: 'DEBUG  ',
 	[LogLevel.TRACE]: 'TRACE  '
 };
+
+/** @internal */
 export const LogLevelToTypeColor: LogLevelMap<StylingFunction> = {
 	[LogLevel.FATAL]: createBgWrapper('bgRed', createColorWrapper('whiteBright', createModifierWrapper('bold'))),
 	[LogLevel.ERROR]: createColorWrapper('redBright', createModifierWrapper('bold')),
@@ -32,6 +38,8 @@ export const LogLevelToTypeColor: LogLevelMap<StylingFunction> = {
 	[LogLevel.DEBUG]: createColorWrapper('magentaBright', createModifierWrapper('bold')),
 	[LogLevel.TRACE]: createColorWrapper('cyanBright', createModifierWrapper('bold'))
 };
+
+/** @internal */
 export const LogLevelToColor: LogLevelMap<StylingFunction> = {
 	[LogLevel.FATAL]: createColorWrapper('redBright'),
 	[LogLevel.ERROR]: createColorWrapper('redBright'),
@@ -41,6 +49,8 @@ export const LogLevelToColor: LogLevelMap<StylingFunction> = {
 	[LogLevel.DEBUG]: createColorWrapper('magentaBright'),
 	[LogLevel.TRACE]: createColorWrapper('cyanBright')
 };
+
+/** @internal */
 export const LogLevelToBackgroundColor: LogLevelMap<StylingFunction> = {
 	[LogLevel.FATAL]: createBgWrapper('bgRed', createColorWrapper('white')),
 	[LogLevel.ERROR]: createBgWrapper('bgRedBright', createColorWrapper('white')),

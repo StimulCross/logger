@@ -4,6 +4,7 @@ import type { Logger } from './Logger';
 import type { LoggerOptions } from './LoggerOptions';
 import { LogLevel, resolveLogLevel } from './LogLevel';
 
+/** @internal */
 export abstract class BaseLogger implements Logger {
 	protected static _lastTimestamp: number = Date.now();
 

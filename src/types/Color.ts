@@ -1,3 +1,4 @@
+/** @internal */
 export type Color =
 	| 'black'
 	| 'red'

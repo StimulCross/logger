@@ -4,6 +4,7 @@ import { BaseLogger } from './BaseLogger';
 import { createColorWrapper } from './utils/StylingFunction';
 import { LogLevelToColor, LogLevelToConsoleFunction, LogLevelToType, LogLevelToTypeColor } from './utils/LogLevelMap';
 
+/** @internal */
 export class NodeLogger extends BaseLogger {
 	private readonly _accentColorWrapper = createColorWrapper('yellowBright');
 

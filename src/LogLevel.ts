@@ -1,3 +1,6 @@
+/**
+ * Log level.
+ */
 export enum LogLevel {
 	FATAL,
 	ERROR,
@@ -8,6 +11,7 @@ export enum LogLevel {
 	TRACE
 }
 
+/** @internal */
 export function resolveLogLevel(level: string | keyof typeof LogLevel | LogLevel): LogLevel {
 	if (typeof level === 'number') {
 		if (Object.prototype.hasOwnProperty.call(LogLevel, level)) {

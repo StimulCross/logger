@@ -3,6 +3,9 @@ import type { Logger } from './Logger';
 import type { LoggerOptions } from './LoggerOptions';
 import { LogLevel, resolveLogLevel } from './LogLevel';
 
+/**
+ * Custom logger config.
+ */
 export interface LoggerOverrideConfig {
 	log: (level: LogLevel, ...args: unknown[]) => void;
 	fatal?: (...args: unknown[]) => void;
@@ -16,6 +19,7 @@ export interface LoggerOverrideConfig {
 
 export type LoggerOverride = LoggerOverrideConfig | ((level: LogLevel, ...args: unknown[]) => void);
 
+/** @internal */
 export class CustomLoggerWrapper implements Logger {
 	private readonly _minLevel?: LogLevel;
 	private readonly _override: LoggerOverrideConfig;

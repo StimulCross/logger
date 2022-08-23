@@ -2,6 +2,7 @@ import type { Modifier } from '../types/Modifier';
 import type { Color } from '../types/Color';
 import type { BackgroundColor } from '../types/BackgroundColor';
 
+/** @internal */
 export const modifiers: Record<Modifier, [number, number]> = {
 	reset: [0, 0],
 	bold: [1, 22],
@@ -14,6 +15,7 @@ export const modifiers: Record<Modifier, [number, number]> = {
 	strikethrough: [9, 29]
 };
 
+/** @internal */
 export const colors: Record<Color, [number, number]> = {
 	black: [30, 39],
 	red: [31, 39],
@@ -34,6 +36,7 @@ export const colors: Record<Color, [number, number]> = {
 	whiteBright: [97, 39]
 };
 
+/** @internal */
 export const bgColors: Record<BackgroundColor, [number, number]> = {
 	bgBlack: [40, 49],
 	bgRed: [41, 49],

@@ -1,3 +1,4 @@
+/** @internal */
 export type BackgroundColor =
 	| 'bgBlack'
 	| 'bgRed'
