@@ -8,6 +8,7 @@ export interface LoggerOptions {
 	pid?: boolean;
 	colors?: boolean;
 	timestamps?: boolean;
+	dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
 	custom?: LoggerOverride;
 	prettifyObjects?: boolean;
 	timeDiff?: boolean;

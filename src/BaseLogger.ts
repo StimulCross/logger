@@ -1,41 +1,8 @@
-import * as isNode from 'detect-node';
-import * as chalk from 'chalk';
+import isNode from 'detect-node';
 import { getMinLogLevelFromEnv } from './getMinLogLevelFromEnv';
 import type { Logger } from './Logger';
 import type { LoggerOptions } from './LoggerOptions';
 import { LogLevel, resolveLogLevel } from './LogLevel';
-
-export const TYPES = {
-	[LogLevel.FATAL]: ' FATAL ',
-	[LogLevel.ERROR]: 'ERROR  ',
-	[LogLevel.WARNING]: 'WARNING',
-	[LogLevel.SUCCESS]: 'SUCCESS',
-	[LogLevel.INFO]: 'INFO   ',
-	[LogLevel.DEBUG]: 'DEBUG  ',
-	[LogLevel.TRACE]: 'TRACE  '
-};
-
-export const COLORED_TYPES = {
-	[LogLevel.FATAL]: chalk.bgRedBright.whiteBright.bold(TYPES[LogLevel.FATAL]),
-	[LogLevel.ERROR]: chalk.red(TYPES[LogLevel.ERROR]),
-	[LogLevel.WARNING]: chalk.bold.yellowBright(TYPES[LogLevel.WARNING]),
-	[LogLevel.SUCCESS]: chalk.bold.greenBright(TYPES[LogLevel.SUCCESS]),
-	[LogLevel.INFO]: chalk.bold.blueBright(TYPES[LogLevel.INFO]),
-	[LogLevel.DEBUG]: chalk.bold.magentaBright(TYPES[LogLevel.DEBUG]),
-	[LogLevel.TRACE]: chalk.bold.cyanBright(TYPES[LogLevel.TRACE])
-};
-
-export const COLORS = {
-	ACCENT: (str: string): string => chalk.yellowBright(str),
-	WHITE: (str: string): string => chalk.white(str),
-	[LogLevel.FATAL]: (str: string): string => chalk.redBright(str),
-	[LogLevel.ERROR]: (str: string): string => chalk.redBright(str),
-	[LogLevel.WARNING]: (str: string): string => chalk.yellowBright(str),
-	[LogLevel.SUCCESS]: (str: string): string => chalk.greenBright(str),
-	[LogLevel.INFO]: (str: string): string => chalk.blueBright(str),
-	[LogLevel.DEBUG]: (str: string): string => chalk.magentaBright(str),
-	[LogLevel.TRACE]: (str: string): string => chalk.cyanBright(str)
-};
 
 export abstract class BaseLogger implements Logger {
 	protected static _lastTimestamp: number = Date.now();
@@ -46,6 +13,7 @@ export abstract class BaseLogger implements Logger {
 	protected readonly _pid: boolean;
 	protected readonly _colors: boolean;
 	protected readonly _timestamps: boolean;
+	protected readonly _dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
 	protected readonly _prettifyObjects: boolean;
 	protected readonly _timeDiff: boolean;
 
@@ -57,6 +25,16 @@ export abstract class BaseLogger implements Logger {
 		prettifyObjects = false,
 		colors = true,
 		timestamps = isNode,
+		dateTimeFormatOptions = {
+			year: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric',
+			second: 'numeric',
+			day: '2-digit',
+			month: '2-digit',
+			// @ts-ignore Not declared
+			fractionalSecondDigits: 3
+		},
 		timeDiff = false
 	}: LoggerOptions) {
 		this._applicationName = applicationName;
@@ -65,6 +43,7 @@ export abstract class BaseLogger implements Logger {
 		this._pid = isNode ? pid ?? true : false;
 		this._colors = colors;
 		this._timestamps = timestamps;
+		this._dateTimeFormatOptions = dateTimeFormatOptions;
 		this._prettifyObjects = prettifyObjects;
 		this._timeDiff = timeDiff;
 	}
@@ -107,14 +86,9 @@ export abstract class BaseLogger implements Logger {
 		this.log(LogLevel.TRACE, ...args);
 	}
 
-	protected static _wrapWithColor(type: keyof typeof COLORS, str: string): string {
-		return COLORS[type](str);
-	}
-
-	protected static _updateAndGetTimestampDiff(colors: boolean = true): string {
+	protected static _updateAndGetTimestampDiff(): string {
 		const timeDiff = ` +${Date.now() - BaseLogger._lastTimestamp}ms`;
-		const result = colors ? BaseLogger._wrapWithColor('ACCENT', timeDiff) : timeDiff;
 		BaseLogger._lastTimestamp = Date.now();
-		return result;
+		return timeDiff;
 	}
 }

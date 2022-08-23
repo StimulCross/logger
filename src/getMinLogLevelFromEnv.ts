@@ -4,7 +4,8 @@ import { resolveLogLevel } from './LogLevel';
 const data: Array<[string[] | undefined, LogLevel]> =
 	typeof process === 'undefined'
 		? []
-		: process.env.LOGGING?.split(';')
+		: // eslint-disable-next-line node/no-process-env
+		  process.env.LOGGING?.split(';')
 				.map(part => {
 					const [namespace, strLevel] = part.split('=', 2) as [string, string];
 
@@ -14,11 +15,11 @@ const data: Array<[string[] | undefined, LogLevel]> =
 
 					return null;
 				})
-				.filter((v): v is [string[] | undefined, LogLevel] => !!v)
+				.filter((v): v is [string[] | undefined, LogLevel] => Boolean(v))
 				.sort(([a], [b]) => (b?.length ?? 0) - (a?.length ?? 0)) ?? [];
 
 const defaultIndex = data.findIndex(([nsParts]) => !nsParts);
-let defaultLevel: LogLevel | undefined = undefined;
+let defaultLevel: LogLevel | undefined;
 
 if (defaultIndex !== -1) {
 	defaultLevel = data[defaultIndex][1];
