@@ -45,8 +45,7 @@ await runYarn(['prettier:check']);
 
 const versionType = process.argv[2] ?? 'patch';
 
-await runYarn([
-	'npm',
+await runAndPassOutput('npm', [
 	'version',
 	'--commit-hooks',
 	'false',
@@ -58,7 +57,7 @@ await runYarn([
 ]);
 
 if (versionType.startsWith('pre')) {
-	await runYarn(['npm', 'publish', '--tag', 'next']);
+	await runAndPassOutput('npm', ['publish', '--tag', 'next']);
 } else {
-	await runYarn(['npm', 'publish']);
+	await runAndPassOutput('npm', ['publish']);
 }
