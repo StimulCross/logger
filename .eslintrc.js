@@ -5,6 +5,8 @@ module.exports = {
 		'@stimulcross/eslint-config-typescript/style'
 	],
 	parserOptions: {
-		project: './tsconfig.json'
+		project: ['./tsconfig.json'],
+		sourceType: 'module',
+		ecmaVersion: 'latest'
 	}
 };

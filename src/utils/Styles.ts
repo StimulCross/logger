@@ -1,6 +1,6 @@
-import type { Modifier } from '../types/Modifier';
-import type { Color } from '../types/Color';
 import type { BackgroundColor } from '../types/BackgroundColor';
+import type { Color } from '../types/Color';
+import type { Modifier } from '../types/Modifier';
 
 /** @internal */
 export const modifiers: Record<Modifier, [number, number]> = {

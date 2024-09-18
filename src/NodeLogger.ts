@@ -1,8 +1,8 @@
 import type { WriteStream } from 'tty';
-import type { LogLevel } from './LogLevel';
 import { BaseLogger } from './BaseLogger';
-import { createColorWrapper } from './utils/StylingFunction';
+import type { LogLevel } from './LogLevel';
 import { LogLevelToColor, LogLevelToConsoleFunction, LogLevelToType, LogLevelToTypeColor } from './utils/LogLevelMap';
+import { createColorWrapper } from './utils/StylingFunction';
 
 /** @internal */
 export class NodeLogger extends BaseLogger {

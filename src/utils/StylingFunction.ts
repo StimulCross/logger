@@ -1,7 +1,7 @@
+import { modifiers, colors, bgColors } from './Styles';
 import type { BackgroundColor } from '../types/BackgroundColor';
 import type { Color } from '../types/Color';
 import type { Modifier } from '../types/Modifier';
-import { modifiers, colors, bgColors } from './Styles';
 
 /** @internal */
 export type StylingFunction = (str: string) => string;
