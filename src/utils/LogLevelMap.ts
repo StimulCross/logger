@@ -45,7 +45,7 @@ export const LogLevelToColor: LogLevelMap<StylingFunction> = {
 	[LogLevel.ERROR]: createColorWrapper('redBright'),
 	[LogLevel.WARNING]: createColorWrapper('yellowBright'),
 	[LogLevel.SUCCESS]: createColorWrapper('greenBright'),
-	[LogLevel.INFO]: createColorWrapper('blue'),
+	[LogLevel.INFO]: createColorWrapper('blueBright'),
 	[LogLevel.DEBUG]: createColorWrapper('magentaBright'),
 	[LogLevel.TRACE]: createColorWrapper('cyanBright')
 };
