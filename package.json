@@ -19,19 +19,19 @@
     "detect-node": "^2.1.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.8.1",
-    "@stimulcross/commitlint-config": "^1.6.2",
-    "@stimulcross/eslint-config-node": "^1.6.2",
-    "@stimulcross/eslint-config-typescript": "^1.6.2",
-    "@stimulcross/prettier-config": "^1.6.2",
+    "@commitlint/cli": "^20.2.0",
+    "@stimulcross/commitlint-config": "^2.0.0",
+    "@stimulcross/eslint-config-node": "^2.0.0",
+    "@stimulcross/eslint-config-typescript": "^2.0.0",
+    "@stimulcross/prettier-config": "^2.0.0",
     "@types/detect-node": "^2.0.2",
-    "@types/node": "^18.19.50",
-    "eslint": "^8.57.1",
-    "husky": "8.0.3",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3",
-    "tsukuru": "^0.8.3",
-    "typescript": "5.6.2"
+    "@types/node": "^24.10.2",
+	"del-cli": "^7.0.0",
+    "eslint": "^9.39.1",
+    "husky": "9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
+    "typescript": "5.9.3"
   },
   "files": [
     "LICENSE",
