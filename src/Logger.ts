@@ -1,78 +1,81 @@
 import type { LogLevel } from './LogLevel';
 
 /**
- * Cross environment logger.
+ * Cross-environment logger interface.
+ *
+ * Provides a unified API for structured logging across different runtimes (Node.js, browsers, etc.).
+ * All log methods respect the currently configured minimum log level.
  */
 export interface Logger {
 	/**
-	 * Prints a message to the console.
+	 * Emits a log message.
 	 *
-	 * @param level The level of the log. If the specified level is less than the minimum log level of the logger,
-	 * the log will be ignored.
-	 * @param args Any data to print.
+	 * @param level The severity of the message. Messages below the current minimum log level are ignored.
+	 * @param args Data to be logged.
 	 */
 	log(level: LogLevel, ...args: unknown[]): void;
 
 	/**
-	 * Prints fatal message to the console.
+	 * Logs a fatal error and indicates that the application cannot continue.
 	 *
-	 * @param args Any data to print.
+	 * @param args Data to be logged.
 	 */
 	fatal(...args: unknown[]): void;
 
 	/**
-	 * Prints error message to the console.
+	 * Logs an error indicating that an operation has failed.
 	 *
-	 * @param args Any data to print.
+	 * @param args Data to be logged.
 	 */
 	error(...args: unknown[]): void;
 
 	/**
-	 * Prints warning message to the console.
+	 * Logs a warning about a potentially problematic situation.
 	 *
-	 * @param args Any data to print.
+	 * @param args Data to be logged.
 	 */
 	warn(...args: unknown[]): void;
 
 	/**
-	 * Prints success message to the console.
+	 * Logs a message indicating successful completion of an operation.
 	 *
-	 * @param args Any data to print.
+	 * @param args Data to be logged.
 	 */
 	success(...args: unknown[]): void;
 
 	/**
-	 * Prints info message to the console.
+	 * Logs general informational messages.
 	 *
-	 * @param args Any data to print.
+	 * @param args Data to be logged.
 	 */
 	info(...args: unknown[]): void;
 
 	/**
-	 * Prints debug message to the console.
+	 * Logs debug-level messages intended for development and troubleshooting.
 	 *
-	 * @param args Any data to print.
+	 * @param args Data to be logged.
 	 */
 	debug(...args: unknown[]): void;
 
 	/**
-	 * Prints trace message to the console.
+	 * Logs highly verbose diagnostic information.
 	 *
-	 * @param args Any data to print.
+	 * @param args Data to be logged.
 	 */
 	trace(...args: unknown[]): void;
 
 	/**
-	 * Sets the logger context.
+	 * Sets the current logger context, typically used to identify the source
+	 * (e.g., module, service, or subsystem).
 	 *
-	 * @param context Context to set.
+	 * @param context The context label to apply.
 	 */
 	setContext(context: string): void;
 
 	/**
-	 * Sets the minimum log level.
+	 * Sets the minimum log level. Messages below this level will be discarded.
 	 *
-	 * @param level The level to set.
+	 * @param level The level to apply. Accepts a LogLevel value, its key, or a string.
 	 */
 	setMinLevel(level: LogLevel | keyof typeof LogLevel | string): void;
 }

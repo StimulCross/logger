@@ -2,22 +2,22 @@ import type { LoggerOverride } from './CustomLoggerWrapper';
 import type { LogLevel } from './LogLevel';
 
 /**
- * Logger options.
+ * Configuration options for the logger.
  *
  * @remarks
- * Some options are designed only for the NodeJS environment and will be ignored in the browser environment.
+ * Some options apply only in Node.js. In browser environments they are safely ignored.
  */
 export interface LoggerOptions {
 	/**
-	 * Application name.
+	 * Name of the application.
 	 *
 	 * @remarks
-	 * Appears at the beginning of the output line. May be useful for distinguishing between applications.
+	 * Placed at the start of each log entry. Useful when multiple applications write to the same output.
 	 */
 	applicationName?: string;
 
 	/**
-	 * Logger context or scope.
+	 * Logger context (e.g., module, subsystem, or service name).
 	 */
 	context: string;
 
@@ -25,75 +25,69 @@ export interface LoggerOptions {
 	 * Minimum log level.
 	 *
 	 * @remarks
-	 * All messages below this level will be ignored.
+	 * Messages below this level are discarded.
 	 *
 	 * @defaultValue `SUCCESS`
 	 */
 	minLevel?: LogLevel | keyof typeof LogLevel | string;
 
 	/**
-	 * The process ID.
+	 * Whether to include the process ID.
 	 *
 	 * @remarks
-	 * If enabled, prints the process ID.
-	 *
-	 * This option is ignored in the browser environment.
+	 * Effective only in Node.js; ignored in the browser.
 	 *
 	 * @defaultValue `true`
 	 */
 	pid?: boolean;
 
 	/**
-	 * Whether to enable colors.
-	 *
-	 * This option is ignored in the browser environment.
+	 * Enables colored output.
 	 */
 	colors?: boolean;
 
 	/**
-	 * Whether to enable timestamps.
+	 * Enables timestamp output.
 	 *
 	 * @remarks
-	 * By default, the timestamps are formatted to the local string with local time. You can change this behavior
-	 * providing {@link LoggerOptions#dateTimeFormatOptions} property.
-	 *
-	 * This option is ignored in the browser environment.
+	 * Timestamps use the local timezone by default. To customize the format,
+	 * use {@link LoggerOptions.dateTimeFormatOptions}.
 	 *
 	 * @defaultValue `true`
 	 */
 	timestamps?: boolean;
 
 	/**
-	 * Formatting options for timestamps.
+	 * Formatting options for timestamp output.
 	 *
 	 * @remarks
-	 * These options are implement `DateTimeFormatOptions` of `Intl` object.
-	 *
-	 * This option is ignored in the browser environment.
+	 * Passed directly to `Intl.DateTimeFormat`.
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
 	 */
 	dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
 
 	/**
-	 * Custom logger.
+	 * Custom logger implementation that overrides default behavior.
 	 */
 	custom?: LoggerOverride;
 
 	/**
-	 * Whether to prettify objects and arrays.
+	 * Enables pretty-printing of objects and arrays.
 	 *
-	 * This option is ignored in the browser environment.
+	 * @remarks
+	 * Ignored in the browser.
 	 *
 	 * @defaultValue `true`
 	 */
 	prettifyObjects?: boolean;
 
 	/**
-	 * Whether to add the time difference from the previous message to the end of the message.
+	 * Appends the time difference since the previous log message.
 	 *
 	 * @remarks
-	 * This option is similar to NestJS and, for example, allows you to evaluate bootstrap speed.
+	 * Similar to the behavior used in NestJS. Useful for measuring bootstrap
+	 * or operation timing.
 	 *
 	 * @defaultValue `false`
 	 */
