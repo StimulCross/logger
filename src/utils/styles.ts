@@ -1,6 +1,6 @@
-import type { BackgroundColor } from '../types/BackgroundColor';
-import type { Color } from '../types/Color';
-import type { Modifier } from '../types/Modifier';
+import { type BackgroundColor } from '../types/background-color';
+import { type Color } from '../types/color';
+import { type Modifier } from '../types/modifier';
 
 /** @internal */
 export const modifiers: Record<Modifier, [number, number]> = {
@@ -12,7 +12,7 @@ export const modifiers: Record<Modifier, [number, number]> = {
 	overline: [53, 55],
 	inverse: [7, 27],
 	hidden: [8, 28],
-	strikethrough: [9, 29]
+	strikethrough: [9, 29],
 };
 
 /** @internal */
@@ -33,7 +33,7 @@ export const colors: Record<Color, [number, number]> = {
 	blueBright: [94, 39],
 	magentaBright: [95, 39],
 	cyanBright: [96, 39],
-	whiteBright: [97, 39]
+	whiteBright: [97, 39],
 };
 
 /** @internal */
@@ -54,5 +54,5 @@ export const bgColors: Record<BackgroundColor, [number, number]> = {
 	bgBlueBright: [103, 49],
 	bgMagentaBright: [104, 49],
 	bgCyanBright: [105, 49],
-	bgWhiteBright: [106, 49]
+	bgWhiteBright: [106, 49],
 };

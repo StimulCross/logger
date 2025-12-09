@@ -1,32 +1,37 @@
-import type { WriteStream } from 'tty';
-import { BaseLogger } from './BaseLogger';
-import type { LogLevel } from './LogLevel';
-import { LogLevelToColor, LogLevelToConsoleFunction, LogLevelToType, LogLevelToTypeColor } from './utils/LogLevelMap';
-import { createColorWrapper } from './utils/StylingFunction';
+import { type WriteStream } from 'tty';
+import { BaseLogger } from './base-logger';
+import { type LogLevel } from '../enums/log-level';
+import {
+	logLevelToColor,
+	logLevelToConsoleFunction,
+	logLevelToType,
+	logLevelToTypeColor,
+} from '../utils/log-level-map';
+import { createColorWrapper } from '../utils/styling-function';
 
 /** @internal */
 export class NodeLogger extends BaseLogger {
 	private readonly _accentColorWrapper = createColorWrapper('yellowBright');
 
-	log(level: LogLevel, ...args: unknown[]): void {
+	public log(level: LogLevel, ...args: unknown[]): void {
 		if (level > this._minLevel) {
 			return;
 		}
 
-		const logFn = LogLevelToConsoleFunction[level];
+		const logFn = logLevelToConsoleFunction[level];
 
 		let builtMessage = '';
 
-		const useColors = this._colors && ((process.stdout as WriteStream | undefined)?.isTTY ?? true);
+		const shouldUseColors = this._colors && ((process.stdout as WriteStream | undefined)?.isTTY ?? true);
 
 		if (this._applicationName) {
 			const applicationName = `[${this._applicationName}] `;
-			builtMessage += useColors ? LogLevelToColor[level](applicationName) : applicationName;
+			builtMessage += shouldUseColors ? logLevelToColor[level](applicationName) : applicationName;
 		}
 
 		if (this._pid) {
 			const pid = `${process.pid}  - `;
-			builtMessage += useColors ? LogLevelToColor[level](pid) : pid;
+			builtMessage += shouldUseColors ? logLevelToColor[level](pid) : pid;
 		}
 
 		if (this._timestamps) {
@@ -52,18 +57,18 @@ export class NodeLogger extends BaseLogger {
 			})
 			.join(' ');
 
-		builtMessage += useColors
-			? `${LogLevelToTypeColor[level](LogLevelToType[level])} `
-			: `${LogLevelToType[level]} `;
+		builtMessage += shouldUseColors
+			? `${logLevelToTypeColor[level](logLevelToType[level])} `
+			: `${logLevelToType[level]} `;
 
 		const context = `[${this._context}] `;
-		builtMessage += useColors ? this._accentColorWrapper(context) : context;
+		builtMessage += shouldUseColors ? this._accentColorWrapper(context) : context;
 
-		builtMessage += useColors ? LogLevelToColor[level](message) : message;
+		builtMessage += shouldUseColors ? logLevelToColor[level](message) : message;
 
 		if (this._timeDiff) {
 			const timeDiff = BaseLogger._updateAndGetTimestampDiff();
-			builtMessage += useColors ? this._accentColorWrapper(timeDiff) : timeDiff;
+			builtMessage += shouldUseColors ? this._accentColorWrapper(timeDiff) : timeDiff;
 		}
 
 		logFn(builtMessage);

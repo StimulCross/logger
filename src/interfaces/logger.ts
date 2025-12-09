@@ -1,4 +1,4 @@
-import type { LogLevel } from './LogLevel';
+import { type LogLevel } from '../enums/log-level';
 
 /**
  * Cross-environment logger interface.
@@ -75,7 +75,7 @@ export interface Logger {
 	/**
 	 * Sets the minimum log level. Messages below this level will be discarded.
 	 *
-	 * @param level The level to apply. Accepts a LogLevel value, its key, or a string.
+	 * @param level The level to apply. Accepts a LogLevel value or its key.
 	 */
-	setMinLevel(level: LogLevel | keyof typeof LogLevel | string): void;
+	setMinLevel(level: LogLevel | keyof typeof LogLevel): void;
 }

@@ -1,13 +1,12 @@
-import type { LogLevel } from './LogLevel';
-import { resolveLogLevel } from './LogLevel';
+import { resolveLogLevel } from './resolve-log-level';
+import { type LogLevel } from '../enums/log-level';
 
 const data: Array<[string[] | undefined, LogLevel]> =
 	typeof process === 'undefined'
 		? []
-		: // eslint-disable-next-line node/no-process-env
-		  process.env.LOGGING?.split(';')
+		: (process.env.LOGGING?.split(';')
 				.map(part => {
-					const [namespace, strLevel] = part.split('=', 2) as [string, string];
+					const [namespace, strLevel] = part.split('=', 2) as [string, (keyof typeof LogLevel)?];
 
 					if (strLevel) {
 						return [namespace === 'default' ? undefined : namespace.split(':'), resolveLogLevel(strLevel)];
@@ -16,7 +15,7 @@ const data: Array<[string[] | undefined, LogLevel]> =
 					return null;
 				})
 				.filter((v): v is [string[] | undefined, LogLevel] => Boolean(v))
-				.sort(([a], [b]) => (b?.length ?? 0) - (a?.length ?? 0)) ?? [];
+				.sort(([a], [b]) => (b?.length ?? 0) - (a?.length ?? 0)) ?? []);
 
 const defaultIndex = data.findIndex(([nsParts]) => !nsParts);
 let defaultLevel: LogLevel | undefined;
@@ -33,6 +32,7 @@ function isPrefix(value: string[], prefix: string[]): boolean {
 /** @internal */
 export function getMinLogLevelFromEnv(name: string): LogLevel | undefined {
 	const nameSplit = name.split(':');
+
 	for (const [nsParts, level] of data) {
 		if (isPrefix(nameSplit, nsParts!)) {
 			return level;

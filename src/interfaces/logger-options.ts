@@ -1,5 +1,5 @@
-import type { LoggerOverride } from './CustomLoggerWrapper';
-import type { LogLevel } from './LogLevel';
+import { type LogLevel } from '../enums/log-level';
+import { type LoggerOverride } from '../types/logger-override';
 
 /**
  * Configuration options for the logger.
@@ -27,9 +27,9 @@ export interface LoggerOptions {
 	 * @remarks
 	 * Messages below this level are discarded.
 	 *
-	 * @defaultValue `SUCCESS`
+	 * @defaultValue SUCCESS
 	 */
-	minLevel?: LogLevel | keyof typeof LogLevel | string;
+	minLevel?: LogLevel | keyof typeof LogLevel;
 
 	/**
 	 * Whether to include the process ID.

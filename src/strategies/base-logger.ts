@@ -1,8 +1,9 @@
 import isNode from 'detect-node';
-import { getMinLogLevelFromEnv } from './getMinLogLevelFromEnv';
-import type { Logger } from './Logger';
-import type { LoggerOptions } from './LoggerOptions';
-import { LogLevel, resolveLogLevel } from './LogLevel';
+import { LogLevel } from '../enums/log-level';
+import { type Logger } from '../interfaces/logger';
+import { type LoggerOptions } from '../interfaces/logger-options';
+import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env';
+import { resolveLogLevel } from '../utils/resolve-log-level';
 
 /** @internal */
 export abstract class BaseLogger implements Logger {
@@ -34,14 +35,14 @@ export abstract class BaseLogger implements Logger {
 			day: '2-digit',
 			month: '2-digit',
 			// @ts-ignore Not declared
-			fractionalSecondDigits: 3
+			fractionalSecondDigits: 3,
 		},
-		timeDiff = false
+		timeDiff = false,
 	}: LoggerOptions) {
 		this._applicationName = applicationName;
 		this._context = context;
-		this._minLevel = minLevel ? resolveLogLevel(minLevel) : getMinLogLevelFromEnv(context) ?? LogLevel.SUCCESS;
-		this._pid = isNode ? pid ?? true : false;
+		this._minLevel = minLevel ? resolveLogLevel(minLevel) : (getMinLogLevelFromEnv(context) ?? LogLevel.SUCCESS);
+		this._pid = isNode ? (pid ?? true) : false;
 		this._colors = colors;
 		this._timestamps = timestamps;
 		this._dateTimeFormatOptions = dateTimeFormatOptions;
@@ -49,41 +50,41 @@ export abstract class BaseLogger implements Logger {
 		this._timeDiff = timeDiff;
 	}
 
-	setContext(context: string): void {
+	public setContext(context: string): void {
 		this._context = context;
 	}
 
-	setMinLevel(level: LogLevel | keyof typeof LogLevel | string): void {
+	public setMinLevel(level: LogLevel | keyof typeof LogLevel): void {
 		this._minLevel = resolveLogLevel(level);
 	}
 
-	abstract log(level: LogLevel, ...args: unknown[]): void;
+	public abstract log(level: LogLevel, ...args: unknown[]): void;
 
-	fatal(...args: unknown[]): void {
+	public fatal(...args: unknown[]): void {
 		this.log(LogLevel.FATAL, ...args);
 	}
 
-	error(...args: unknown[]): void {
+	public error(...args: unknown[]): void {
 		this.log(LogLevel.ERROR, ...args);
 	}
 
-	warn(...args: unknown[]): void {
+	public warn(...args: unknown[]): void {
 		this.log(LogLevel.WARNING, ...args);
 	}
 
-	success(...args: unknown[]): void {
+	public success(...args: unknown[]): void {
 		this.log(LogLevel.SUCCESS, ...args);
 	}
 
-	info(...args: unknown[]): void {
+	public info(...args: unknown[]): void {
 		this.log(LogLevel.INFO, ...args);
 	}
 
-	debug(...args: unknown[]): void {
+	public debug(...args: unknown[]): void {
 		this.log(LogLevel.DEBUG, ...args);
 	}
 
-	trace(...args: unknown[]): void {
+	public trace(...args: unknown[]): void {
 		this.log(LogLevel.TRACE, ...args);
 	}
 
