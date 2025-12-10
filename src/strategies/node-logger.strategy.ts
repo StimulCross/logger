@@ -7,6 +7,7 @@ import {
 	logLevelToType,
 	logLevelToTypeColor,
 } from '../utils/log-level-map.js';
+import { safeStringify } from '../utils/safe-stringify.js';
 import { createColorWrapper } from '../utils/styling-function.js';
 
 /** @internal */
@@ -47,10 +48,10 @@ export class NodeLoggerStrategy extends BaseLogger {
 
 				if (typeof arg === 'object' && arg !== null) {
 					if (this._prettifyObjects) {
-						return `${Object.prototype.toString.call(arg)}:\n${JSON.stringify(arg, null, 2)}\n`;
+						return `${Object.prototype.toString.call(arg)}:\n${safeStringify(arg, 2)}\n`;
 					}
 
-					return JSON.stringify(arg);
+					return safeStringify(arg);
 				}
 
 				return String(arg);
