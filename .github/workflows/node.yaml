@@ -1,0 +1,50 @@
+name: Node.js CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Use Node.js 22
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+            - run: npm i
+            - run: npm run build
+            - run: npm run lint
+            - run: npm run format:check
+            - name: Archive build assets
+              run: tar cvf build-result.tar ./lib
+            - name: Save build assets
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-result
+                  path: build-result.tar
+    test:
+        strategy:
+            matrix:
+                node-version: [ 20, 22, 24 ]
+
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: Use Node.js ${{ matrix.node-version }}
+                uses: actions/setup-node@v4
+                with:
+                    node-version: ${{ matrix.node-version }}
+            -   name: Cache dependencies
+                uses: actions/cache@v4
+                with:
+                    path: ~/.npm
+                    key: ${{ runner.os }}-npm-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
+            -   run: npm i
+            -   run: npm test
+
