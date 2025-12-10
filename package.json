@@ -11,6 +11,9 @@
 			"default": "./lib/index.js"
 		}
 	},
+	"engines": {
+		"node": ">=22.19.0"
+	},
 	"sideEffects": false,
 	"repository": "github:stimulcross/logger",
 	"author": "Stimul Cross <stimulcross@gmail.com>",
