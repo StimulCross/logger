@@ -1,12 +1,12 @@
-import { LogLevel } from '../enums/log-level';
-import { type Logger } from '../interfaces/logger';
-import { type LoggerOptions } from '../interfaces/logger-options';
-import { type LoggerOverrideConfig } from '../interfaces/logger-override-config';
-import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env';
-import { resolveLogLevel } from '../utils/resolve-log-level';
+import { LogLevel } from '../enums/log-level.js';
+import { type LoggerOptions } from '../interfaces/logger-options.js';
+import { type LoggerOverrideConfig } from '../interfaces/logger-override-config.js';
+import { type Logger } from '../interfaces/logger.js';
+import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env.js';
+import { resolveLogLevel } from '../utils/resolve-log-level.js';
 
 /** @internal */
-export class CustomLoggerWrapper implements Logger {
+export class CustomLoggerStrategy implements Logger {
 	private _context: string;
 	private _minLevel: LogLevel;
 	private readonly _override: LoggerOverrideConfig;

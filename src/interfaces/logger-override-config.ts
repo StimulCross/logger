@@ -1,4 +1,4 @@
-import { type LogLevel } from '../enums/log-level';
+import { type LogLevel } from '../enums/log-level.js';
 
 /**
  * Configuration for a custom logger implementation.

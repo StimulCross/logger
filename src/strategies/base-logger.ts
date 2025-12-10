@@ -1,9 +1,9 @@
 import isNode from 'detect-node';
-import { LogLevel } from '../enums/log-level';
-import { type Logger } from '../interfaces/logger';
-import { type LoggerOptions } from '../interfaces/logger-options';
-import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env';
-import { resolveLogLevel } from '../utils/resolve-log-level';
+import { LogLevel } from '../enums/log-level.js';
+import { type LoggerOptions } from '../interfaces/logger-options.js';
+import { type Logger } from '../interfaces/logger.js';
+import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env.js';
+import { resolveLogLevel } from '../utils/resolve-log-level.js';
 
 /** @internal */
 export abstract class BaseLogger implements Logger {

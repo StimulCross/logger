@@ -9,7 +9,6 @@ node_modules/
 .env
 /.idea
 lib
-es
 package-lock.json
 yarn.lock
 *.code-workspace

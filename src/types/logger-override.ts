@@ -1,5 +1,5 @@
-import { type LogLevel } from '../enums/log-level';
-import { type LoggerOverrideConfig } from '../interfaces/logger-override-config';
+import { type LogLevel } from '../enums/log-level.js';
+import { type LoggerOverrideConfig } from '../interfaces/logger-override-config.js';
 
 /**
  * Custom logger override.

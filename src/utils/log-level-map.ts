@@ -1,7 +1,12 @@
 /* eslint-disable no-console */
 import isNode from 'detect-node';
-import { createBgWrapper, createColorWrapper, createModifierWrapper, type StylingFunction } from './styling-function';
-import { LogLevel } from '../enums/log-level';
+import {
+	createBgWrapper,
+	createColorWrapper,
+	createModifierWrapper,
+	type StylingFunction,
+} from './styling-function.js';
+import { LogLevel } from '../enums/log-level.js';
 
 /** @internal */
 export type LogLevelMap<T> = { [severity in LogLevel]: T };

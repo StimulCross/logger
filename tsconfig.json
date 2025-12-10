@@ -1,22 +1,19 @@
 {
 	"compilerOptions": {
+		"module": "node16",
+		"moduleResolution": "node16",
+		"target": "ES2023",
+		"lib": ["ES2023"],
 		"outDir": "lib",
-		"module": "commonjs",
-		"target": "ES2015",
-		"lib": ["es6", "es2017", "dom"],
-		"sourceMap": true,
-		"moduleResolution": "node",
 		"rootDir": "src",
+		"sourceMap": true,
 		"declaration": true,
 		"forceConsistentCasingInFileNames": true,
 		"noImplicitReturns": true,
 		"strict": true,
-		"noUnusedLocals": true,
-		"experimentalDecorators": true,
 		"importHelpers": true,
-		"isolatedModules": true,
-		"esModuleInterop": true
+		"isolatedModules": true
 	},
 	"include": ["src"],
-	"exclude": ["node_modules", "lib", "es"]
+	"exclude": ["node_modules", "lib"]
 }

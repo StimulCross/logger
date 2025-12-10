@@ -55,7 +55,7 @@ export default defineConfig(
 		},
 	},
 	{
-		files: ['tests/**'],
+		files: [...globs.tsSpec],
 		rules: {
 			'id-length': 'off',
 			'no-console': 'off',
@@ -80,61 +80,3 @@ export default defineConfig(
 		},
 	},
 );
-
-// /** @type {import("eslint").Linter.Config[]} */
-// const config = [
-// 	node,
-// 	nodeStyle,
-// 	typescript,
-// 	typescriptStyle,
-// 	{
-// 		ignores: [globs.lib, globs.nodeModules, '**/*.d.ts'],
-// 	},
-// 	{
-// 		files: [...globs.js, ...globs.ts, ...globs.tsSpec, ...globs.jsSpec],
-// 		rules: {
-// 			'unicorn/no-await-expression-member': 'off',
-// 		},
-// 	},
-// 	{
-// 		files: [...globs.ts],
-// 		rules: {
-// 			'@typescript-eslint/explicit-member-accessibility': [
-// 				'error',
-// 				{
-// 					accessibility: 'explicit',
-// 					overrides: {
-// 						accessors: 'explicit',
-// 						constructors: 'no-public',
-// 						methods: 'explicit',
-// 						properties: 'off',
-// 						parameterProperties: 'explicit',
-// 					},
-// 				},
-// 			],
-// 			'@typescript-eslint/no-explicit-any': 'off',
-// 			'@typescript-eslint/no-non-null-assertion': 'off',
-// 			'@typescript-eslint/unified-signatures': 'off',
-// 		},
-// 	},
-// 	{
-// 		files: ['tests/**'],
-// 		rules: {
-// 			'id-length': 'off',
-// 			'no-console': 'off',
-// 			'max-classes-per-file': 'off',
-// 			'max-nested-callbacks': ['warn', { max: 10 }],
-// 			'unicorn/consistent-function-scoping': 'off',
-// 			'unicorn/no-useless-undefined': 'off',
-// 			'@typescript-eslint/class-literal-property-style': 'off',
-// 			'@typescript-eslint/naming-convention': 'off',
-// 			'@typescript-eslint/no-empty-function': 'off',
-// 			'@typescript-eslint/no-loop-func': 'off',
-// 			'@typescript-eslint/no-unused-vars': 'off',
-// 			'@typescript-eslint/explicit-member-accessibility': 'off',
-// 			'@typescript-eslint/explicit-function-return-type': 'off',
-// 		},
-// 	},
-// ];
-//
-// export  config;

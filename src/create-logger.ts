@@ -1,9 +1,9 @@
 import isNode from 'detect-node';
-import { type Logger } from './interfaces/logger';
-import { type LoggerOptions } from './interfaces/logger-options';
-import { BrowserLogger } from './strategies/browser-logger';
-import { CustomLoggerWrapper } from './strategies/custom-logger-wrapper';
-import { NodeLogger } from './strategies/node-logger';
+import { type LoggerOptions } from './interfaces/logger-options.js';
+import { type Logger } from './interfaces/logger.js';
+import { BrowserLoggerStrategy } from './strategies/browser-logger.strategy.js';
+import { CustomLoggerStrategy } from './strategies/custom-logger.strategy.js';
+import { NodeLoggerStrategy } from './strategies/node-logger.strategy.js';
 
 /**
  * Creates a logger instance appropriate for the current runtime environment.
@@ -17,11 +17,12 @@ import { NodeLogger } from './strategies/node-logger';
  */
 export function createLogger(options: LoggerOptions): Logger {
 	if (options.custom) {
-		return new CustomLoggerWrapper(options);
+		return new CustomLoggerStrategy(options);
 	}
 
 	if (isNode) {
-		return new NodeLogger(options);
+		return new NodeLoggerStrategy(options);
 	}
-	return new BrowserLogger(options);
+
+	return new BrowserLoggerStrategy(options);
 }

@@ -1,4 +1,4 @@
-import { type LogLevel } from '../enums/log-level';
+import { type LogLevel } from '../enums/log-level.js';
 
 /**
  * Cross-environment logger interface.

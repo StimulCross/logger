@@ -1,51 +1,54 @@
 {
-  "name": "@stimulcross/logger",
-  "version": "7.0.0",
-  "description": "A simple logger for Node and the browser.",
-  "main": "lib",
-  "types": "lib",
-  "exports": {
-    ".": {
-      "require": "./lib/index.js",
-      "import": "./es/index.mjs",
-      "types": "./lib/index.d.ts"
-    }
-  },
-  "sideEffects": false,
-  "repository": "github:stimulcross/logger",
-  "author": "Stimul Cross <stimulcross@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "detect-node": "^2.1.0"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^20.2.0",
-    "@stimulcross/commitlint-config": "^2.0.0",
-    "@stimulcross/eslint-config-node": "^2.0.0",
-    "@stimulcross/eslint-config-typescript": "^2.0.0",
-    "@stimulcross/prettier-config": "^2.0.0",
-    "@types/detect-node": "^2.0.2",
-    "@types/node": "^24.10.2",
-	"del-cli": "^7.0.0",
-    "eslint": "^9.39.1",
-    "husky": "9.1.7",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4",
-    "typescript": "5.9.3"
-  },
-  "files": [
-    "LICENSE",
-    "README.md",
-    "lib",
-    "es"
-  ],
-  "scripts": {
-    "lint": "eslint --ext js,ts src",
-    "prettier:check": "prettier --check src",
-    "prettier:fix": "prettier --write src",
-    "build": "tsukuru",
-    "rebuild": "tsukuru --clean",
-    "clean": "rimraf ./es ./lib ./tsconfig.tsbuildinfo",
-    "prepare": "husky"
-  }
+	"name": "@stimulcross/logger",
+	"version": "7.0.0",
+	"description": "A simple logger for Node and the browser.",
+	"type": "module",
+	"main": "lib",
+	"types": "lib",
+	"exports": {
+		".": {
+			"types": "./lib/index.d.ts",
+			"default": "./lib/index.js"
+		}
+	},
+	"sideEffects": false,
+	"repository": "github:stimulcross/logger",
+	"author": "Stimul Cross <stimulcross@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"detect-node": "^2.1.0"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^20.2.0",
+		"@stimulcross/commitlint-config": "^2.0.0",
+		"@stimulcross/eslint-config-node": "^2.0.0",
+		"@stimulcross/eslint-config-typescript": "^2.0.0",
+		"@stimulcross/prettier-config": "^2.0.0",
+		"@types/detect-node": "^2.0.2",
+		"@types/node": "^24.10.2",
+		"del-cli": "^7.0.0",
+		"eslint": "^9.39.1",
+		"husky": "9.1.7",
+		"lint-staged": "^16.2.7",
+		"prettier": "^3.7.4",
+		"typescript": "5.9.3",
+		"vitest": "^4.0.15"
+	},
+	"files": [
+		"LICENSE",
+		"README.md",
+		"lib"
+	],
+	"scripts": {
+		"lint": "eslint src",
+		"lint:fix": "eslint src --fix",
+		"format:check": "prettier --check src",
+		"format:fix": "prettier --write src",
+		"build": "tsc --build",
+		"rebuild": "npm run clean && npm run build",
+		"clean": "del-cli lib",
+		"prepare": "husky",
+		"test": "vitest run",
+		"test:watch": "vitest run --watch"
+	}
 }

@@ -1,15 +1,15 @@
-import { BaseLogger } from './base-logger';
-import { type LogLevel } from '../enums/log-level';
+import { BaseLogger } from './base-logger.js';
+import { type LogLevel } from '../enums/log-level.js';
 import {
 	logLevelToColor,
 	logLevelToConsoleFunction,
 	logLevelToType,
 	logLevelToTypeColor,
-} from '../utils/log-level-map';
-import { createColorWrapper } from '../utils/styling-function';
+} from '../utils/log-level-map.js';
+import { createColorWrapper } from '../utils/styling-function.js';
 
 /** @internal */
-export class BrowserLogger extends BaseLogger {
+export class BrowserLoggerStrategy extends BaseLogger {
 	private readonly _accentColorWrapper = createColorWrapper('yellowBright');
 
 	public log(level: LogLevel, ...args: unknown[]): void {

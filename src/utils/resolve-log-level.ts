@@ -1,4 +1,4 @@
-import { LogLevel } from '../enums/log-level';
+import { LogLevel } from '../enums/log-level.js';
 
 /** @internal */
 export function resolveLogLevel(level: keyof typeof LogLevel | LogLevel): LogLevel {

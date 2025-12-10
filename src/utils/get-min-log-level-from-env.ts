@@ -1,5 +1,5 @@
-import { resolveLogLevel } from './resolve-log-level';
-import { type LogLevel } from '../enums/log-level';
+import { resolveLogLevel } from './resolve-log-level.js';
+import { type LogLevel } from '../enums/log-level.js';
 
 const data: Array<[string[] | undefined, LogLevel]> =
 	typeof process === 'undefined'
@@ -15,7 +15,7 @@ const data: Array<[string[] | undefined, LogLevel]> =
 					return null;
 				})
 				.filter((v): v is [string[] | undefined, LogLevel] => Boolean(v))
-				.sort(([a], [b]) => (b?.length ?? 0) - (a?.length ?? 0)) ?? []);
+				.sort(([nsA], [nsB]) => (nsB?.length ?? 0) - (nsA?.length ?? 0)) ?? []);
 
 const defaultIndex = data.findIndex(([nsParts]) => !nsParts);
 let defaultLevel: LogLevel | undefined;
