@@ -9,35 +9,35 @@ export enum LogLevel {
 	/**
 	 * Critical failure — the application cannot continue.
 	 */
-	FATAL,
+	FATAL = 0,
 
 	/**
 	 * An operation has failed and requires attention.
 	 */
-	ERROR,
+	ERROR = 1,
 
 	/**
 	 * A potentially harmful or unexpected situation.
 	 */
-	WARNING,
+	WARNING = 2,
 
 	/**
 	 * Confirmation that an operation completed successfully.
 	 */
-	SUCCESS,
+	SUCCESS = 3,
 
 	/**
 	 * General informational messages.
 	 */
-	INFO,
+	INFO = 4,
 
 	/**
 	 * Debug information intended for development and troubleshooting.
 	 */
-	DEBUG,
+	DEBUG = 5,
 
 	/**
 	 * Highly detailed diagnostic output.
 	 */
-	TRACE,
+	TRACE = 6,
 }
