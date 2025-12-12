@@ -56,11 +56,11 @@ export const logLevelToColor: LogLevelMap<StylingFunction> = {
 
 /** @internal */
 export const logLevelToBackgroundColor: LogLevelMap<StylingFunction> = {
-	[LogLevel.FATAL]: createBgWrapper('bgRed', createColorWrapper('white')),
-	[LogLevel.ERROR]: createBgWrapper('bgRedBright', createColorWrapper('white')),
-	[LogLevel.WARNING]: createBgWrapper('bgYellow', createColorWrapper('black')),
-	[LogLevel.SUCCESS]: createColorWrapper('green'),
-	[LogLevel.INFO]: createBgWrapper('bgBlue', createColorWrapper('white')),
-	[LogLevel.DEBUG]: createBgWrapper('bgMagenta', createColorWrapper('black')),
-	[LogLevel.TRACE]: createBgWrapper('bgCyanBright', createColorWrapper('black')),
+	[LogLevel.FATAL]: createBgWrapper('bgRedBright', createColorWrapper('whiteBright', createModifierWrapper('bold'))),
+	[LogLevel.ERROR]: createBgWrapper('bgRed', createColorWrapper('whiteBright', createModifierWrapper('bold'))),
+	[LogLevel.WARNING]: createBgWrapper('bgYellow', createColorWrapper('black', createModifierWrapper('bold'))),
+	[LogLevel.SUCCESS]: createBgWrapper('bgGreen', createColorWrapper('whiteBright', createModifierWrapper('bold'))),
+	[LogLevel.INFO]: createBgWrapper('bgBlue', createColorWrapper('whiteBright', createModifierWrapper('bold'))),
+	[LogLevel.DEBUG]: createBgWrapper('bgMagenta', createColorWrapper('black', createModifierWrapper('bold'))),
+	[LogLevel.TRACE]: createBgWrapper('bgCyan', createColorWrapper('black', createModifierWrapper('bold'))),
 };
