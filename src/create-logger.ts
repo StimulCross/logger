@@ -12,12 +12,21 @@ import { NodeLoggerStrategy } from './strategies/node-logger.strategy.js';
  * supported environment, this function returns the corresponding logger
  * implementation.
  *
- * @param options Configuration options for the logger.
+ * @param context The context label to apply.
+ * @param options Logger configuration options.
+ *
  * @returns A logger instance tailored to the detected environment.
  */
-export function createLogger(options: LoggerOptions): Logger {
-	if (options.custom) {
-		return new CustomLoggerStrategy(options);
+export function createLogger(options: LoggerOptions): Logger;
+export function createLogger(context: string, options?: Omit<LoggerOptions, 'context'>): Logger;
+export function createLogger(
+	contextOrOptions: string | LoggerOptions,
+	options?: Omit<LoggerOptions, 'context'>,
+): Logger {
+	const opts = typeof contextOrOptions === 'string' ? { context: contextOrOptions, ...options } : contextOrOptions;
+
+	if (opts.custom) {
+		return new CustomLoggerStrategy(opts);
 	}
 
 	if (isNode) {
