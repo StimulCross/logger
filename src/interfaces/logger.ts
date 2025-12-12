@@ -77,5 +77,5 @@ export interface Logger {
 	 *
 	 * @param level The level to apply. Accepts a LogLevel value or its key.
 	 */
-	setMinLevel(level: LogLevel | keyof typeof LogLevel): void;
+	setMinLevel(level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>): void;
 }

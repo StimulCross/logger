@@ -54,7 +54,7 @@ export abstract class BaseLogger implements Logger {
 		this._context = context;
 	}
 
-	public setMinLevel(level: LogLevel | keyof typeof LogLevel): void {
+	public setMinLevel(level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>): void {
 		this._minLevel = resolveLogLevel(level);
 	}
 

@@ -23,13 +23,11 @@ export interface LoggerOptions {
 
 	/**
 	 * Minimum log level.
+	 * Messages below this level are ignored.
 	 *
-	 * @remarks
-	 * Messages below this level are discarded.
-	 *
-	 * @defaultValue SUCCESS
+	 * @default SUCCESS
 	 */
-	minLevel?: LogLevel | keyof typeof LogLevel;
+	minLevel?: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>;
 
 	/**
 	 * Whether to include the process ID.

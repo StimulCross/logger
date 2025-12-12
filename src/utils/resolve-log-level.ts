@@ -1,7 +1,7 @@
 import { LogLevel } from '../enums/log-level.js';
 
 /** @internal */
-export function resolveLogLevel(level: keyof typeof LogLevel | LogLevel): LogLevel {
+export function resolveLogLevel(level: keyof typeof LogLevel | Lowercase<keyof typeof LogLevel> | LogLevel): LogLevel {
 	if (typeof level === 'number') {
 		if (Object.prototype.hasOwnProperty.call(LogLevel, level)) {
 			return level;
