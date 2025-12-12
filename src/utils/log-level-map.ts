@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import isNode from 'detect-node';
 import {
 	createBgWrapper,
 	createColorWrapper,
@@ -18,7 +17,7 @@ export const logLevelToConsoleFunction: LogLevelMap<(...args: unknown[]) => void
 	[LogLevel.WARNING]: console.warn.bind(console),
 	[LogLevel.SUCCESS]: console.info.bind(console),
 	[LogLevel.INFO]: console.info.bind(console),
-	[LogLevel.DEBUG]: isNode ? console.log.bind(console) : console.debug.bind(console),
+	[LogLevel.DEBUG]: console.debug.bind(console),
 	[LogLevel.TRACE]: console.trace.bind(console),
 };
 
