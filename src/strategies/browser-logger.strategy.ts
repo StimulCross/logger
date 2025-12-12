@@ -1,16 +1,27 @@
 import { BaseLogger } from './base-logger.js';
+import { DEFAULT_OPTIONS } from '../constants.js';
 import { type LogLevel } from '../enums/log-level.js';
+import { type LoggerOptions } from '../interfaces/logger-options.js';
 import {
 	logLevelToColor,
 	logLevelToConsoleFunction,
 	logLevelToType,
 	logLevelToTypeColor,
 } from '../utils/log-level-map.js';
+import { resolveLogLevel } from '../utils/resolve-log-level.js';
 import { createColorWrapper } from '../utils/styling-function.js';
+
+const createAccentWrapper = createColorWrapper('yellowBright');
 
 /** @internal */
 export class BrowserLoggerStrategy extends BaseLogger {
-	private readonly _accentColorWrapper = createColorWrapper('yellowBright');
+	protected override _minLevel: LogLevel;
+
+	constructor(options: LoggerOptions) {
+		super(options);
+
+		this._minLevel = options.minLevel ? resolveLogLevel(options.minLevel) : DEFAULT_OPTIONS.minLevel;
+	}
 
 	public log(level: LogLevel, ...args: unknown[]): void {
 		if (level > this._minLevel) {
@@ -18,26 +29,25 @@ export class BrowserLoggerStrategy extends BaseLogger {
 		}
 
 		const logFn = logLevelToConsoleFunction[level];
-
 		const shouldUseColors = this._colors;
 		const templateArgs: string[] = [];
-		const arrArgs: unknown[] = [];
+		const messageArgs: unknown[] = [];
 
 		if (this._applicationName) {
 			templateArgs.push(shouldUseColors ? logLevelToColor[level]('%s') : '%s');
-			arrArgs.push(`[${this._applicationName}]`);
+			messageArgs.push(`[${this._applicationName}]`);
 		}
 
 		if (this._timestamps) {
 			templateArgs.push('%s');
-			arrArgs.push(`${new Date().toLocaleString(undefined, this._dateTimeFormatOptions)}   `);
+			messageArgs.push(`${new Date().toLocaleString(undefined, this._dateTimeFormatOptions)}   `);
 		}
 
 		templateArgs.push(shouldUseColors ? logLevelToTypeColor[level]('%s') : '%s');
-		arrArgs.push(logLevelToType[level]);
+		messageArgs.push(logLevelToType[level]);
 
-		templateArgs.push(shouldUseColors ? this._accentColorWrapper('%s') : '%s');
-		arrArgs.push(`[${this._context}]`);
+		templateArgs.push(shouldUseColors ? createAccentWrapper('%s') : '%s');
+		messageArgs.push(`[${this._context}]`);
 
 		for (const arg of args) {
 			if (typeof arg === 'object') {
@@ -46,14 +56,16 @@ export class BrowserLoggerStrategy extends BaseLogger {
 				templateArgs.push(shouldUseColors ? logLevelToColor[level]('%s') : '%s');
 			}
 
-			arrArgs.push(arg);
+			messageArgs.push(arg);
 		}
 
-		if (this._timeDiff) {
-			templateArgs.push(shouldUseColors ? this._accentColorWrapper('%s') : '%s');
-			arrArgs.push(BaseLogger._updateAndGetTimestampDiff());
+		const timeDiff = this._getTimeDiff();
+
+		if (timeDiff) {
+			templateArgs.push(shouldUseColors ? createAccentWrapper('%s') : '%s');
+			messageArgs.push(timeDiff);
 		}
 
-		logFn(templateArgs.join(' '), ...arrArgs);
+		logFn(templateArgs.join(' '), ...messageArgs);
 	}
 }

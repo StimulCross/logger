@@ -1,5 +1,22 @@
+import { type InspectOptions } from 'node:util';
 import { type LogLevel } from '../enums/log-level.js';
+import { type DateTimeFormatter } from '../types/datetime-formatter.js';
 import { type LoggerOverride } from '../types/logger-override.js';
+import { type LoggerTimeDiffScope } from '../types/logger-time-diff-scope.js';
+
+/**
+ * An interface extending `Intl.DateTimeFormatOptions` to configure formatting of date and time.
+ *
+ * This interface allows specifying options for customizing the output of date and
+ * time in a localized format, with an optional `locale` property to explicitly
+ * define the desired locale.
+ */
+export interface DateTimeFormatOptions extends Intl.DateTimeFormatOptions {
+	/**
+	 * The locale identifier for the desired locale.
+	 */
+	locale?: string;
+}
 
 /**
  * Configuration options for the logger.
@@ -33,9 +50,9 @@ export interface LoggerOptions {
 	 * Whether to include the process ID.
 	 *
 	 * @remarks
-	 * Effective only in Node.js; ignored in the browser.
+	 * Effective only in Node.js, Deno, and Bun runtimes; ignored in the browser.
 	 *
-	 * @defaultValue `true`
+	 * @default `true`
 	 */
 	pid?: boolean;
 
@@ -49,21 +66,21 @@ export interface LoggerOptions {
 	 *
 	 * @remarks
 	 * Timestamps use the local timezone by default. To customize the format,
-	 * use {@link LoggerOptions.dateTimeFormatOptions}.
+	 * use {@link LoggerOptions.dateTimeFormat}.
 	 *
-	 * @defaultValue `true`
+	 * @default `true`
 	 */
 	timestamps?: boolean;
 
 	/**
-	 * Formatting options for timestamp output.
+	 * Formatting options or a custom formatting function for timestamp output.
 	 *
 	 * @remarks
 	 * Passed directly to `Intl.DateTimeFormat`.
 	 *
-	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
 	 */
-	dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
+	dateTimeFormat?: DateTimeFormatter | DateTimeFormatOptions;
 
 	/**
 	 * Custom logger implementation that overrides default behavior.
@@ -71,23 +88,26 @@ export interface LoggerOptions {
 	custom?: LoggerOverride;
 
 	/**
-	 * Enables pretty-printing of objects and arrays.
+	 * Specifies options for `inspect()` when formatting log arguments.
 	 *
 	 * @remarks
-	 * Ignored in the browser.
+	 * Effective only in Node.js, Deno, and Bun runtimes; ignored in the browser.
 	 *
-	 * @defaultValue `true`
+	 * @see https://nodejs.org/api/util.html#util_util_inspect_object_options
+	 *
+	 * @default { depth: 5, colors: true }
 	 */
-	prettifyObjects?: boolean;
+	inspectOptions?: InspectOptions;
 
 	/**
-	 * Appends the time difference since the previous log message.
+	 * Configures time-difference tracking between consecutive log entries.
 	 *
 	 * @remarks
-	 * Similar to the behavior used in NestJS. Useful for measuring bootstrap
-	 * or operation timing.
+	 * Accepts `global` to measure deltas across all logger instances or `local` to
+	 * keep measurements scoped to the current instance, mirroring the behavior popularized
+	 * by NestJS for bootstrap and operation timing.
 	 *
-	 * @defaultValue `false`
+	 * @default local
 	 */
-	timeDiff?: boolean;
+	timeDiff?: LoggerTimeDiffScope;
 }

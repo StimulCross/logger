@@ -1,53 +1,46 @@
-import isNode from 'detect-node';
+import { DEFAULT_OPTIONS } from '../constants.js';
 import { LogLevel } from '../enums/log-level.js';
-import { type LoggerOptions } from '../interfaces/logger-options.js';
+import { type DateTimeFormatOptions, type LoggerOptions } from '../interfaces/logger-options.js';
 import { type Logger } from '../interfaces/logger.js';
-import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env.js';
+import { type DateTimeFormatter } from '../types/datetime-formatter.js';
+import { type LoggerTimeDiffScope } from '../types/logger-time-diff-scope.js';
 import { resolveLogLevel } from '../utils/resolve-log-level.js';
 
 /** @internal */
 export abstract class BaseLogger implements Logger {
-	protected static _lastTimestamp: number = Date.now();
+	protected static _lastGlobalTimestamp: number = Date.now();
+	protected _lastLocalTimestamp: number = Date.now();
 
 	protected readonly _applicationName?: string;
 	protected _context: string;
-	protected _minLevel: LogLevel;
-	protected readonly _pid: boolean;
-	protected readonly _colors: boolean;
+	protected _colors: boolean;
 	protected readonly _timestamps: boolean;
-	protected readonly _dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
-	protected readonly _prettifyObjects: boolean;
-	protected readonly _timeDiff: boolean;
+	protected readonly _dateTimeFormatter?: DateTimeFormatter;
+	protected readonly _dateTimeFormatOptions?: DateTimeFormatOptions;
+	protected readonly _timeDiff?: LoggerTimeDiffScope;
+
+	protected abstract _minLevel: LogLevel;
 
 	constructor({
 		applicationName,
 		context,
-		minLevel,
-		pid,
-		prettifyObjects = false,
-		colors = true,
-		timestamps = isNode,
-		dateTimeFormatOptions = {
-			year: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-			second: 'numeric',
-			day: '2-digit',
-			month: '2-digit',
-			// @ts-ignore Not declared
-			fractionalSecondDigits: 3,
-		},
-		timeDiff = false,
+		colors = DEFAULT_OPTIONS.colors,
+		timestamps = DEFAULT_OPTIONS.timestamps,
+		dateTimeFormat,
+		timeDiff,
 	}: LoggerOptions) {
 		this._applicationName = applicationName;
 		this._context = context;
-		this._minLevel = minLevel ? resolveLogLevel(minLevel) : (getMinLogLevelFromEnv(context) ?? LogLevel.SUCCESS);
-		this._pid = isNode ? (pid ?? true) : false;
 		this._colors = colors;
 		this._timestamps = timestamps;
-		this._dateTimeFormatOptions = dateTimeFormatOptions;
-		this._prettifyObjects = prettifyObjects;
 		this._timeDiff = timeDiff;
+
+		if (typeof dateTimeFormat === 'function') {
+			this._dateTimeFormatter = dateTimeFormat;
+			this._dateTimeFormatOptions = DEFAULT_OPTIONS.dateTimeFormat;
+		} else if (typeof dateTimeFormat === 'object') {
+			this._dateTimeFormatOptions = { ...DEFAULT_OPTIONS.dateTimeFormat, ...dateTimeFormat };
+		}
 	}
 
 	public setContext(context: string): void {
@@ -88,9 +81,20 @@ export abstract class BaseLogger implements Logger {
 		this.log(LogLevel.TRACE, ...args);
 	}
 
-	protected static _updateAndGetTimestampDiff(): string {
-		const timeDiff = ` +${Date.now() - BaseLogger._lastTimestamp}ms`;
-		BaseLogger._lastTimestamp = Date.now();
-		return timeDiff;
+	protected _getTimeDiff(): string {
+		const now = Date.now();
+
+		if (!this._timeDiff) {
+			BaseLogger._lastGlobalTimestamp = now;
+			return '';
+		}
+
+		const timeDiff =
+			this._timeDiff === 'global' ? now - BaseLogger._lastGlobalTimestamp : now - this._lastLocalTimestamp;
+
+		this._lastLocalTimestamp = now;
+		BaseLogger._lastGlobalTimestamp = now;
+
+		return `+${timeDiff}ms ${this._timeDiff === 'global' ? '[G]' : '[L]'}`;
 	}
 }

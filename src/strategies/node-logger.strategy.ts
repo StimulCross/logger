@@ -1,77 +1,69 @@
-import { type WriteStream } from 'tty';
-import { BaseLogger } from './base-logger.js';
+import errorStackParser, { type StackFrame } from 'error-stack-parser';
+import { ConsoleRuntimeLogger } from './console-runtime-logger.js';
 import { type LogLevel } from '../enums/log-level.js';
-import {
-	logLevelToColor,
-	logLevelToConsoleFunction,
-	logLevelToType,
-	logLevelToTypeColor,
-} from '../utils/log-level-map.js';
-import { safeStringify } from '../utils/safe-stringify.js';
-import { createColorWrapper } from '../utils/styling-function.js';
+import { logLevelToColor } from '../utils/log-level-map.js';
+import { createBgWrapper, createColorWrapper, createModifierWrapper } from '../utils/styling-function.js';
+
+const createWhiteWrapper = createColorWrapper('white');
+const creatGrayWrapper = createColorWrapper('blackBright');
+const createErrorWrapper = createBgWrapper('bgRed', createColorWrapper('whiteBright', createModifierWrapper('bold')));
+const createStackFrameWrapper = createColorWrapper(
+	'cyan',
+	createModifierWrapper('bold', createModifierWrapper('italic')),
+);
 
 /** @internal */
-export class NodeLoggerStrategy extends BaseLogger {
-	private readonly _accentColorWrapper = createColorWrapper('yellowBright');
-
-	public log(level: LogLevel, ...args: unknown[]): void {
-		if (level > this._minLevel) {
-			return;
+export class NodeLoggerStrategy extends ConsoleRuntimeLogger {
+	protected _formatError(error: Error, level: LogLevel): string {
+		if (!this._colors) {
+			return error.stack ?? `${error.name}: ${error.message}`;
 		}
 
-		const logFn = logLevelToConsoleFunction[level];
+		const stackLines: string[] = [
+			`${createErrorWrapper(` ${error.name} `)} ${logLevelToColor[level](error.message)}`,
+		];
 
-		let builtMessage = '';
+		const frames = errorStackParser.parse(error);
 
-		const shouldUseColors = this._colors && ((process.stdout as WriteStream | undefined)?.isTTY ?? true);
-
-		if (this._applicationName) {
-			const applicationName = `[${this._applicationName}] `;
-			builtMessage += shouldUseColors ? logLevelToColor[level](applicationName) : applicationName;
+		for (const frame of frames) {
+			const stackLine = this._formatStackFrame(frame);
+			stackLines.push(stackLine);
 		}
 
-		if (this._pid) {
-			const pid = `${process.pid}  - `;
-			builtMessage += shouldUseColors ? logLevelToColor[level](pid) : pid;
+		return stackLines.join('\n');
+	}
+
+	private _formatStackFrame({
+		functionName = '<anonymous>',
+		fileName,
+		lineNumber,
+		columnNumber,
+	}: StackFrame): string {
+		const result: string[] = [`    ${creatGrayWrapper('at')}`];
+
+		if (functionName) {
+			result.push(
+				fileName && (fileName.includes('node_modules') || fileName.startsWith('node:'))
+					? `${creatGrayWrapper(functionName)}`
+					: `${createStackFrameWrapper(functionName)}`,
+			);
 		}
 
-		if (this._timestamps) {
-			const timestamp = `${new Date().toLocaleString(undefined, this._dateTimeFormatOptions)}    `;
-			builtMessage += timestamp;
+		if (fileName) {
+			let path = fileName;
+
+			if (lineNumber !== undefined) {
+				path += `:${lineNumber}`;
+			}
+
+			if (columnNumber !== undefined) {
+				path += `:${columnNumber}`;
+			}
+
+			path = createWhiteWrapper(`(${path})`);
+			result.push(path);
 		}
 
-		const message = args
-			.map((arg: unknown) => {
-				if (arg instanceof Error) {
-					return arg.stack ? `${arg.stack}\n` : `${arg.name}${arg.message ? `: ${arg.message}` : ''}`;
-				}
-
-				if (typeof arg === 'object' && arg !== null) {
-					if (this._prettifyObjects) {
-						return `${Object.prototype.toString.call(arg)}:\n${safeStringify(arg, 2)}\n`;
-					}
-
-					return safeStringify(arg);
-				}
-
-				return String(arg);
-			})
-			.join(' ');
-
-		builtMessage += shouldUseColors
-			? `${logLevelToTypeColor[level](logLevelToType[level])} `
-			: `${logLevelToType[level]} `;
-
-		const context = `[${this._context}] `;
-		builtMessage += shouldUseColors ? this._accentColorWrapper(context) : context;
-
-		builtMessage += shouldUseColors ? logLevelToColor[level](message) : message;
-
-		if (this._timeDiff) {
-			const timeDiff = BaseLogger._updateAndGetTimestampDiff();
-			builtMessage += shouldUseColors ? this._accentColorWrapper(timeDiff) : timeDiff;
-		}
-
-		logFn(builtMessage);
+		return result.join(' ');
 	}
 }
