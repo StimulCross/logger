@@ -19,7 +19,8 @@
 	"author": "Stimul Cross <stimulcross@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"detect-node": "^2.1.0"
+		"error-stack-parser": "^2.1.4",
+		"std-env": "^3.10.0"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^20.2.0",

@@ -1,9 +1,11 @@
-import isNode from 'detect-node';
 import { type LoggerOptions } from './interfaces/logger-options.js';
 import { type Logger } from './interfaces/logger.js';
 import { BrowserLoggerStrategy } from './strategies/browser-logger.strategy.js';
+import { BunLoggerStrategy } from './strategies/bun-logger.strategy.js';
 import { CustomLoggerStrategy } from './strategies/custom-logger.strategy.js';
+import { DenoLoggerStrategy } from './strategies/deno-logger.strategy.js';
 import { NodeLoggerStrategy } from './strategies/node-logger.strategy.js';
+import { detectRuntime, Runtime } from './utils/detect-runtime.js';
 
 /**
  * Creates a logger instance appropriate for the current runtime environment.
@@ -29,9 +31,23 @@ export function createLogger(
 		return new CustomLoggerStrategy(opts);
 	}
 
-	if (isNode) {
-		return new NodeLoggerStrategy(options);
-	}
+	const runtime = detectRuntime();
 
-	return new BrowserLoggerStrategy(options);
+	switch (runtime) {
+		case Runtime.Browser: {
+			return new BrowserLoggerStrategy(opts);
+		}
+
+		case Runtime.Bun: {
+			return new BunLoggerStrategy(opts);
+		}
+
+		case Runtime.Deno: {
+			return new DenoLoggerStrategy(opts);
+		}
+
+		default: {
+			return new NodeLoggerStrategy(opts);
+		}
+	}
 }
