@@ -1,5 +1,5 @@
-import { createLogger, LogLevel } from '../src/index.js';
-import { detectRuntime } from '../src/utils/detect-runtime.js';
+import { createLogger, LogLevel } from '../lib/index.js';
+import { detectRuntime } from '../lib/utils/detect-runtime.js';
 
 const sep = (title: string) => {
 	console.log('\n' + '-'.repeat(5) + ' ' + title + ' ' + '-'.repeat(20) + '\n');
