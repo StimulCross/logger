@@ -1,3 +1,4 @@
+import { DEFAULT_OPTIONS } from '../constants.js';
 import { LogLevel } from '../enums/log-level.js';
 
 /** @internal */
@@ -11,7 +12,7 @@ export function resolveLogLevel(level: keyof typeof LogLevel | Lowercase<keyof t
 			.filter(key => !Number.isNaN(key) && key < level);
 
 		if (eligibleLevels.length === 0) {
-			return LogLevel.WARNING;
+			return DEFAULT_OPTIONS.minLevel;
 		}
 		return Math.max(...eligibleLevels);
 	}
