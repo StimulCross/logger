@@ -25,7 +25,7 @@ export function createLogger(
 	contextOrOptions: string | LoggerOptions,
 	options?: Omit<LoggerOptions, 'context'>,
 ): Logger {
-	const opts = typeof contextOrOptions === 'string' ? { context: contextOrOptions, ...options } : contextOrOptions;
+	const opts = typeof contextOrOptions === 'string' ? { ...options, context: contextOrOptions } : contextOrOptions;
 
 	if (opts.custom) {
 		return new CustomLoggerStrategy(opts);
