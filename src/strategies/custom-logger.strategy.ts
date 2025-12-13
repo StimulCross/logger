@@ -1,3 +1,4 @@
+import { DEFAULT_OPTIONS } from '../constants.js';
 import { LogLevel } from '../enums/log-level.js';
 import { type LoggerOptions } from '../interfaces/logger-options.js';
 import { type LoggerOverrideConfig } from '../interfaces/logger-override-config.js';
@@ -13,9 +14,10 @@ export class CustomLoggerStrategy implements Logger {
 
 	constructor({ context, minLevel, custom }: LoggerOptions) {
 		this._context = context;
-		this._minLevel = minLevel
-			? resolveLogLevel(minLevel)
-			: (getMinLogLevelFromEnv(this._context) ?? LogLevel.SUCCESS);
+		this._minLevel =
+			minLevel === undefined
+				? (getMinLogLevelFromEnv(this._context) ?? DEFAULT_OPTIONS.minLevel)
+				: resolveLogLevel(minLevel);
 		this._override = typeof custom === 'function' ? { log: custom } : custom!;
 	}
 

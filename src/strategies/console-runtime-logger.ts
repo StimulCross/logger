@@ -25,9 +25,10 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 	constructor(options: LoggerOptions) {
 		super(options);
 
-		this._minLevel = options.minLevel
-			? resolveLogLevel(options.minLevel)
-			: (getMinLogLevelFromEnv(this._context) ?? DEFAULT_OPTIONS.minLevel);
+		this._minLevel =
+			options.minLevel === undefined
+				? (getMinLogLevelFromEnv(this._context) ?? DEFAULT_OPTIONS.minLevel)
+				: resolveLogLevel(options.minLevel);
 
 		this._pid = options.pid ?? true;
 

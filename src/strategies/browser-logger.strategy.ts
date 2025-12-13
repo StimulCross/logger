@@ -20,7 +20,7 @@ export class BrowserLoggerStrategy extends BaseLogger {
 	constructor(options: LoggerOptions) {
 		super(options);
 
-		this._minLevel = options.minLevel ? resolveLogLevel(options.minLevel) : DEFAULT_OPTIONS.minLevel;
+		this._minLevel = options.minLevel === undefined ? DEFAULT_OPTIONS.minLevel : resolveLogLevel(options.minLevel);
 	}
 
 	public log(level: LogLevel, ...args: unknown[]): void {
