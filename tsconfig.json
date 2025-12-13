@@ -2,8 +2,8 @@
 	"compilerOptions": {
 		"module": "node16",
 		"moduleResolution": "node16",
-		"target": "ES2023",
-		"lib": ["ES2023"],
+		"target": "ES2022",
+		"lib": ["ES2022"],
 		"outDir": "lib",
 		"rootDir": "src",
 		"sourceMap": true,
