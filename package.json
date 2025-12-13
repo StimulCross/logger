@@ -30,6 +30,7 @@
 		"@stimulcross/prettier-config": "^2.0.0",
 		"@types/detect-node": "^2.0.2",
 		"@types/node": "^24.10.2",
+		"@vitest/coverage-v8": "^4.0.15",
 		"del-cli": "^7.0.0",
 		"eslint": "^9.39.1",
 		"husky": "9.1.7",
@@ -53,6 +54,7 @@
 		"clean": "del-cli lib",
 		"prepare": "husky",
 		"test": "vitest run",
-		"test:watch": "vitest run --watch"
+		"test:watch": "vitest run --watch",
+		"test:cov": "vitest run --coverage"
 	}
 }
