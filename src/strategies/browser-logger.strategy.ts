@@ -24,7 +24,7 @@ export class BrowserLoggerStrategy extends BaseLogger {
 	}
 
 	public log(level: LogLevel, ...args: unknown[]): void {
-		if (level > this._minLevel) {
+		if (!this._shouldLog(level)) {
 			return;
 		}
 

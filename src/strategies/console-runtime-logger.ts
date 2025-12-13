@@ -42,7 +42,7 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 	}
 
 	public log(level: LogLevel, ...args: unknown[]): void {
-		if (level > this._minLevel) {
+		if (!this._shouldLog(level)) {
 			return;
 		}
 

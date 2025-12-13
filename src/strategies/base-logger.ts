@@ -81,6 +81,10 @@ export abstract class BaseLogger implements Logger {
 		this.log(LogLevel.TRACE, ...args);
 	}
 
+	protected _shouldLog(level: LogLevel): boolean {
+		return this._minLevel >= level;
+	}
+
 	protected _getTimeDiff(): string {
 		const now = Date.now();
 
