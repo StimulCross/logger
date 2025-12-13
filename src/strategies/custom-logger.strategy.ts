@@ -60,10 +60,10 @@ export class CustomLoggerStrategy implements Logger {
 	}
 
 	public success(...args: unknown[]): void {
-		if (!this._override.warn) {
+		if (!this._override.success) {
 			this.log(LogLevel.SUCCESS, ...args);
 		} else if (this._shouldLog(LogLevel.SUCCESS)) {
-			this._override.warn(...args);
+			this._override.success(...args);
 		}
 	}
 
