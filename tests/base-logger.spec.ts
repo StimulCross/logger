@@ -14,6 +14,7 @@ import { LogLevel } from '../src/enums/log-level.js';
 import { type DateTimeFormatOptions, type LoggerOptions } from '../src/interfaces/logger-options.js';
 import { BaseLogger } from '../src/strategies/base-logger.js';
 import { DEFAULT_OPTIONS } from '../src/constants.js';
+import { LoggerRuntime } from '../src/logger-runtime.js';
 
 class TestLogger extends BaseLogger {
 	protected override _minLevel: LogLevel = LogLevel.TRACE;
@@ -68,12 +69,26 @@ function createTestLogger(opts: Partial<LoggerOptions> = {}): TestLogger {
 }
 
 describe('BaseLogger', () => {
+	const runtimeSnapshot = () => ({
+		isEnabled: LoggerRuntime.isEnabled,
+		globalMinLevel: LoggerRuntime.globalMinLevel,
+	});
+
+	let initialRuntime: ReturnType<typeof runtimeSnapshot>;
+
 	beforeEach(() => {
 		vi.restoreAllMocks();
 		createLoggerMock.mockReset();
+
+		initialRuntime = runtimeSnapshot();
+		LoggerRuntime.setEnabled(true);
+		LoggerRuntime.setGlobalMinLevel(null);
 	});
 
 	afterEach(() => {
+		LoggerRuntime.setEnabled(initialRuntime.isEnabled);
+		LoggerRuntime.setGlobalMinLevel(initialRuntime.globalMinLevel);
+
 		vi.restoreAllMocks();
 		createLoggerMock.mockReset();
 	});
@@ -146,6 +161,28 @@ describe('BaseLogger', () => {
 			expect(logger._callShouldLog(LogLevel.INFO)).toBe(true);
 			expect(logger._callShouldLog(LogLevel.SUCCESS)).toBe(true);
 		});
+
+		it('returns false when LoggerRuntime is disabled (even if local minLevel allows)', () => {
+			const logger = createTestLogger();
+			logger.setMinLevel(LogLevel.TRACE);
+
+			LoggerRuntime.setEnabled(false);
+
+			expect(logger._callShouldLog(LogLevel.FATAL)).toBe(false);
+			expect(logger._callShouldLog(LogLevel.TRACE)).toBe(false);
+		});
+
+		it('respects LoggerRuntime.globalMinLevel as a global lower bound', () => {
+			const logger = createTestLogger();
+			logger.setMinLevel(LogLevel.TRACE);
+
+			LoggerRuntime.setGlobalMinLevel(LogLevel.WARNING);
+
+			expect(logger._callShouldLog(LogLevel.INFO)).toBe(false);
+			expect(logger._callShouldLog(LogLevel.DEBUG)).toBe(false);
+			expect(logger._callShouldLog(LogLevel.WARNING)).toBe(true);
+			expect(logger._callShouldLog(LogLevel.ERROR)).toBe(true);
+		});
 	});
 
 	describe('level helpers', () => {
@@ -207,7 +244,7 @@ describe('BaseLogger', () => {
 		it('throws if context is missing', () => {
 			const logger = createTestLogger();
 
-			// @ts-expect-error should throw
+			// @ts-expect-error should throw on missing context
 			expect(() => logger.child()).toThrowError(/requires a context string or loggeroptions/iu);
 			expect(() => logger.child({} as LoggerOptions)).toThrowError(
 				/requires a context string or loggeroptions/iu,

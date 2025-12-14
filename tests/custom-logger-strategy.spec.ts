@@ -1,12 +1,29 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { LogLevel, type LoggerOverrideConfig } from '../src/index.js';
+import { LoggerRuntime } from '../src/logger-runtime.js';
 import { CustomLoggerStrategy } from '../src/strategies/custom-logger.strategy.js';
 
 describe('CustomLoggerStrategy', () => {
 	let baseLog: ReturnType<typeof vi.fn>;
 
+	const runtimeSnapshot = () => ({
+		isEnabled: LoggerRuntime.isEnabled,
+		globalMinLevel: LoggerRuntime.globalMinLevel,
+	});
+
+	let initialRuntime: ReturnType<typeof runtimeSnapshot>;
+
 	beforeEach(() => {
 		baseLog = vi.fn();
+
+		initialRuntime = runtimeSnapshot();
+		LoggerRuntime.setEnabled(true);
+		LoggerRuntime.setGlobalMinLevel(null);
+	});
+
+	afterEach(() => {
+		LoggerRuntime.setEnabled(initialRuntime.isEnabled);
+		LoggerRuntime.setGlobalMinLevel(initialRuntime.globalMinLevel);
 	});
 
 	describe('function override', () => {
@@ -40,6 +57,40 @@ describe('CustomLoggerStrategy', () => {
 			expect(baseLog).toHaveBeenCalledTimes(2);
 			expect(baseLog).toHaveBeenNthCalledWith(1, LogLevel.FATAL, 'ok');
 			expect(baseLog).toHaveBeenNthCalledWith(2, LogLevel.ERROR, 'ok');
+		});
+
+		it('should NOT log when LoggerRuntime is disabled', () => {
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.TRACE,
+				custom: baseLog as unknown as LoggerOverrideConfig,
+			});
+
+			LoggerRuntime.setEnabled(false);
+
+			logger.log(LogLevel.FATAL, 'nope');
+			logger.log(LogLevel.TRACE, 'nope');
+
+			expect(baseLog).not.toHaveBeenCalled();
+		});
+
+		it('should respect LoggerRuntime.globalMinLevel (block levels below it)', () => {
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.TRACE,
+				custom: baseLog as unknown as LoggerOverrideConfig,
+			});
+
+			LoggerRuntime.setGlobalMinLevel(LogLevel.WARNING);
+
+			logger.log(LogLevel.INFO, 'no');
+			logger.log(LogLevel.DEBUG, 'no');
+			logger.log(LogLevel.WARNING, 'yes');
+			logger.log(LogLevel.ERROR, 'yes');
+
+			expect(baseLog).toHaveBeenCalledTimes(2);
+			expect(baseLog).toHaveBeenNthCalledWith(1, LogLevel.WARNING, 'yes');
+			expect(baseLog).toHaveBeenNthCalledWith(2, LogLevel.ERROR, 'yes');
 		});
 	});
 
@@ -114,6 +165,44 @@ describe('CustomLoggerStrategy', () => {
 
 			expect(baseLog).toHaveBeenCalledTimes(1);
 			expect(baseLog).toHaveBeenCalledWith(LogLevel.ERROR, 'yes');
+		});
+
+		it('should NOT call fallback log() when LoggerRuntime is disabled (even via helpers)', () => {
+			const override: LoggerOverrideConfig = { log: baseLog as (level: LogLevel, ...args: unknown[]) => void };
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.TRACE,
+				custom: override,
+			});
+
+			LoggerRuntime.setEnabled(false);
+
+			logger.warn('w');
+			logger.error('e');
+			logger.fatal('f');
+			logger.trace('t');
+
+			expect(baseLog).not.toHaveBeenCalled();
+		});
+
+		it('should NOT call specific override method when LoggerRuntime.globalMinLevel blocks it', () => {
+			const info = vi.fn();
+			const override: LoggerOverrideConfig = {
+				log: baseLog as (level: LogLevel, ...args: unknown[]) => void,
+				info,
+			};
+
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.TRACE,
+				custom: override,
+			});
+
+			LoggerRuntime.setGlobalMinLevel(LogLevel.WARNING);
+
+			logger.info('i'); // blocked globally
+			expect(info).not.toHaveBeenCalled();
+			expect(baseLog).not.toHaveBeenCalled();
 		});
 	});
 });

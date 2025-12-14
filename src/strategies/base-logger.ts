@@ -3,6 +3,7 @@ import { createLogger } from '../create-logger.js';
 import { LogLevel } from '../enums/log-level.js';
 import { type DateTimeFormatOptions, type LoggerOptions } from '../interfaces/logger-options.js';
 import { type Logger } from '../interfaces/logger.js';
+import { LoggerRuntime } from '../logger-runtime.js';
 import { type DateTimeFormatter } from '../types/datetime-formatter.js';
 import { resolveLogLevel } from '../utils/resolve-log-level.js';
 
@@ -97,6 +98,13 @@ export abstract class BaseLogger implements Logger {
 	}
 
 	protected _shouldLog(level: LogLevel): boolean {
+		if (
+			!LoggerRuntime.isEnabled ||
+			(LoggerRuntime.globalMinLevel !== null && LoggerRuntime.globalMinLevel < level)
+		) {
+			return false;
+		}
+
 		return this._minLevel >= level;
 	}
 

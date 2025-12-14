@@ -3,6 +3,7 @@ import { LogLevel } from '../enums/log-level.js';
 import { type LoggerOptions } from '../interfaces/logger-options.js';
 import { type LoggerOverrideConfig } from '../interfaces/logger-override-config.js';
 import { type Logger } from '../interfaces/logger.js';
+import { LoggerRuntime } from '../logger-runtime.js';
 import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env.js';
 import { resolveLogLevel } from '../utils/resolve-log-level.js';
 
@@ -117,6 +118,13 @@ export class CustomLoggerStrategy implements Logger {
 	}
 
 	private _shouldLog(level: LogLevel): boolean {
+		if (
+			!LoggerRuntime.isEnabled ||
+			(LoggerRuntime.globalMinLevel !== null && LoggerRuntime.globalMinLevel < level)
+		) {
+			return false;
+		}
+
 		return this._minLevel >= level;
 	}
 }
