@@ -1,3 +1,4 @@
+import { type LoggerOptions } from './logger-options.js';
 import { type LogLevel } from '../enums/log-level.js';
 
 /**
@@ -78,4 +79,26 @@ export interface Logger {
 	 * @param level The level to apply. Accepts a LogLevel value or its key.
 	 */
 	setMinLevel(level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>): void;
+
+	/**
+	 * Creates a child logger with the specified options.
+	 *
+	 * @param options The logger options to apply.
+	 *                These options will be merged with the parent options.
+	 *
+	 * @throws Error if context is not set.
+	 */
+	child(options: LoggerOptions): Logger;
+
+	/**
+	 * Creates a child logger with the specified context and options.
+	 *
+	 * @param context The context label to apply.
+	 *                This context will be appended to the parent context: `parent:child`.
+	 * @param options The logger options to apply.
+	 *                These options will be merged with the parent options.
+	 *
+	 * @throws Error if context is not set.
+	 */
+	child(context: string, options?: Omit<LoggerOptions, 'context'>): Logger;
 }

@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { LogLevel, type LoggerOptions } from '../src/index.js';
+import { LogLevel } from '../src/enums/log-level.js';
+import { type LoggerOptions } from '../src/interfaces/logger-options.js';
+
+const { createLoggerMock } = vi.hoisted(() => ({
+	createLoggerMock: vi.fn(),
+}));
 
 vi.mock('error-stack-parser', () => ({
 	default: {
@@ -19,6 +24,10 @@ describe('NodeLoggerStrategy', () => {
 
 	async function setup() {
 		vi.resetModules();
+
+		vi.doMock('../src/create-logger.js', () => ({
+			createLogger: createLoggerMock,
+		}));
 
 		const map = await import('../src/utils/log-level-map.js');
 		originalErrorFn = map.logLevelToConsoleFunction[LogLevel.ERROR];
@@ -52,6 +61,7 @@ describe('NodeLoggerStrategy', () => {
 			map.logLevelToConsoleFunction[LogLevel.ERROR] = originalErrorFn;
 		}
 
+		vi.doUnmock('../src/create-logger.js');
 		vi.doUnmock('std-env');
 		vi.restoreAllMocks();
 	});

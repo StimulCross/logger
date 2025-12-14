@@ -21,18 +21,18 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 	protected override _minLevel: LogLevel;
 	protected readonly _inspectOptions?: InspectOptions;
 	protected readonly _pid?: boolean;
+	protected readonly _colors?: boolean;
 
 	constructor(options: LoggerOptions) {
 		super(options);
 
 		this._minLevel =
 			options.minLevel === undefined
-				? (getMinLogLevelFromEnv(this._context) ?? DEFAULT_OPTIONS.minLevel)
+				? (getMinLogLevelFromEnv(this._options.context) ?? DEFAULT_OPTIONS.minLevel)
 				: resolveLogLevel(options.minLevel);
 
 		this._pid = options.pid ?? true;
-
-		this._colors = this._colors && isColorSupported;
+		this._colors = this._options.colors && isColorSupported;
 
 		this._inspectOptions = {
 			depth: 5,
@@ -49,20 +49,22 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 		const logFn = logLevelToConsoleFunction[level];
 		const parts: unknown[] = [];
 
+		const { applicationName, pid, timestamps, context } = this._options;
+
 		// [app]
-		if (this._applicationName) {
-			const t = `[${this._applicationName}]`;
+		if (applicationName) {
+			const t = `[${applicationName}]`;
 			parts.push(this._colors ? logLevelToColor[level](t) : t);
 		}
 
 		// PID
-		if (this._pid && process.pid !== undefined) {
-			const pid = String(process.pid);
-			parts.push(this._colors ? logLevelToColor[level](pid) : pid);
+		if (pid && process.pid !== undefined) {
+			const pidStr = String(process.pid);
+			parts.push(this._colors ? logLevelToColor[level](pidStr) : pidStr);
 		}
 
 		// timestamp
-		if (this._timestamps) {
+		if (timestamps) {
 			const now = new Date();
 			const timestamp = this._dateTimeFormatter
 				? this._dateTimeFormatter(now)
@@ -75,7 +77,7 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 		parts.push('  ', this._colors ? logLevelToTypeColor[level](logLevelToType[level]) : logLevelToType[level]);
 
 		// [context]
-		const ctx = `[${this._context}]`;
+		const ctx = `[${context}]`;
 		parts.push(this._colors ? createAccentWrapper(ctx) : ctx);
 
 		// arguments

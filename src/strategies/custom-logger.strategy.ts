@@ -91,6 +91,31 @@ export class CustomLoggerStrategy implements Logger {
 		}
 	}
 
+	public child(options: LoggerOptions): Logger;
+	public child(context: string, options?: Omit<LoggerOptions, 'context'>): Logger;
+	public child(contextOrOptions?: string | LoggerOptions, options?: Omit<LoggerOptions, 'context'>): Logger {
+		let resolvedContext: string | undefined;
+		let resolvedOptions: Omit<LoggerOptions, 'context'> | undefined;
+
+		if (typeof contextOrOptions === 'string') {
+			resolvedContext = contextOrOptions;
+			resolvedOptions = options;
+		} else if (typeof contextOrOptions === 'object') {
+			resolvedContext = contextOrOptions.context;
+			resolvedOptions = contextOrOptions;
+		}
+
+		if (!resolvedContext) {
+			throw new Error('child() requires a context string or LoggerOptions with a context property');
+		}
+
+		return new CustomLoggerStrategy({
+			context: `${this._context}:${resolvedContext}`,
+			minLevel: resolvedOptions?.minLevel ?? this._minLevel,
+			custom: this._override,
+		});
+	}
+
 	private _shouldLog(level: LogLevel): boolean {
 		return this._minLevel >= level;
 	}

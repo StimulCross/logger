@@ -28,32 +28,33 @@ export class BrowserLoggerStrategy extends BaseLogger {
 			return;
 		}
 
+		const { applicationName, timestamps, context, colors } = this._options;
+
 		const logFn = logLevelToConsoleFunction[level];
-		const shouldUseColors = this._colors;
 		const templateArgs: string[] = [];
 		const messageArgs: unknown[] = [];
 
-		if (this._applicationName) {
-			templateArgs.push(shouldUseColors ? logLevelToColor[level]('%s') : '%s');
-			messageArgs.push(`[${this._applicationName}]`);
+		if (applicationName) {
+			templateArgs.push(colors ? logLevelToColor[level]('%s') : '%s');
+			messageArgs.push(`[${applicationName}]`);
 		}
 
-		if (this._timestamps) {
+		if (timestamps) {
 			templateArgs.push('%s');
 			messageArgs.push(`${new Date().toLocaleString(undefined, this._dateTimeFormatOptions)}   `);
 		}
 
-		templateArgs.push(shouldUseColors ? logLevelToTypeColor[level]('%s') : '%s');
+		templateArgs.push(colors ? logLevelToTypeColor[level]('%s') : '%s');
 		messageArgs.push(logLevelToType[level]);
 
-		templateArgs.push(shouldUseColors ? createAccentWrapper('%s') : '%s');
-		messageArgs.push(`[${this._context}]`);
+		templateArgs.push(colors ? createAccentWrapper('%s') : '%s');
+		messageArgs.push(`[${context}]`);
 
 		for (const arg of args) {
 			if (typeof arg === 'object') {
 				templateArgs.push('%o');
 			} else {
-				templateArgs.push(shouldUseColors ? logLevelToColor[level]('%s') : '%s');
+				templateArgs.push(colors ? logLevelToColor[level]('%s') : '%s');
 			}
 
 			messageArgs.push(arg);
@@ -62,7 +63,7 @@ export class BrowserLoggerStrategy extends BaseLogger {
 		const timeDiff = this._getTimeDiff();
 
 		if (timeDiff) {
-			templateArgs.push(shouldUseColors ? createAccentWrapper('%s') : '%s');
+			templateArgs.push(colors ? createAccentWrapper('%s') : '%s');
 			messageArgs.push(timeDiff);
 		}
 
