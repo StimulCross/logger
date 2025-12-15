@@ -57,8 +57,6 @@
 		"test:watch": "vitest run --watch",
 		"test:cov": "vitest run --coverage",
 		"prepare": "husky",
-		"preversion": "npm run rebuild && npm run format:fix && npm run lint",
-		"prepublishOnly": "npm run rebuild && npm run format:fix && npm run lint",
 		"demo:node": "ts-node ./playground/demo.ts",
 		"demo:bun": "bun ./playground/demo.ts",
 		"demo:deno": "deno --allow-env ./playground/demo.ts"
