@@ -14,6 +14,18 @@ const globs = {
 	dts: '**/*.d.ts',
 };
 
+const namingConvention = typescriptStyle.rules['@typescript-eslint/naming-convention'].map(rule => {
+	if (typeof rule !== 'object') {
+		return rule;
+	}
+
+	if (rule.selector === 'variable' && rule.types?.includes('boolean')) {
+		rule.filter = { regex: '^(timestamps|colors|pid)', match: false };
+	}
+
+	return rule;
+});
+
 export default defineConfig(
 	globalIgnores([globs.lib, globs.nodeModules, globs.coverage, globs.dts]),
 	{
@@ -49,6 +61,7 @@ export default defineConfig(
 					},
 				},
 			],
+			'@typescript-eslint/naming-convention': namingConvention,
 			'@typescript-eslint/no-explicit-any': 'off',
 			'@typescript-eslint/no-non-null-assertion': 'off',
 			'@typescript-eslint/unified-signatures': 'off',
