@@ -108,21 +108,16 @@ export abstract class BaseLogger implements Logger {
 		return this._minLevel >= level;
 	}
 
-	protected _getTimeDiff(): string {
+	protected _getTimeDiff(): number {
 		const now = Date.now();
 
-		if (!this._options.timeDiff) {
-			BaseLogger._lastGlobalTimestamp = now;
-			return '';
-		}
-
-		const isGlobal = this._options.timeDiff === 'global';
-		const timeDiff = isGlobal ? now - BaseLogger._lastGlobalTimestamp : now - this._lastLocalTimestamp;
+		const isLocal = this._options.timeDiff === 'local';
+		const timeDiff = isLocal ? now - this._lastLocalTimestamp : now - BaseLogger._lastGlobalTimestamp;
 
 		this._lastLocalTimestamp = now;
 		BaseLogger._lastGlobalTimestamp = now;
 
-		return `+${timeDiff}ms ${isGlobal ? '[G]' : '[L]'}`;
+		return timeDiff;
 	}
 
 	private _mergeLoggerOptions(parent: LoggerOptions, child?: Omit<LoggerOptions, 'context'>): LoggerOptions {

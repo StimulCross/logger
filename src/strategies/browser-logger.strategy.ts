@@ -2,7 +2,7 @@ import { BaseLogger } from './base-logger.js';
 import { DEFAULT_OPTIONS } from '../constants.js';
 import { type LogLevel } from '../enums/log-level.js';
 import { type LoggerOptions } from '../interfaces/logger-options.js';
-import { createAccentWrapper } from '../utils/common-wrappers.js';
+import { createAccentWrapper, createGrayWrapper } from '../utils/common-wrappers.js';
 import {
 	logLevelToColor,
 	logLevelToConsoleFunction,
@@ -58,11 +58,14 @@ export class BrowserLoggerStrategy extends BaseLogger {
 			messageArgs.push(arg);
 		}
 
-		const timeDiff = this._getTimeDiff();
+		if (this._options.timeDiff) {
+			if (colors) {
+				templateArgs.push(createAccentWrapper('%s'), createGrayWrapper('%s'));
+			} else {
+				templateArgs.push('%s', '%s');
+			}
 
-		if (timeDiff) {
-			templateArgs.push(colors ? createAccentWrapper('%s') : '%s');
-			messageArgs.push(timeDiff);
+			messageArgs.push(`+${this._getTimeDiff()}ms`, this._options.timeDiff === 'global' ? '[G]' : '[L]');
 		}
 
 		logFn(templateArgs.join(' '), ...messageArgs);

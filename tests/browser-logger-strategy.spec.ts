@@ -93,7 +93,11 @@ describe('BrowserLoggerStrategy', () => {
 		expect(infoFn).toHaveBeenCalledTimes(2);
 		const [, ...args2] = infoFn.mock.calls[1];
 
-		expect(String(args2.at(-1))).toMatch(/\+\d+ms \[L\]/u);
+		const diff = args2.at(-2);
+		const scope = args2.at(-1);
+
+		expect(diff).toMatch(/\+\d+ms/u);
+		expect(scope).toMatch(/\[L\]/u);
 	});
 
 	it('should work with colors enabled (template still string, but has ANSI sequences)', () => {

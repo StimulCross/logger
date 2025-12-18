@@ -52,7 +52,7 @@ class TestLogger extends BaseLogger {
 		return this._shouldLog(level);
 	}
 
-	public _callGetTimeDiff(): string {
+	public _callGetTimeDiff(): number | null {
 		return this._getTimeDiff();
 	}
 
@@ -209,14 +209,14 @@ describe('BaseLogger', () => {
 	});
 
 	describe('_getTimeDiff', () => {
-		it('returns empty string when timeDiff disabled and updates global timestamp', () => {
+		it('returns global difference by default', () => {
 			vi.spyOn(Date, 'now').mockReturnValue(2000);
 
 			TestLogger._setGlobalTs(1000);
-			const logger = createTestLogger({ timeDiff: undefined });
+			const logger = createTestLogger({});
 
 			const v = logger._callGetTimeDiff();
-			expect(v).toBe('');
+			expect(v).toBe(1000);
 		});
 
 		it('supports global scope', () => {
@@ -226,7 +226,7 @@ describe('BaseLogger', () => {
 			const logger = createTestLogger({ timeDiff: 'global' });
 
 			const diff = logger._callGetTimeDiff();
-			expect(diff).toBe('+100ms [G]');
+			expect(diff).toBe(100);
 		});
 
 		it('supports local scope', () => {
@@ -236,7 +236,7 @@ describe('BaseLogger', () => {
 			logger._setLocalTs(4800);
 
 			const diff = logger._callGetTimeDiff();
-			expect(diff).toBe('+200ms [L]');
+			expect(diff).toBe(200);
 		});
 	});
 

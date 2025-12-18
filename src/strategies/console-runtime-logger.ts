@@ -4,7 +4,7 @@ import { BaseLogger } from './base-logger.js';
 import { DEFAULT_OPTIONS } from '../constants.js';
 import { type LogLevel } from '../enums/log-level.js';
 import { type LoggerOptions } from '../interfaces/logger-options.js';
-import { createAccentWrapper } from '../utils/common-wrappers.js';
+import { createAccentWrapper, createGrayWrapper } from '../utils/common-wrappers.js';
 import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env.js';
 import {
 	logLevelToColor,
@@ -92,10 +92,15 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 		}
 
 		// time diff
-		const timeDiff = this._getTimeDiff();
+		if (this._options.timeDiff) {
+			const diff = `+${this._getTimeDiff()}ms`;
+			const scope = this._options.timeDiff === 'global' ? '[G]' : '[L]';
 
-		if (timeDiff) {
-			parts.push(this._colors ? createAccentWrapper(timeDiff) : timeDiff);
+			if (this._colors) {
+				parts.push(createAccentWrapper(diff), createGrayWrapper(scope));
+			} else {
+				parts.push(diff, scope);
+			}
 		}
 
 		logFn(...parts);

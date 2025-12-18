@@ -134,8 +134,11 @@ describe('NodeLoggerStrategy', () => {
 
 		expect(errorFn).toHaveBeenCalledTimes(2);
 
-		const tail = String(errorFn.mock.calls[1].at(-1));
-		expect(tail).toMatch(/\+\d+ms \[L\]/u);
+		const diff = errorFn.mock.calls[1].at(-2);
+		const scope = errorFn.mock.calls[1].at(-1);
+
+		expect(diff).toMatch(/\+\d+ms/u);
+		expect(scope).toMatch(/\[L\]/u);
 	});
 
 	it('should format Error differently based on colors flag', async () => {
