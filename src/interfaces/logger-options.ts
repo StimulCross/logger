@@ -95,7 +95,7 @@ export interface LoggerOptions {
 	 *
 	 * @see https://nodejs.org/api/util.html#util_util_inspect_object_options
 	 *
-	 * @default { depth: 5, colors: true }
+	 * @default { depth: null, colors: true }
 	 */
 	inspectOptions?: InspectOptions;
 
@@ -106,8 +106,6 @@ export interface LoggerOptions {
 	 * Accepts `global` to measure deltas across all logger instances or `local` to
 	 * keep measurements scoped to the current instance, mirroring the behavior popularized
 	 * by NestJS for bootstrap and operation timing.
-	 *
-	 * @default local
 	 */
 	timeDiff?: LoggerTimeDiffScope;
 }

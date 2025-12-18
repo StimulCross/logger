@@ -6,7 +6,6 @@ export const DEFAULT_OPTIONS = {
 	colors: true,
 	pid: true,
 	timestamps: true,
-	timeDiff: 'local',
 	dateTimeFormat: {
 		year: 'numeric',
 		hour: '2-digit',
