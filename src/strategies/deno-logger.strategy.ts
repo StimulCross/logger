@@ -1,9 +1,7 @@
 import { ConsoleRuntimeLogger } from './console-runtime-logger.js';
 import { type LogLevel } from '../enums/log-level.js';
+import { createErrorWrapper } from '../utils/common-wrappers.js';
 import { logLevelToColor } from '../utils/log-level-map.js';
-import { createBgWrapper, createColorWrapper, createModifierWrapper } from '../utils/styling-function.js';
-
-const createErrorWrapper = createBgWrapper('bgRed', createColorWrapper('whiteBright', createModifierWrapper('bold')));
 
 /** @internal */
 export class DenoLoggerStrategy extends ConsoleRuntimeLogger {

@@ -1,12 +1,11 @@
 import errorStackParser, { type StackFrame } from 'error-stack-parser';
 import { ConsoleRuntimeLogger } from './console-runtime-logger.js';
 import { type LogLevel } from '../enums/log-level.js';
+import { createErrorWrapper, createGrayWrapper } from '../utils/common-wrappers.js';
 import { logLevelToColor } from '../utils/log-level-map.js';
-import { createBgWrapper, createColorWrapper, createModifierWrapper } from '../utils/styling-function.js';
+import { createColorWrapper, createModifierWrapper } from '../utils/styling-function.js';
 
 const createWhiteWrapper = createColorWrapper('white');
-const creatGrayWrapper = createColorWrapper('blackBright');
-const createErrorWrapper = createBgWrapper('bgRed', createColorWrapper('whiteBright', createModifierWrapper('bold')));
 const createStackFrameWrapper = createColorWrapper(
 	'cyan',
 	createModifierWrapper('bold', createModifierWrapper('italic')),
@@ -39,12 +38,12 @@ export class NodeLoggerStrategy extends ConsoleRuntimeLogger {
 		lineNumber,
 		columnNumber,
 	}: StackFrame): string {
-		const result: string[] = [`    ${creatGrayWrapper('at')}`];
+		const result: string[] = [`    ${createGrayWrapper('at')}`];
 
 		if (functionName) {
 			result.push(
 				fileName && (fileName.includes('node_modules') || fileName.startsWith('node:'))
-					? `${creatGrayWrapper(functionName)}`
+					? `${createGrayWrapper(functionName)}`
 					: `${createStackFrameWrapper(functionName)}`,
 			);
 		}

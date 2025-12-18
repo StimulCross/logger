@@ -4,6 +4,7 @@ import { BaseLogger } from './base-logger.js';
 import { DEFAULT_OPTIONS } from '../constants.js';
 import { type LogLevel } from '../enums/log-level.js';
 import { type LoggerOptions } from '../interfaces/logger-options.js';
+import { createAccentWrapper } from '../utils/common-wrappers.js';
 import { getMinLogLevelFromEnv } from '../utils/get-min-log-level-from-env.js';
 import {
 	logLevelToColor,
@@ -12,9 +13,6 @@ import {
 	logLevelToTypeColor,
 } from '../utils/log-level-map.js';
 import { resolveLogLevel } from '../utils/resolve-log-level.js';
-import { createColorWrapper } from '../utils/styling-function.js';
-
-const createAccentWrapper = createColorWrapper('yellowBright');
 
 /** @internal */
 export abstract class ConsoleRuntimeLogger extends BaseLogger {
