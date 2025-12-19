@@ -14,13 +14,13 @@ describe('getMinLogLevelFromEnv', () => {
 		return await import('../../src/utils/get-min-log-level-from-env.js');
 	}
 
-	it('should return undefined if LOGGING env is not set', async () => {
+	it('returns undefined if LOGGING env is not set', async () => {
 		const { getMinLogLevelFromEnv } = await getUtil();
 		expect(getMinLogLevelFromEnv('AnyContext')).toBeUndefined();
 	});
 
-	it('should return default level defined in env', async () => {
-		vi.stubEnv('LOGGING', 'default=ERROR');
+	it('supports case-insensitive default and log level', async () => {
+		vi.stubEnv('LOGGING', 'DeFaUlT=error');
 
 		const { getMinLogLevelFromEnv } = await getUtil();
 
@@ -28,8 +28,8 @@ describe('getMinLogLevelFromEnv', () => {
 		expect(getMinLogLevelFromEnv('OtherModule')).toBe(LogLevel.ERROR);
 	});
 
-	it('should match specific namespace exactly', async () => {
-		vi.stubEnv('LOGGING', 'MyModule=DEBUG;default=INFO');
+	it('matches specific namespace exactly', async () => {
+		vi.stubEnv('LOGGING', 'MyModule=debug;DEFAULT=info');
 
 		const { getMinLogLevelFromEnv } = await getUtil();
 
@@ -37,8 +37,8 @@ describe('getMinLogLevelFromEnv', () => {
 		expect(getMinLogLevelFromEnv('OtherModule')).toBe(LogLevel.INFO);
 	});
 
-	it('should match nested namespaces (prefix matching)', async () => {
-		vi.stubEnv('LOGGING', 'app:db=TRACE;app:ui=WARNING;default=INFO');
+	it('matches nested namespaces using prefix logic', async () => {
+		vi.stubEnv('LOGGING', 'app:db=trace;app:ui=warning;default=info');
 
 		const { getMinLogLevelFromEnv } = await getUtil();
 
@@ -48,8 +48,8 @@ describe('getMinLogLevelFromEnv', () => {
 		expect(getMinLogLevelFromEnv('app:other')).toBe(LogLevel.INFO);
 	});
 
-	it('should prioritise more specific match', async () => {
-		vi.stubEnv('LOGGING', 'app:feature:deep=FATAL;app:feature=DEBUG');
+	it('prioritises more specific namespaces', async () => {
+		vi.stubEnv('LOGGING', 'app:feature:deep=fatal;app:feature=debug');
 
 		const { getMinLogLevelFromEnv } = await getUtil();
 
@@ -57,8 +57,18 @@ describe('getMinLogLevelFromEnv', () => {
 		expect(getMinLogLevelFromEnv('app:feature:shallow')).toBe(LogLevel.DEBUG);
 	});
 
-	it('should ignore invalid LOGGING parts (no "=" or empty level)', async () => {
-		vi.stubEnv('LOGGING', 'badPart;alsoBad=;app=INFO;default=WARNING');
+	it('handles whitespace and trims all parts', async () => {
+		vi.stubEnv('LOGGING', '  default = warning ;  app : db = error ; app = info  ');
+
+		const { getMinLogLevelFromEnv } = await getUtil();
+
+		expect(getMinLogLevelFromEnv('app:db:conn')).toBe(LogLevel.ERROR);
+		expect(getMinLogLevelFromEnv('app:ui')).toBe(LogLevel.INFO);
+		expect(getMinLogLevelFromEnv('other')).toBe(LogLevel.WARNING);
+	});
+
+	it('ignores invalid parts', async () => {
+		vi.stubEnv('LOGGING', 'badPart;alsoBad=;app=INFO;DEFAULT=WARNING');
 
 		const { getMinLogLevelFromEnv } = await getUtil();
 
@@ -66,7 +76,7 @@ describe('getMinLogLevelFromEnv', () => {
 		expect(getMinLogLevelFromEnv('other')).toBe(LogLevel.WARNING);
 	});
 
-	it('should return undefined when no default is set and no namespace matches', async () => {
+	it('returns undefined when no default exists and no rule matches', async () => {
 		vi.stubEnv('LOGGING', 'app:db=ERROR');
 
 		const { getMinLogLevelFromEnv } = await getUtil();
