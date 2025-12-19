@@ -17,7 +17,7 @@ export function resolveLogLevel(level: keyof typeof LogLevel | Lowercase<keyof t
 		return Math.max(...eligibleLevels);
 	}
 
-	const strLevel = level.toUpperCase() as keyof typeof LogLevel;
+	const strLevel = level.trim().toUpperCase() as keyof typeof LogLevel;
 
 	if (!Object.hasOwn(LogLevel, strLevel)) {
 		throw new Error(`Unknown log level string: ${level}`);
