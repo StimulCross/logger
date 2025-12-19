@@ -4,7 +4,7 @@ import { LogLevel } from '../enums/log-level.js';
 /** @internal */
 export function resolveLogLevel(level: keyof typeof LogLevel | Lowercase<keyof typeof LogLevel> | LogLevel): LogLevel {
 	if (typeof level === 'number') {
-		if (Object.prototype.hasOwnProperty.call(LogLevel, level)) {
+		if (Object.hasOwn(LogLevel, level)) {
 			return level;
 		}
 		const eligibleLevels = Object.keys(LogLevel)
@@ -19,7 +19,7 @@ export function resolveLogLevel(level: keyof typeof LogLevel | Lowercase<keyof t
 
 	const strLevel = level.toUpperCase() as keyof typeof LogLevel;
 
-	if (!Object.prototype.hasOwnProperty.call(LogLevel, strLevel)) {
+	if (!Object.hasOwn(LogLevel, strLevel)) {
 		throw new Error(`Unknown log level string: ${level}`);
 	}
 
