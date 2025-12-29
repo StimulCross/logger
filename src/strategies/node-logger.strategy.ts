@@ -1,6 +1,7 @@
 import errorStackParser, { type StackFrame } from 'error-stack-parser';
 import { ConsoleRuntimeLogger } from './console-runtime-logger.js';
 import { type LogLevel } from '../enums/log-level.js';
+import { type LoggerOptions } from '../interfaces/logger-options.js';
 import { createErrorWrapper, createGrayWrapper } from '../utils/common-wrappers.js';
 import { logLevelToColor } from '../utils/log-level-map.js';
 import { createColorWrapper, createModifierWrapper } from '../utils/styling-function.js';
@@ -30,6 +31,10 @@ export class NodeLoggerStrategy extends ConsoleRuntimeLogger {
 		}
 
 		return stackLines.join('\n');
+	}
+
+	protected override _createChildLogger(options: LoggerOptions): NodeLoggerStrategy {
+		return new NodeLoggerStrategy(options);
 	}
 
 	private _formatStackFrame({

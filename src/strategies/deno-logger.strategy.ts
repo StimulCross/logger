@@ -1,5 +1,6 @@
 import { ConsoleRuntimeLogger } from './console-runtime-logger.js';
 import { type LogLevel } from '../enums/log-level.js';
+import { type LoggerOptions } from '../interfaces/logger-options.js';
 import { createErrorWrapper } from '../utils/common-wrappers.js';
 import { logLevelToColor } from '../utils/log-level-map.js';
 
@@ -17,5 +18,9 @@ export class DenoLoggerStrategy extends ConsoleRuntimeLogger {
 		}
 
 		return lines.join('\n');
+	}
+
+	protected override _createChildLogger(options: LoggerOptions): DenoLoggerStrategy {
+		return new DenoLoggerStrategy(options);
 	}
 }

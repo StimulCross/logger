@@ -1,5 +1,4 @@
 import { DEFAULT_OPTIONS } from '../constants.js';
-import { createLogger } from '../create-logger.js';
 import { LogLevel } from '../enums/log-level.js';
 import { type DateTimeFormatOptions, type LoggerOptions } from '../interfaces/logger-options.js';
 import { type Logger } from '../interfaces/logger.js';
@@ -91,11 +90,15 @@ export abstract class BaseLogger implements Logger {
 			throw new Error('child() requires a context string or LoggerOptions with a context property');
 		}
 
-		return createLogger(
-			`${this._options.context}:${resolvedContext}`,
-			this._mergeLoggerOptions(this._options, resolvedOptions),
+		return this._createChildLogger(
+			this._mergeLoggerOptions(this._options, {
+				...resolvedOptions,
+				context: `${this._options.context}:${resolvedContext}`,
+			}),
 		);
 	}
+
+	protected abstract _createChildLogger(options: LoggerOptions): Logger;
 
 	protected _shouldLog(level: LogLevel): boolean {
 		if (
@@ -120,7 +123,7 @@ export abstract class BaseLogger implements Logger {
 		return timeDiff;
 	}
 
-	private _mergeLoggerOptions(parent: LoggerOptions, child?: Omit<LoggerOptions, 'context'>): LoggerOptions {
+	private _mergeLoggerOptions(parent: LoggerOptions, child?: LoggerOptions): LoggerOptions {
 		const result: LoggerOptions = {
 			...parent,
 			...child,

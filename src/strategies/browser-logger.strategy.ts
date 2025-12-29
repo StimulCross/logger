@@ -70,4 +70,8 @@ export class BrowserLoggerStrategy extends BaseLogger {
 
 		logFn(templateArgs.join(' '), ...messageArgs);
 	}
+
+	protected override _createChildLogger(options: LoggerOptions): BrowserLoggerStrategy {
+		return new BrowserLoggerStrategy(options);
+	}
 }
