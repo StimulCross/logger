@@ -27,7 +27,7 @@ const namingConvention = typescriptStyle.rules['@typescript-eslint/naming-conven
 });
 
 export default defineConfig(
-	globalIgnores([globs.lib, globs.nodeModules, globs.coverage, globs.dts]),
+	globalIgnores([globs.lib, globs.nodeModules, globs.coverage, globs.dts, '**/playground']),
 	{
 		files: [...globs.js],
 		...node,

@@ -65,8 +65,8 @@
 		"test:watch": "vitest run --watch",
 		"test:cov": "vitest run --coverage",
 		"prepare": "husky",
-		"demo:node": "ts-node ./playground/demo.ts",
-		"demo:bun": "bun ./playground/demo.ts",
-		"demo:deno": "deno --allow-env ./playground/demo.ts"
+		"demo:node": "ts-node ./playground/demo.js",
+		"demo:bun": "bun ./playground/demo.js",
+		"demo:deno": "deno --allow-env ./playground/demo.js"
 	}
 }

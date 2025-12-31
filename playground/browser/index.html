@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Logger demo</title>
+		<link rel="stylesheet" href="./style.css" />
+		<script type="module" src="./script.js"></script>
+	</head>
+	<body>
+		<div class="console-note">Press <span class="key">F12</span> to open DevTools console</div>
+
+		<div class="container">
+			<section class="part light">
+				<h2>Light theme</h2>
+
+				<h3>Chromium-based browsers</h3>
+				<p class="note">Chromium-based browsers interpret ANSI escape sequences in DevTools.</p>
+
+				<div class="log fatal ansi">
+					<strong><span class="badge">FATAL</span></strong>
+					Unable to start server: configuration is corrupted
+				</div>
+				<div class="log error ansi"><strong>ERROR</strong> Database connection failed after 3 retries</div>
+				<div class="log warn ansi"><strong>WARN</strong> Cache miss rate exceeded acceptable threshold</div>
+				<div class="log success ansi"><strong>SUCCESS</strong> User profile successfully saved</div>
+				<div class="log info ansi"><strong>INFO</strong> Listening on http://localhost:3000</div>
+				<div class="log debug ansi"><strong>DEBUG</strong> Parsed request headers in 2ms</div>
+				<div class="log trace ansi"><strong>TRACE</strong> Entered AuthMiddleware.handle()</div>
+
+				<h3>Other browsers</h3>
+				<p class="note">
+					Other browsers do not support ANSI colors in DevTools. A custom CSS fallback palette is used
+					instead.
+				</p>
+
+				<div class="log fatal css">
+					<strong><span class="badge">FATAL</span></strong>
+					Unable to start server: configuration is corrupted
+				</div>
+				<div class="log error css"><strong>ERROR</strong> Database connection failed after 3 retries</div>
+				<div class="log warn css"><strong>WARN</strong> Cache miss rate exceeded acceptable threshold</div>
+				<div class="log success css"><strong>SUCCESS</strong> User profile successfully saved</div>
+				<div class="log info css"><strong>INFO</strong> Listening on http://localhost:3000</div>
+				<div class="log debug css"><strong>DEBUG</strong> Parsed request headers in 2ms</div>
+				<div class="log trace css"><strong>TRACE</strong> Entered AuthMiddleware.handle()</div>
+			</section>
+
+			<section class="part dark">
+				<h2>Dark theme</h2>
+
+				<h3>Chromium-based browsers</h3>
+				<p class="note">Chromium-based browsers interpret ANSI escape sequences in DevTools.</p>
+
+				<div class="log fatal ansi">
+					<strong><span class="badge">FATAL</span></strong>
+					Unable to start server: configuration is corrupted
+				</div>
+				<div class="log error ansi"><strong>ERROR</strong> Database connection failed after 3 retries</div>
+				<div class="log warn ansi"><strong>WARN</strong> Cache miss rate exceeded acceptable threshold</div>
+				<div class="log success ansi"><strong>SUCCESS</strong> User profile successfully saved</div>
+				<div class="log info ansi"><strong>INFO</strong> Listening on http://localhost:3000</div>
+				<div class="log debug ansi"><strong>DEBUG</strong> Parsed request headers in 2ms</div>
+				<div class="log trace ansi"><strong>TRACE</strong> Entered AuthMiddleware.handle()</div>
+
+				<h3>Other browsers</h3>
+				<p class="note">
+					Other browsers do not support ANSI colors in DevTools. A custom CSS fallback palette is used
+					instead.
+				</p>
+
+				<div class="log fatal css">
+					<strong><span class="badge">FATAL</span></strong>
+					Unable to start server: configuration is corrupted
+				</div>
+				<div class="log error css"><strong>ERROR</strong> Database connection failed after 3 retries</div>
+				<div class="log warn css"><strong>WARN</strong> Cache miss rate exceeded acceptable threshold</div>
+				<div class="log success css"><strong>SUCCESS</strong> User profile successfully saved</div>
+				<div class="log info css"><strong>INFO</strong> Listening on http://localhost:3000</div>
+				<div class="log debug css"><strong>DEBUG</strong> Parsed request headers in 2ms</div>
+				<div class="log trace css"><strong>TRACE</strong> Entered AuthMiddleware.handle()</div>
+			</section>
+		</div>
+	</body>
+</html>
