@@ -7,8 +7,13 @@
 	"types": "lib",
 	"exports": {
 		".": {
-			"types": "./lib/index.d.ts",
-			"default": "./lib/index.js"
+			"types": "./lib/runtime/index.d.ts",
+			"browser": "./lib/browser/index.js",
+			"default": "./lib/runtime/index.js"
+		},
+		"./browser": {
+			"types": "./lib/browser/index.d.ts",
+			"default": "./lib/browser/index.js"
 		}
 	},
 	"engines": {
@@ -20,6 +25,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"error-stack-parser": "^2.1.4",
+		"safe-stable-stringify": "^2.5.0",
 		"std-env": "^3.10.0"
 	},
 	"devDependencies": {
@@ -50,7 +56,9 @@
 		"lint:fix": "eslint src --fix",
 		"format:check": "prettier --check src",
 		"format:fix": "prettier --write src",
-		"build": "tsc --build",
+		"build:browser": "tsc --build tsconfig.browser.json",
+		"build:runtime": "tsc --build tsconfig.runtime.json",
+		"build": "npm run build:browser && npm run build:runtime",
 		"rebuild": "npm run clean && npm run build",
 		"clean": "del-cli lib",
 		"test": "vitest run",

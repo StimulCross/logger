@@ -14,5 +14,5 @@ yarn.lock
 *.code-workspace
 yalc.lock
 /.yalc
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 coverage
