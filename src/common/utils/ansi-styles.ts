@@ -3,7 +3,7 @@ import { type Color } from '../types/color.js';
 import { type Modifier } from '../types/modifier.js';
 
 /** @internal */
-export const modifiers: Record<Modifier, [number, number]> = {
+export const ANSI_MODIFIERS: Record<Modifier, [number, number]> = {
 	reset: [0, 0],
 	bold: [1, 22],
 	dim: [2, 22],
@@ -15,7 +15,7 @@ export const modifiers: Record<Modifier, [number, number]> = {
 };
 
 /** @internal */
-export const colors: Record<Color, [number, number]> = {
+export const ANSI_COLORS: Record<Color, [number, number]> = {
 	black: [30, 39],
 	red: [31, 39],
 	green: [32, 39],
@@ -36,7 +36,7 @@ export const colors: Record<Color, [number, number]> = {
 };
 
 /** @internal */
-export const bgColors: Record<BackgroundColor, [number, number]> = {
+export const ANSI_BG_COLORS: Record<BackgroundColor, [number, number]> = {
 	bgBlack: [40, 49],
 	bgRed: [41, 49],
 	bgGreen: [42, 49],
