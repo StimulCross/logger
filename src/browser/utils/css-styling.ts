@@ -2,6 +2,7 @@ import { LogLevel } from '../../common/enums/log-level.js';
 import { type Modifier } from '../../common/types/modifier.js';
 import { type LogLevelMap } from '../../common/utils/log-level-map.js';
 
+/** @internal */
 export const COLORS = {
 	error: '#f63a3a',
 	warning: '#ff9806',
@@ -14,6 +15,7 @@ export const COLORS = {
 	gray: '#909090',
 };
 
+/** @internal */
 export const COLOR_STYLES = {
 	error: `color:${COLORS.error};`,
 	warning: `color:${COLORS.warning};`,
@@ -26,10 +28,12 @@ export const COLOR_STYLES = {
 	gray: `color:${COLORS.gray};`,
 };
 
+/** @internal */
 export const BACKGROUND_COLOR_STYLES = {
 	fatal: `background-color:${COLORS.error};`,
 };
 
+/** @internal */
 export const MODIFIER_STYLES: Record<Modifier, string> = {
 	reset: 'color:inherit;font-weight:inherit;background-color:inherit;opacity:inherit;text-decoration:inherit;filter:inherit;visibility:inherit;',
 	bold: 'font-weight:bold;',
