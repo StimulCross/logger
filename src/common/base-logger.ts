@@ -4,6 +4,7 @@ import { type LogFormatter } from './formatters/log-formatter.js';
 import { type LogEntry } from './interfaces/log-entry.js';
 import { type LoggerOptions } from './interfaces/logger-options.js';
 import { type Logger } from './interfaces/logger.js';
+import { LoggerObserver } from './logger-observer.js';
 import { LoggerRuntime } from './logger-runtime.js';
 import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from './utils/log-level-map.js';
 import { resolveLogLevel } from './utils/resolve-log-level.js';
@@ -36,6 +37,9 @@ export abstract class BaseLogger implements Logger {
 		}
 
 		const entry = this._createLogEntry(level, args);
+
+		LoggerObserver.notify(entry);
+
 		const parts = this._formatter.formatToParts(entry);
 
 		const log = LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[level];

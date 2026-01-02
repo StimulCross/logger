@@ -1,4 +1,6 @@
 import { type LogLevel } from './enums/log-level.js';
+import { LoggerObserver } from './logger-observer.js';
+import { type LogObserver } from './types/log-observer.js';
 import { resolveLogLevel } from './utils/resolve-log-level.js';
 
 /**
@@ -73,5 +75,21 @@ export class LoggerRuntime {
 		level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel> | null,
 	): void {
 		this._globalMinLevel = level === null ? null : resolveLogLevel(level);
+	}
+
+	/**
+	 * Subscribes an observer to log events.
+	 *
+	 * @param observer A function that receives log events.
+	 *
+	 * @remarks
+	 * Observers are invoked synchronously after log-level filtering and cannot affect log output or control flow.
+	 *
+	 * @returns A function that unsubscribes the observer.
+	 */
+	public static subscribe(observer: LogObserver): () => void {
+		LoggerObserver.add(observer);
+
+		return () => LoggerObserver.remove(observer);
 	}
 }

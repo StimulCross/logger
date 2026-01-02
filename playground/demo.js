@@ -1,4 +1,4 @@
-import { createLogger, LogLevel } from '../lib/runtime/index.js';
+import { createLogger, LogLevel, LoggerRuntime } from '../lib/runtime/index.js';
 
 const sep = title => {
 	console.log(`\n${'-'.repeat(5)} ${title} ${'-'.repeat(20)}\n`);
@@ -225,6 +225,16 @@ logger10.info('Info message');
 logger10.debug('Debug message');
 logger10.trace('Trace message');
 logger10.info('Logging multiple values:', 42, true, null, { key: 'value' });
+
+// 11. OBSERVING
+sep('OBSERVING');
+const logger11 = createLogger('ObserveDemo', { applicationName: 'ObserverApp', minLevel: LogLevel.INFO });
+
+const logObserver = async entry => console.log('Received log event:', entry);
+const unsubscribe = LoggerRuntime.subscribe(logObserver);
+
+logger11.info('Log event test', true, 1, null, { foo: 'bar' });
+unsubscribe();
 
 // END
 sep('DEMO COMPLETE');

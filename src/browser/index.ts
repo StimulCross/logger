@@ -8,6 +8,7 @@ export type { LoggerInspectOptions } from '../common/interfaces/logger-inspect-o
 export type { LoggerOverride } from '../common/types/logger-override.js';
 export type { LoggerTimeDiffScope } from '../common/types/logger-time-diff-scope.js';
 export type { LoggerDateTimeFormatter } from '../common/types/logger-date-time-formatter.js';
+export type { LogObserver } from '../common/types/log-observer.js';
 export type { BrowserLoggerOptions } from './interfaces/browser-logger-options.js';
 export { createLogger } from './create-logger.js';
 export { LoggerRuntime } from '../common/logger-runtime.js';
