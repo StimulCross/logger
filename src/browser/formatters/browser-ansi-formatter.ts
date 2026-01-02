@@ -1,23 +1,29 @@
 import { LogFormatter } from '../../common/formatters/log-formatter.js';
 import { type LogEntry } from '../../common/interfaces/log-entry.js';
-import { createAccentWrapper, createGrayWrapper } from '../../common/utils/common-wrappers.js';
-import {
-	LOG_LEVEL_TO_COLOR_MAP,
-	LOG_LEVEL_TO_TYPE_MAP,
-	LOG_LEVEL_TO_TYPE_COLOR_MAP,
-} from '../../common/utils/log-level-map.js';
+import { type ColorVariant } from '../../common/types/color-variant.js';
+import { colorize, colorizeType, colorizeWithAccent, colorizeWithGray } from '../../common/utils/colorize.js';
+import { LOG_LEVEL_TO_TYPE_MAP } from '../../common/utils/log-level-map.js';
+import { type BrowserLoggerOptions } from '../interfaces/browser-logger-options.js';
 
 /** @internal */
 export class BrowserAnsiFormatter extends LogFormatter {
+	private readonly _colors?: ColorVariant;
+
+	constructor(options: BrowserLoggerOptions) {
+		super(options);
+
+		this._colors = typeof options.colors === 'boolean' ? 'standard' : options.colors;
+	}
+
 	public formatToParts(entry: LogEntry): unknown[] {
 		const { level, args, timestamp, timeDiff, timeDiffScope } = entry;
-		const { applicationName, timestamps, context, colors } = this._options;
+		const { applicationName, timestamps, context } = this._options;
 
 		const templateArgs: string[] = [];
 		const messageArgs: unknown[] = [];
 
 		if (applicationName) {
-			templateArgs.push(colors ? LOG_LEVEL_TO_COLOR_MAP[level]('%s') : '%s');
+			templateArgs.push(colorize('%s', level, this._colors));
 			messageArgs.push(`[${applicationName}]`);
 		}
 
@@ -31,19 +37,15 @@ export class BrowserAnsiFormatter extends LogFormatter {
 			messageArgs.push(`${dateStr}   `);
 		}
 
-		templateArgs.push(colors ? LOG_LEVEL_TO_TYPE_COLOR_MAP[level]('%s') : '%s');
+		templateArgs.push(colorizeType('%s', level, this._colors));
 		messageArgs.push(LOG_LEVEL_TO_TYPE_MAP[level]);
 
-		templateArgs.push(colors ? createAccentWrapper('%s') : '%s');
+		templateArgs.push(colorizeWithAccent('%s', this._colors));
 		messageArgs.push(`[${context}]`);
 
 		for (const arg of args) {
 			if (typeof arg === 'string') {
-				if (colors) {
-					templateArgs.push(LOG_LEVEL_TO_COLOR_MAP[level]('%s'));
-				} else {
-					templateArgs.push('%s');
-				}
+				templateArgs.push(colorize('%s', level, this._colors));
 			} else {
 				templateArgs.push('%o');
 			}
@@ -52,12 +54,7 @@ export class BrowserAnsiFormatter extends LogFormatter {
 		}
 
 		if (this._options.timeDiff) {
-			if (colors) {
-				templateArgs.push(createAccentWrapper('%s'), createGrayWrapper('%s'));
-			} else {
-				templateArgs.push('%s', '%s');
-			}
-
+			templateArgs.push(colorizeWithAccent('%s', this._colors), colorizeWithGray('%s', this._colors));
 			messageArgs.push(`+${timeDiff}ms`, timeDiffScope === 'global' ? '[G]' : '[L]');
 		}
 

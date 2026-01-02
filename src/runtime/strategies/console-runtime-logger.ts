@@ -1,4 +1,4 @@
-import { isColorSupported, process } from 'std-env';
+import { process } from 'std-env';
 import { BaseLogger } from '../../common/base-logger.js';
 import { DEFAULT_OPTIONS } from '../../common/constants.js';
 import { type LogLevel } from '../../common/enums/log-level.js';
@@ -13,7 +13,6 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 	protected override _minLevel: LogLevel;
 	protected readonly _inspectOptions?: LoggerInspectOptions;
 	protected readonly _pid?: boolean;
-	protected readonly _colors?: boolean;
 
 	constructor(options: LoggerOptions) {
 		super(options);
@@ -24,12 +23,11 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 				: resolveLogLevel(options.minLevel);
 
 		this._pid = options.pid ?? true;
-		this._colors = this._options.colors && isColorSupported;
 
 		this._inspectOptions = {
 			depth: 5,
 			...options.inspectOptions,
-			colors: this._colors,
+			colors: Boolean(this._options.colors),
 		};
 	}
 

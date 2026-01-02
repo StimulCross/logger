@@ -208,5 +208,23 @@ logger9.warn('Potential issue detected');
 logger9.error(new RangeError('Full configuration test error'));
 logger9.info('Multiple mixed args:', 123, false, { cfg: true }, ['a', 'b', 'c']);
 
+// 10. BRIGHT COLORS
+sep('BRIGHT COLORS');
+
+const logger10 = createLogger('BasicDemo', {
+	applicationName: 'MyApp',
+	minLevel: LogLevel.TRACE,
+	colors: 'bright',
+});
+
+logger10.fatal(new RangeError('Fatal message'));
+logger10.error('Error message');
+logger10.warn('Warning message');
+logger10.success('Success message');
+logger10.info('Info message');
+logger10.debug('Debug message');
+logger10.trace('Trace message');
+logger10.info('Logging multiple values:', 42, true, null, { key: 'value' });
+
 // END
 sep('DEMO COMPLETE');

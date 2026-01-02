@@ -1,15 +1,18 @@
 import errorStackParser, { type StackFrame } from 'error-stack-parser';
 import { RuntimeFormatter } from './runtime-formatter.js';
 import { type LogEntry } from '../../common/interfaces/log-entry.js';
-import { createErrorWrapper, createGrayWrapper } from '../../common/utils/common-wrappers.js';
-import { LOG_LEVEL_TO_COLOR_MAP } from '../../common/utils/log-level-map.js';
+import { type ColorVariant } from '../../common/types/color-variant.js';
+import { colorize, colorizeError, colorizeWithGray } from '../../common/utils/colorize.js';
 import { createColorWrapper, createModifierWrapper } from '../../common/utils/styling-function.js';
 
-const createWhiteWrapper = createColorWrapper('white');
-const createStackFrameWrapper = createColorWrapper(
-	'cyan',
+const stackFrameWrapper = createColorWrapper('cyan', createModifierWrapper('bold', createModifierWrapper('italic')));
+const stackFrameBrightWrapper = createColorWrapper(
+	'cyanBright',
 	createModifierWrapper('bold', createModifierWrapper('italic')),
 );
+
+const colorizeStackFrame = (str: string, color: ColorVariant): string =>
+	color === 'bright' ? stackFrameBrightWrapper(str) : stackFrameWrapper(str);
 
 /** @internal */
 export class NodeFormatter extends RuntimeFormatter {
@@ -19,7 +22,7 @@ export class NodeFormatter extends RuntimeFormatter {
 		}
 
 		const stackLines: string[] = [
-			`${createErrorWrapper(` ${error.name} `)} ${LOG_LEVEL_TO_COLOR_MAP[level](error.message)}`,
+			`${colorizeError(` ${error.name} `, this._colors)} ${colorize(error.message, level, this._colors)}`,
 		];
 
 		const frames = errorStackParser.parse(error);
@@ -38,13 +41,13 @@ export class NodeFormatter extends RuntimeFormatter {
 		lineNumber,
 		columnNumber,
 	}: StackFrame): string {
-		const result: string[] = [`    ${createGrayWrapper('at')}`];
+		const result: string[] = [`    ${colorizeWithGray('at', this._colors)}`];
 
 		if (functionName) {
 			result.push(
 				fileName && (fileName.includes('node_modules') || fileName.startsWith('node:'))
-					? `${createGrayWrapper(functionName)}`
-					: `${createStackFrameWrapper(functionName)}`,
+					? `${colorizeWithGray(functionName, this._colors)}`
+					: `${colorizeStackFrame(functionName, this._colors!)}`,
 			);
 		}
 
@@ -59,7 +62,7 @@ export class NodeFormatter extends RuntimeFormatter {
 				path += `:${columnNumber}`;
 			}
 
-			path = createWhiteWrapper(`(${path})`);
+			path = `(${path})`;
 			result.push(path);
 		}
 

@@ -1,6 +1,7 @@
 import { type LoggerDateTimeFormatOptions } from './logger-date-time-format-options.js';
 import { type LoggerInspectOptions } from './logger-inspect-options.js';
 import { type LogLevel } from '../enums/log-level.js';
+import { type ColorVariant } from '../types/color-variant.js';
 import { type LoggerDateTimeFormatter } from '../types/logger-date-time-formatter.js';
 import { type LoggerOverride } from '../types/logger-override.js';
 import { type LoggerTimeDiffScope } from '../types/logger-time-diff-scope.js';
@@ -46,9 +47,18 @@ export interface LoggerOptions {
 	/**
 	 * Enables colored output.
 	 *
-	 * @default true
+	 * Support the following variants:
+	 *   - `standard` - standard ANSI colors (default);
+	 *   - `bright` - bright ANSI colors
+	 *
+	 * If a boolean is provided, `true` enables standard colors, `false` disables colored output.
+	 *
+	 * @remarks
+	 * This option is ignored in the browsers that are not based on Chromium as they do not support ANSI escape codes.
+	 *
+	 * @default standard
 	 */
-	colors?: boolean;
+	colors?: ColorVariant | boolean;
 
 	/**
 	 * Enables timestamp output.

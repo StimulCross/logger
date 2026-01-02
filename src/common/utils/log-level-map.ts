@@ -44,6 +44,17 @@ export const LOG_LEVEL_TO_TYPE_COLOR_MAP: LogLevelMap<StylingFunction> = {
 };
 
 /** @internal */
+export const LOG_LEVEL_TO_TYPE_BRIGHT_COLOR_MAP: LogLevelMap<StylingFunction> = {
+	[LogLevel.FATAL]: createBgWrapper('bgRedBright', createColorWrapper('black', createModifierWrapper('bold'))),
+	[LogLevel.ERROR]: createColorWrapper('redBright', createModifierWrapper('bold')),
+	[LogLevel.WARNING]: createColorWrapper('yellowBright', createModifierWrapper('bold')),
+	[LogLevel.SUCCESS]: createColorWrapper('greenBright', createModifierWrapper('bold')),
+	[LogLevel.INFO]: createColorWrapper('blueBright', createModifierWrapper('bold')),
+	[LogLevel.DEBUG]: createColorWrapper('magentaBright', createModifierWrapper('bold')),
+	[LogLevel.TRACE]: createColorWrapper('cyanBright', createModifierWrapper('bold')),
+};
+
+/** @internal */
 export const LOG_LEVEL_TO_COLOR_MAP: LogLevelMap<StylingFunction> = {
 	[LogLevel.FATAL]: createColorWrapper('red'),
 	[LogLevel.ERROR]: createColorWrapper('red'),
@@ -52,6 +63,17 @@ export const LOG_LEVEL_TO_COLOR_MAP: LogLevelMap<StylingFunction> = {
 	[LogLevel.INFO]: createColorWrapper('blue'),
 	[LogLevel.DEBUG]: createColorWrapper('magenta'),
 	[LogLevel.TRACE]: createColorWrapper('cyan'),
+};
+
+/** @internal */
+export const LOG_LEVEL_TO_BRIGHT_COLOR_MAP: LogLevelMap<StylingFunction> = {
+	[LogLevel.FATAL]: createColorWrapper('redBright'),
+	[LogLevel.ERROR]: createColorWrapper('redBright'),
+	[LogLevel.WARNING]: createColorWrapper('yellowBright'),
+	[LogLevel.SUCCESS]: createColorWrapper('greenBright'),
+	[LogLevel.INFO]: createColorWrapper('blueBright'),
+	[LogLevel.DEBUG]: createColorWrapper('magentaBright'),
+	[LogLevel.TRACE]: createColorWrapper('cyanBright'),
 };
 
 /** @internal */

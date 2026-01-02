@@ -3,7 +3,7 @@ import { type LoggerOptions } from './interfaces/logger-options.js';
 
 export const DEFAULT_OPTIONS = {
 	minLevel: LogLevel.SUCCESS,
-	colors: true,
+	colors: 'standard',
 	pid: true,
 	timestamps: true,
 	dateTimeFormat: {
@@ -16,5 +16,5 @@ export const DEFAULT_OPTIONS = {
 		fractionalSecondDigits: 3,
 		hour12: false,
 	},
-	inspectOptions: { depth: 5, colors: true },
+	inspectOptions: { depth: 5 },
 } as const satisfies Partial<LoggerOptions>;

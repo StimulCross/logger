@@ -1,7 +1,6 @@
 import { RuntimeFormatter } from './runtime-formatter.js';
 import { type LogEntry } from '../../common/interfaces/log-entry.js';
-import { createErrorWrapper } from '../../common/utils/common-wrappers.js';
-import { LOG_LEVEL_TO_COLOR_MAP } from '../../common/utils/log-level-map.js';
+import { colorize, colorizeError } from '../../common/utils/colorize.js';
 
 /** @internal */
 export class DenoFormatter extends RuntimeFormatter {
@@ -11,7 +10,7 @@ export class DenoFormatter extends RuntimeFormatter {
 		}
 
 		const lines: string[] = [
-			`${createErrorWrapper(` ${error.name} `)} ${LOG_LEVEL_TO_COLOR_MAP[level](error.message)}`,
+			`${colorizeError(` ${error.name} `, this._colors)} ${colorize(error.message, level, this._colors)}`,
 		];
 
 		if (error.stack) {

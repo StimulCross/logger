@@ -7,7 +7,7 @@ const sep = title => {
 // 0. DEFAULT MIN LEVEL DEMO (DEFAULT = SUCCESS)
 sep('DEFAULT MIN LEVEL = SUCCESS');
 
-const loggerDefault = createLogger('DefaultDemo', {});
+const loggerDefault = createLogger('DefaultDemo');
 
 loggerDefault.info('INFO — should NOT appear');
 loggerDefault.debug('DEBUG — should NOT appear');
@@ -56,6 +56,7 @@ const logger3 = createLogger('DateDemo', {
 	dateTimeFormat: d => d.toISOString(),
 });
 
+logger3.fatal('Fatal error message');
 logger3.info('ISO timestamp formatting example');
 logger3.success('Boot completed');
 logger3.warn('Not optimal performance detected');
@@ -200,6 +201,24 @@ logger9.success('Operation successful');
 logger9.warn('Potential issue detected');
 logger9.error(new Error('Full configuration test error'));
 logger9.info('Multiple mixed args:', 123, false, { cfg: true }, ['a', 'b', 'c']);
+
+// 10. BRIGHT COLORS
+sep('BRIGHT COLORS');
+
+const logger10 = createLogger('BasicDemo', {
+	applicationName: 'MyApp',
+	minLevel: LogLevel.TRACE,
+	colors: 'bright',
+});
+
+logger10.fatal(new RangeError('Fatal message'));
+logger10.error('Error message');
+logger10.warn('Warning message');
+logger10.success('Success message');
+logger10.info('Info message');
+logger10.debug('Debug message');
+logger10.trace('Trace message');
+logger10.info('Logging multiple values:', 42, true, null, { key: 'value' });
 
 // END
 sep('DEMO COMPLETE');
