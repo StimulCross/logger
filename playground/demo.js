@@ -1,8 +1,13 @@
 import { createLogger, LogLevel, LoggerRuntime } from '../lib/runtime/index.js';
+import { detectRuntime } from '../lib/runtime/utils/detect-runtime.js';
 
 const sep = title => {
 	console.log(`\n${'-'.repeat(5)} ${title} ${'-'.repeat(20)}\n`);
 };
+
+const runtime = (detectRuntime() ?? 'UNKNOWN').toUpperCase();
+
+sep(`DEMO FOR ${runtime} RUNTIME`);
 
 // 0. DEFAULT MIN LEVEL DEMO (DEFAULT = SUCCESS)
 sep('DEFAULT MIN LEVEL = SUCCESS');
@@ -237,4 +242,4 @@ logger11.info('Log event test', true, 1, null, { foo: 'bar' });
 unsubscribe();
 
 // END
-sep('DEMO COMPLETE');
+sep(`DEMO FOR ${runtime} COMPLETED`);
