@@ -1,20 +1,20 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { LogLevel, type LoggerOptions } from '../src/index.js';
-import { BrowserLoggerStrategy } from '../src/strategies/browser-logger.strategy.js';
-import { logLevelToConsoleFunction } from '../src/utils/log-level-map.js';
+import { BrowserLoggerStrategy } from '../src/browser/strategies/browser-logger.strategy.js';
+import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from '../src/common/utils/log-level-map.js';
+import { LogLevel, type LoggerOptions } from '../src/runtime/index.js';
 
 describe('BrowserLoggerStrategy', () => {
-	const originalFns = { ...logLevelToConsoleFunction };
+	const originalFns = { ...LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP };
 
 	let infoFn: ReturnType<typeof vi.fn<(...args: unknown[]) => void>>;
 
 	beforeEach(() => {
 		infoFn = vi.fn<(...args: unknown[]) => void>();
-		logLevelToConsoleFunction[LogLevel.INFO] = infoFn;
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO] = infoFn;
 	});
 
 	afterEach(() => {
-		logLevelToConsoleFunction[LogLevel.INFO] = originalFns[LogLevel.INFO];
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO] = originalFns[LogLevel.INFO];
 		vi.restoreAllMocks();
 	});
 
@@ -100,7 +100,7 @@ describe('BrowserLoggerStrategy', () => {
 		expect(scope).toMatch(/\[L\]/u);
 	});
 
-	it('should work with colors enabled (template still string, but has ANSI sequences)', () => {
+	it('should work with colors enabled', () => {
 		const logger = createLogger({
 			minLevel: LogLevel.TRACE,
 			colors: true,
@@ -114,6 +114,6 @@ describe('BrowserLoggerStrategy', () => {
 		const [template] = infoFn.mock.calls[0];
 
 		expect(String(template)).toContain('%s');
-		expect(String(template)).toContain('\u001B[');
+		expect(String(template)).toContain('%c');
 	});
 });

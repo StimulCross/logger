@@ -9,26 +9,20 @@ describe('detectRuntime', () => {
 		vi.unstubAllGlobals();
 	});
 
-	it('should detect Browser by document', async () => {
-		vi.stubGlobal('document', {});
-		const { detectRuntime, Runtime } = await import('../../src/utils/detect-runtime.js');
-		expect(detectRuntime()).toBe(Runtime.Browser);
-	});
-
 	it('should detect Deno', async () => {
 		vi.stubGlobal('Deno', {});
-		const { detectRuntime, Runtime } = await import('../../src/utils/detect-runtime.js');
+		const { detectRuntime, Runtime } = await import('../../src/runtime/utils/detect-runtime.js');
 		expect(detectRuntime()).toBe(Runtime.Deno);
 	});
 
 	it('should detect Bun', async () => {
 		vi.stubGlobal('Bun', {});
-		const { detectRuntime, Runtime } = await import('../../src/utils/detect-runtime.js');
+		const { detectRuntime, Runtime } = await import('../../src/runtime/utils/detect-runtime.js');
 		expect(detectRuntime()).toBe(Runtime.Bun);
 	});
 
 	it('should detect Node by process.release.name', async () => {
-		const { detectRuntime, Runtime } = await import('../../src/utils/detect-runtime.js');
+		const { detectRuntime, Runtime } = await import('../../src/runtime/utils/detect-runtime.js');
 		expect(detectRuntime()).toBe(Runtime.Node);
 	});
 
@@ -45,7 +39,7 @@ describe('detectRuntime', () => {
 				value: { ...originalRelease, name: 'not-node' },
 			});
 
-			const { detectRuntime } = await import('../../src/utils/detect-runtime.js');
+			const { detectRuntime } = await import('../../src/runtime/utils/detect-runtime.js');
 			expect(detectRuntime()).toBeNull();
 		} finally {
 			Object.defineProperty(process, 'release', {

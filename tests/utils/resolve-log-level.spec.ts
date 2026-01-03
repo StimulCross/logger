@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { DEFAULT_OPTIONS } from '../../src/constants.js';
-import { LogLevel } from '../../src/index.js';
-import { resolveLogLevel } from '../../src/utils/resolve-log-level.js';
+import { DEFAULT_OPTIONS } from '../../src/common/constants.js';
+import { resolveLogLevel } from '../../src/common/utils/resolve-log-level.js';
+import { LogLevel } from '../../src/runtime/index.js';
 
 function getNumericEnumValues<E extends Record<string, string | number>>(e: E): number[] {
 	return Object.keys(e)

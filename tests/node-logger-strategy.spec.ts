@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { LogLevel } from '../src/enums/log-level.js';
-import { type LoggerOptions } from '../src/interfaces/logger-options.js';
+import { LogLevel } from '../src/common/enums/log-level.js';
+import { type LoggerOptions } from '../src/common/interfaces/logger-options.js';
 
 const { createLoggerMock } = vi.hoisted(() => ({
 	createLoggerMock: vi.fn(),
@@ -29,13 +29,13 @@ describe('NodeLoggerStrategy', () => {
 			createLogger: createLoggerMock,
 		}));
 
-		const map = await import('../src/utils/log-level-map.js');
-		originalErrorFn = map.logLevelToConsoleFunction[LogLevel.ERROR];
+		const map = await import('../src/common/utils/log-level-map.js');
+		originalErrorFn = map.LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.ERROR];
 
 		errorFn = vi.fn<(...args: unknown[]) => void>();
-		map.logLevelToConsoleFunction[LogLevel.ERROR] = errorFn;
+		map.LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.ERROR] = errorFn;
 
-		const { NodeLoggerStrategy } = await import('../src/strategies/node-logger.strategy.js');
+		const { NodeLoggerStrategy } = await import('../src/runtime/strategies/node-logger.strategy.js');
 		return { NodeLoggerStrategy };
 	}
 
@@ -55,10 +55,10 @@ describe('NodeLoggerStrategy', () => {
 	}
 
 	afterEach(async () => {
-		const map = await import('../src/utils/log-level-map.js');
+		const map = await import('../src/common/utils/log-level-map.js');
 
 		if (originalErrorFn) {
-			map.logLevelToConsoleFunction[LogLevel.ERROR] = originalErrorFn;
+			map.LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.ERROR] = originalErrorFn;
 		}
 
 		vi.doUnmock('../src/create-logger.js');

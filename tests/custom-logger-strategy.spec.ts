@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { LogLevel, type LoggerOverrideConfig } from '../src/index.js';
-import { LoggerRuntime } from '../src/logger-runtime.js';
-import { CustomLoggerStrategy } from '../src/strategies/custom-logger.strategy.js';
+import { LoggerRuntime } from '../src/common/logger-runtime.js';
+import { CustomLoggerStrategy } from '../src/common/strategies/custom-logger.strategy.js';
+import { LogLevel, type LoggerOverrideConfig } from '../src/runtime/index.js';
 
 describe('CustomLoggerStrategy', () => {
 	let baseLog: ReturnType<typeof vi.fn>;

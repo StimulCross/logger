@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { LogLevel } from '../../src/index.js';
+import { LogLevel } from '../../src/runtime/index.js';
 
 describe('getMinLogLevelFromEnv', () => {
 	beforeEach(() => {
@@ -11,7 +11,7 @@ describe('getMinLogLevelFromEnv', () => {
 	});
 
 	async function getUtil() {
-		return await import('../../src/utils/get-min-log-level-from-env.js');
+		return await import('../../src/runtime/utils/get-min-log-level-from-env.js');
 	}
 
 	it('returns undefined if LOGGING env is not set', async () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { LogLevel } from '../src/enums/log-level.js';
-import { LoggerRuntime } from '../src/logger-runtime.js';
+import { LogLevel } from '../src/common/enums/log-level.js';
+import { LoggerRuntime } from '../src/common/logger-runtime.js';
 
 describe('LoggerRuntime', () => {
 	const snapshot = () => ({

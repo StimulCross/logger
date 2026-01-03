@@ -4,7 +4,7 @@ import {
 	createColorWrapper,
 	createModifierWrapper,
 	createBgWrapper,
-} from '../../src/utils/styling-function.js';
+} from '../../src/common/utils/styling-function.js';
 
 describe('styling-functions', () => {
 	it('should wrap string with generic open and close codes', () => {

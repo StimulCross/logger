@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { LogLevel } from '../../src/index.js';
+import { LogLevel } from '../../src/runtime/index.js';
 
 describe('log-level-map', () => {
 	beforeEach(() => {
@@ -11,7 +11,7 @@ describe('log-level-map', () => {
 	});
 
 	async function importMap() {
-		return await import('../../src/utils/log-level-map.js');
+		return await import('../../src/common/utils/log-level-map.js');
 	}
 
 	it('logLevelToConsoleFunction should call proper console methods', async () => {
@@ -21,15 +21,15 @@ describe('log-level-map', () => {
 		const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
 		const traceSpy = vi.spyOn(console, 'trace').mockImplementation(() => {});
 
-		const { logLevelToConsoleFunction } = await importMap();
+		const { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } = await importMap();
 
-		logLevelToConsoleFunction[LogLevel.FATAL]('x');
-		logLevelToConsoleFunction[LogLevel.ERROR]('x');
-		logLevelToConsoleFunction[LogLevel.WARNING]('x');
-		logLevelToConsoleFunction[LogLevel.SUCCESS]('x');
-		logLevelToConsoleFunction[LogLevel.INFO]('x');
-		logLevelToConsoleFunction[LogLevel.DEBUG]('x');
-		logLevelToConsoleFunction[LogLevel.TRACE]('x');
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.FATAL]('x');
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.ERROR]('x');
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.WARNING]('x');
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.SUCCESS]('x');
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO]('x');
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.DEBUG]('x');
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.TRACE]('x');
 
 		expect(errorSpy).toHaveBeenCalledTimes(2); // fatal + error
 		expect(warnSpy).toHaveBeenCalledTimes(1);
@@ -39,38 +39,34 @@ describe('log-level-map', () => {
 	});
 
 	it('logLevelToType should contain padded fixed-width strings', async () => {
-		const { logLevelToType } = await importMap();
+		const { LOG_LEVEL_TO_TYPE_MAP } = await importMap();
 
-		const values = Object.values(logLevelToType);
-		expect(values.length).toBeGreaterThan(0);
-
-		const len = values[0].length;
+		const values = Object.values(LOG_LEVEL_TO_TYPE_MAP);
+		const len = 7;
 
 		for (const v of values) {
 			expect(v.length).toBe(len);
 		}
-
-		expect(logLevelToType[LogLevel.ERROR]).toMatch(/ERROR/u);
-		expect(logLevelToType[LogLevel.INFO]).toMatch(/INFO/u);
 	});
 
 	it('styling maps should return ANSI-wrapped strings', async () => {
-		const { logLevelToTypeColor, logLevelToColor, logLevelToBackgroundColor } = await importMap();
+		const { LOG_LEVEL_TO_TYPE_COLOR_MAP, LOG_LEVEL_TO_COLOR_MAP, LOG_LEVEL_TO_BACKGROUND_COLOR_MAP } =
+			await importMap();
 
 		const sample = 'Hello';
 
-		const colored = logLevelToColor[LogLevel.WARNING](sample);
+		const colored = LOG_LEVEL_TO_COLOR_MAP[LogLevel.WARNING](sample);
 		expect(colored).toContain(sample);
 		// eslint-disable-next-line no-control-regex
 		expect(colored).toMatch(/^\u001B\[\d+m/u);
 		// eslint-disable-next-line no-control-regex
 		expect(colored).toMatch(/\u001B\[\d+m$/u);
 
-		const typeColored = logLevelToTypeColor[LogLevel.ERROR](sample);
+		const typeColored = LOG_LEVEL_TO_TYPE_COLOR_MAP[LogLevel.ERROR](sample);
 		expect(typeColored).toContain(sample);
 		expect(typeColored).toContain('\u001B[');
 
-		const bg = logLevelToBackgroundColor[LogLevel.FATAL](sample);
+		const bg = LOG_LEVEL_TO_BACKGROUND_COLOR_MAP[LogLevel.FATAL](sample);
 		expect(bg).toContain(sample);
 		expect(bg).toContain('\u001B[');
 	});

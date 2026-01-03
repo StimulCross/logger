@@ -1,22 +1,24 @@
 /* eslint-disable import/order */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { LogLevel } from '../src/common/enums/log-level.js';
+import { type LoggerOptions } from '../src/common/interfaces/logger-options.js';
+import { BaseLogger } from '../src/common/base-logger.js';
+import { LoggerRuntime } from '../src/common/logger-runtime.js';
+import { type LogEntry } from '../src/common/interfaces/log-entry.js';
+import { process } from 'std-env';
+import { type Logger } from '../src/common/interfaces/logger.js';
+import { LogFormatter } from '../src/common/formatters/log-formatter.js';
+import { LoggerObserver } from '../src/common/logger-observer.js';
+import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from '../src/common/utils/log-level-map.js';
 
-const { createLoggerMock } = vi.hoisted(() => ({
-	createLoggerMock: vi.fn(),
-}));
-
-vi.mock('../src/create-logger.js', () => ({
-	createLogger: createLoggerMock,
-}));
-
-/* eslint-disable import/first */
-import { LogLevel } from '../src/enums/log-level.js';
-import { type DateTimeFormatOptions, type LoggerOptions } from '../src/interfaces/logger-options.js';
-import { BaseLogger } from '../src/strategies/base-logger.js';
-import { DEFAULT_OPTIONS } from '../src/constants.js';
-import { LoggerRuntime } from '../src/logger-runtime.js';
+class TestFormatter extends LogFormatter {
+	public formatToParts(entry: LogEntry): unknown[] {
+		return ['formatted', entry.level, ...entry.args];
+	}
+}
 
 class TestLogger extends BaseLogger {
+	protected override readonly _formatter = new TestFormatter(this._options);
 	protected override _minLevel: LogLevel = LogLevel.TRACE;
 
 	public static _setGlobalTs(v: number): void {
@@ -35,19 +37,6 @@ class TestLogger extends BaseLogger {
 		return this._minLevel;
 	}
 
-	public get dtFormatter(): Function | undefined {
-		return this._dateTimeFormatter;
-	}
-
-	public get dtOptions(): DateTimeFormatOptions | undefined {
-		return this._dateTimeFormatOptions;
-	}
-
-	public log(level: LogLevel, ...args: unknown[]): void {
-		void level;
-		void args;
-	}
-
 	public _callShouldLog(level: LogLevel): boolean {
 		return this._shouldLog(level);
 	}
@@ -58,6 +47,23 @@ class TestLogger extends BaseLogger {
 
 	public _setLocalTs(v: number): void {
 		this._lastLocalTimestamp = v;
+	}
+
+	protected override _createChildLogger(options: LoggerOptions): Logger {
+		return new TestLogger(options);
+	}
+
+	protected override _createLogEntry(level: LogLevel, args: unknown[]): LogEntry {
+		return {
+			level,
+			context: this._options.context,
+			timestamp: Date.now(),
+			args,
+			appName: this._options.applicationName,
+			pid: process.pid,
+			timeDiff: this._getTimeDiff(),
+			timeDiffScope: this._options.timeDiff ?? 'global',
+		};
 	}
 }
 
@@ -78,7 +84,6 @@ describe('BaseLogger', () => {
 
 	beforeEach(() => {
 		vi.restoreAllMocks();
-		createLoggerMock.mockReset();
 
 		initialRuntime = runtimeSnapshot();
 		LoggerRuntime.setEnabled(true);
@@ -90,7 +95,6 @@ describe('BaseLogger', () => {
 		LoggerRuntime.setGlobalMinLevel(initialRuntime.globalMinLevel);
 
 		vi.restoreAllMocks();
-		createLoggerMock.mockReset();
 	});
 
 	describe('constructor', () => {
@@ -107,24 +111,19 @@ describe('BaseLogger', () => {
 			expect(logger.options.colors).toBe(false);
 			expect(logger.options.timestamps).toBe(false);
 			expect(logger.options.timeDiff).toBeUndefined();
-			expect(logger.dtFormatter).toBeUndefined();
-
-			expect(logger.dtOptions).toStrictEqual(DEFAULT_OPTIONS.dateTimeFormat);
 		});
 
-		it('accepts dateTimeFormat function (sets formatter + default options)', () => {
+		it('accepts dateTimeFormat function (stored in options)', () => {
 			const fmt = vi.fn((d: Date) => d.toISOString());
 			const logger = createTestLogger({ dateTimeFormat: fmt });
 
-			expect(logger.dtFormatter).toBe(fmt);
-			expect(logger.dtOptions).toBeTypeOf('object');
+			expect(logger.options.dateTimeFormat).toBe(fmt);
 		});
 
-		it('accepts dateTimeFormat options object (merged with defaults)', () => {
+		it('accepts dateTimeFormat options object', () => {
 			const logger = createTestLogger({ dateTimeFormat: { locale: 'ru-RU', hour12: false } });
 
-			expect(logger.dtFormatter).toBeUndefined();
-			expect(logger.dtOptions).toMatchObject({ locale: 'ru-RU', hour12: false });
+			expect(logger.options.dateTimeFormat).toEqual({ locale: 'ru-RU', hour12: false });
 		});
 	});
 
@@ -182,6 +181,54 @@ describe('BaseLogger', () => {
 			expect(logger._callShouldLog(LogLevel.DEBUG)).toBe(false);
 			expect(logger._callShouldLog(LogLevel.WARNING)).toBe(true);
 			expect(logger._callShouldLog(LogLevel.ERROR)).toBe(true);
+		});
+	});
+
+	describe('log', () => {
+		it('does nothing when _shouldLog returns false', () => {
+			const logger = createTestLogger();
+			logger.setMinLevel(LogLevel.ERROR); // ниже ERROR логировать нельзя
+
+			const shouldLogSpy = vi.spyOn<any, any>(logger as any, '_shouldLog');
+			const notifySpy = vi.spyOn(LoggerObserver, 'notify');
+			const formatterSpy = vi.spyOn((logger as any)._formatter as TestFormatter, 'formatToParts');
+			const consoleSpy = vi.spyOn(console, 'log'); // на случай, если INFO мапится на console.log
+
+			logger.log(LogLevel.TRACE, 'ignored');
+
+			expect(shouldLogSpy).toHaveBeenCalledWith(LogLevel.TRACE);
+			expect(notifySpy).not.toHaveBeenCalled();
+			expect(formatterSpy).not.toHaveBeenCalled();
+			expect(consoleSpy).not.toHaveBeenCalled();
+		});
+
+		it('creates entry, notifies observer, formats and writes to console when allowed', () => {
+			const logger = createTestLogger();
+			logger.setMinLevel(LogLevel.TRACE);
+
+			const notifySpy = vi.spyOn(LoggerObserver, 'notify');
+			const formatter = (logger as any)._formatter as TestFormatter;
+			const formatterSpy = vi.spyOn(formatter, 'formatToParts');
+
+			const infoSpy = vi.fn();
+			LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO] = infoSpy;
+
+			logger.log(LogLevel.INFO, 'msg1', { foo: 'bar' });
+
+			expect(notifySpy).toHaveBeenCalledTimes(1);
+			const [entryArg] = notifySpy.mock.calls[0] as [LogEntry];
+			expect(entryArg.level).toBe(LogLevel.INFO);
+			expect(entryArg.context).toBe(logger.ctx);
+			expect(entryArg.args).toEqual(['msg1', { foo: 'bar' }]);
+
+			expect(formatterSpy).toHaveBeenCalledTimes(1);
+			expect(formatterSpy).toHaveBeenCalledWith(entryArg);
+
+			expect(infoSpy).toHaveBeenCalledTimes(1);
+			const consoleArgs = infoSpy.mock.calls[0] as unknown[];
+
+			expect(consoleArgs[0]).toBe('formatted');
+			expect(consoleArgs[1]).toBe(LogLevel.INFO);
 		});
 	});
 
@@ -251,9 +298,7 @@ describe('BaseLogger', () => {
 			);
 		});
 
-		it('string overload calls createLogger with namespaced context and merged options', () => {
-			createLoggerMock.mockReturnValue({ kind: 'child' });
-
+		it('string overload creates child logger with namespaced context and merged options', () => {
 			const parent = createTestLogger({
 				context: 'PARENT',
 				inspectOptions: { depth: 1 },
@@ -261,47 +306,44 @@ describe('BaseLogger', () => {
 				colors: true,
 			});
 
-			const childLogger = parent.child('CH', {
+			const child = parent.child('CH', {
 				inspectOptions: { colors: false },
 				dateTimeFormat: { hour12: false },
 				colors: false,
 			});
 
-			expect(childLogger).toEqual({ kind: 'child' });
+			expect(child).toBeInstanceOf(TestLogger);
 
-			expect(createLoggerMock).toHaveBeenCalledTimes(1);
-			const [ctxArg, optionsArg] = createLoggerMock.mock.calls[0] as [string, LoggerOptions];
+			const childOptions = (child as TestLogger).options;
 
-			expect(ctxArg).toBe('PARENT:CH');
-			expect(optionsArg.inspectOptions).toEqual({ depth: 1, colors: false });
-			expect(optionsArg.dateTimeFormat).toEqual({ locale: 'en-US', hour12: false });
-			expect(optionsArg.colors).toBe(false);
+			expect(childOptions.context).toBe('PARENT:CH');
+			expect(childOptions.inspectOptions).toEqual({ depth: 1, colors: false });
+			expect(childOptions.dateTimeFormat).toEqual({ locale: 'en-US', hour12: false });
+			expect(childOptions.colors).toBe(false);
 		});
 
 		it('options overload uses options.context and merges inspectOptions when only child provides it', () => {
-			createLoggerMock.mockReturnValue({ kind: 'child2' });
-
 			const parent = createTestLogger({
 				context: 'P',
 				inspectOptions: undefined,
 				dateTimeFormat: { locale: 'ru-RU' },
 			});
 
-			parent.child({
+			const child = parent.child({
 				context: 'C',
 				inspectOptions: { depth: 7 },
 			} as LoggerOptions);
 
-			const [ctxArg, optionsArg] = createLoggerMock.mock.calls[0] as [string, LoggerOptions];
+			expect(child).toBeInstanceOf(TestLogger);
 
-			expect(ctxArg).toBe('P:C');
-			expect(optionsArg.inspectOptions).toEqual({ depth: 7 });
-			expect(optionsArg.dateTimeFormat).toEqual({ locale: 'ru-RU' });
+			const childOptions = (child as TestLogger).options;
+
+			expect(childOptions.context).toBe('P:C');
+			expect(childOptions.inspectOptions).toEqual({ depth: 7 });
+			expect(childOptions.dateTimeFormat).toEqual({ locale: 'ru-RU' });
 		});
 
 		it('merges dateTimeFormat branches: child function wins; child object merges even if parent is a function; child undefined keeps parent function', () => {
-			createLoggerMock.mockReturnValue({});
-
 			const parentFn = vi.fn((d: Date) => d.toISOString());
 			const childFn = vi.fn((d: Date) => String(d.getTime()));
 
@@ -310,17 +352,17 @@ describe('BaseLogger', () => {
 				dateTimeFormat: parentFn,
 			});
 
-			parent.child('A', { dateTimeFormat: childFn });
-			let [, optionsArg] = createLoggerMock.mock.calls.at(-1) as [string, LoggerOptions];
-			expect(optionsArg.dateTimeFormat).toBe(childFn);
+			let child = parent.child('A', { dateTimeFormat: childFn });
+			let childOptions = (child as TestLogger).options;
+			expect(childOptions.dateTimeFormat).toBe(childFn);
 
-			parent.child('B', { dateTimeFormat: { locale: 'en-GB' } });
-			[, optionsArg] = createLoggerMock.mock.calls.at(-1) as [string, LoggerOptions];
-			expect(optionsArg.dateTimeFormat).toEqual({ locale: 'en-GB' });
+			child = parent.child('B', { dateTimeFormat: { locale: 'en-GB' } });
+			childOptions = (child as TestLogger).options;
+			expect(childOptions.dateTimeFormat).toEqual({ locale: 'en-GB' });
 
-			parent.child('C', {});
-			[, optionsArg] = createLoggerMock.mock.calls.at(-1) as [string, LoggerOptions];
-			expect(optionsArg.dateTimeFormat).toBe(parentFn);
+			child = parent.child('C', {});
+			childOptions = (child as TestLogger).options;
+			expect(childOptions.dateTimeFormat).toBe(parentFn);
 		});
 	});
 });
