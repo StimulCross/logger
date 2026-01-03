@@ -14,9 +14,11 @@ const grayWrapper = createColorWrapper('blackBright');
 const errorWrapper = createBgWrapper('bgRed', createColorWrapper('whiteBright', createModifierWrapper('bold')));
 const errorWrapperBright = createBgWrapper('bgRedBright', createColorWrapper('black', createModifierWrapper('bold')));
 
+/** @internal */
 export const colorize = (str: string, level: LogLevel, color?: ColorVariant): string =>
 	color ? (color === 'bright' ? LOG_LEVEL_TO_BRIGHT_COLOR_MAP[level](str) : LOG_LEVEL_TO_COLOR_MAP[level](str)) : str;
 
+/** @internal */
 export const colorizeType = (str: string, level: LogLevel, color?: ColorVariant): string =>
 	color
 		? color === 'bright'

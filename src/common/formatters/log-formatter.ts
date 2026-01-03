@@ -4,6 +4,7 @@ import { type LoggerDateTimeFormatOptions } from '../interfaces/logger-date-time
 import { type LoggerOptions } from '../interfaces/logger-options.js';
 import { type LoggerDateTimeFormatter } from '../types/logger-date-time-formatter.js';
 
+/** @internal */
 export abstract class LogFormatter {
 	protected readonly _dateTimeFormatter?: LoggerDateTimeFormatter;
 	protected readonly _dateTimeFormatOptions?: LoggerDateTimeFormatOptions;

@@ -1,6 +1,7 @@
 import { LogLevel } from './enums/log-level.js';
 import { type LoggerOptions } from './interfaces/logger-options.js';
 
+/** @internal */
 export const DEFAULT_OPTIONS = {
 	minLevel: LogLevel.SUCCESS,
 	colors: 'standard',
