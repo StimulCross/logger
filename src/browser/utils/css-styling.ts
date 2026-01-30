@@ -9,7 +9,7 @@ export const COLORS = {
 	success: '#02b938',
 	info: '#1586ee',
 	debug: '#bb32de',
-	trace: '#629391',
+	trace: '#1098ad',
 	accent: '#ff9806',
 	white: '#ffffff',
 	gray: '#909090',
