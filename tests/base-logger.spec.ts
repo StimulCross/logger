@@ -29,14 +29,6 @@ class TestLogger extends BaseLogger {
 		return this._options;
 	}
 
-	public get ctx(): string {
-		return this._options.context;
-	}
-
-	public get minLevel(): LogLevel {
-		return this._minLevel;
-	}
-
 	public _callShouldLog(level: LogLevel): boolean {
 		return this._shouldLog(level);
 	}
@@ -106,7 +98,7 @@ describe('BaseLogger', () => {
 				timeDiff: undefined,
 			});
 
-			expect(logger.ctx).toBe('CTX');
+			expect(logger.context).toBe('CTX');
 			expect(logger.options.applicationName).toBe('APP');
 			expect(logger.options.colors).toBe(false);
 			expect(logger.options.timestamps).toBe(false);
@@ -130,10 +122,10 @@ describe('BaseLogger', () => {
 	describe('configuration methods', () => {
 		it('setContext updates context in options', () => {
 			const logger = createTestLogger({ context: 'A' });
-			expect(logger.ctx).toBe('A');
+			expect(logger.context).toBe('A');
 
 			logger.setContext('B');
-			expect(logger.ctx).toBe('B');
+			expect(logger.context).toBe('B');
 			expect(logger.options.context).toBe('B');
 		});
 
@@ -148,6 +140,30 @@ describe('BaseLogger', () => {
 
 			logger.setMinLevel('warning');
 			expect(logger.minLevel).toBe(LogLevel.WARNING);
+		});
+	});
+
+	describe('State', () => {
+		it('should return correct context', () => {
+			const logger = createTestLogger({ context: 'TEST' });
+
+			expect(logger.context).toBe('TEST');
+
+			logger.setContext('TEST2');
+			expect(logger.context).toBe('TEST2');
+		});
+
+		it('should return correct minLevel', () => {
+			const logger = createTestLogger();
+
+			logger.setMinLevel(LogLevel.INFO);
+			expect(logger.minLevel).toBe(LogLevel.INFO);
+
+			logger.setMinLevel(LogLevel.ERROR);
+			expect(logger.minLevel).toBe(LogLevel.ERROR);
+
+			logger.setMinLevel(LogLevel.TRACE);
+			expect(logger.minLevel).toBe(LogLevel.TRACE);
 		});
 	});
 
@@ -218,7 +234,7 @@ describe('BaseLogger', () => {
 			expect(notifySpy).toHaveBeenCalledTimes(1);
 			const [entryArg] = notifySpy.mock.calls[0] as [LogEntry];
 			expect(entryArg.level).toBe(LogLevel.INFO);
-			expect(entryArg.context).toBe(logger.ctx);
+			expect(entryArg.context).toBe(logger.context);
 			expect(entryArg.args).toEqual(['msg1', { foo: 'bar' }]);
 
 			expect(formatterSpy).toHaveBeenCalledTimes(1);

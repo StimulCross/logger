@@ -9,6 +9,16 @@ import { type LogLevel } from '../enums/log-level.js';
  */
 export interface Logger {
 	/**
+	 * The current logger context.
+	 */
+	get context(): string;
+
+	/**
+	 * The current minimum log level.
+	 */
+	get minLevel(): LogLevel;
+
+	/**
 	 * Emits a log message.
 	 *
 	 * @param level The severity of the message. Messages below the current minimum log level are ignored.

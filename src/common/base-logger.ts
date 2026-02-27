@@ -23,6 +23,14 @@ export abstract class BaseLogger implements Logger {
 		this._options = { ...DEFAULT_OPTIONS, ...options };
 	}
 
+	public get context(): string {
+		return this._options.context;
+	}
+
+	public get minLevel(): LogLevel {
+		return this._minLevel;
+	}
+
 	public setContext(context: string): void {
 		this._options.context = context;
 	}
