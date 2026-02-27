@@ -67,6 +67,9 @@
 		"prepare": "husky",
 		"demo:node": "ts-node ./playground/demo.js",
 		"demo:bun": "bun ./playground/demo.js",
-		"demo:deno": "deno --allow-env ./playground/demo.js"
+		"demo:deno": "deno --allow-env ./playground/demo.js",
+		"preversion": "npm run rebuild && npm run format:check && npm run lint",
+		"postversion": "npm i",
+		"prepublishOnly": "npm run rebuild && npm run format:check && npm run lint"
 	}
 }
