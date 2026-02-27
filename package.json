@@ -29,21 +29,21 @@
 		"std-env": "^3.10.0"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^20.2.0",
+		"@commitlint/cli": "^20.4.2",
 		"@stimulcross/commitlint-config": "^2.0.0",
 		"@stimulcross/eslint-config-node": "^2.0.0",
 		"@stimulcross/eslint-config-typescript": "^2.0.0",
 		"@stimulcross/prettier-config": "^2.0.0",
 		"@types/detect-node": "^2.0.2",
-		"@types/node": "^24.10.2",
-		"@vitest/coverage-v8": "^4.0.15",
+		"@types/node": "^25.3.2",
+		"@vitest/coverage-v8": "^4.0.18",
 		"del-cli": "^7.0.0",
-		"eslint": "^9.39.2",
+		"eslint": "^9.39.3",
 		"husky": "9.1.7",
 		"lint-staged": "^16.2.7",
-		"prettier": "^3.7.4",
+		"prettier": "^3.8.1",
 		"typescript": "5.9.3",
-		"vitest": "^4.0.15"
+		"vitest": "^4.0.18"
 	},
 	"files": [
 		"LICENSE",
