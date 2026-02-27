@@ -18,6 +18,14 @@ export class CustomLoggerStrategy implements Logger {
 		this._override = typeof custom === 'function' ? { log: custom } : custom!;
 	}
 
+	public get context(): string {
+		return this._context;
+	}
+
+	public get minLevel(): LogLevel {
+		return this._minLevel;
+	}
+
 	public setContext(context: string): void {
 		this._context = context;
 	}
