@@ -19,6 +19,7 @@
 	"engines": {
 		"node": ">=20"
 	},
+	"packageManager": "pnpm@10.30.3",
 	"sideEffects": false,
 	"repository": "github:stimulcross/logger",
 	"author": "Stimul Cross <stimulcross@gmail.com>",
