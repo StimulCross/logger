@@ -21,7 +21,7 @@ export function detectRuntime(): Runtime | null {
 	}
 
 	// Node.js detection
-	if (typeof process !== 'undefined' && process?.release?.name && process.release.name.toLowerCase() === 'node') {
+	if (typeof process !== 'undefined' && process?.release?.name?.toLowerCase() === 'node') {
 		return Runtime.Node;
 	}
 
