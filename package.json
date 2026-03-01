@@ -52,15 +52,18 @@
 		"!lib/**/*.d.ts.map"
 	],
 	"scripts": {
+		"build:browser": "tsc --build tsconfig.browser.json",
+		"build:runtime": "tsc --build tsconfig.runtime.json",
+		"build": "pnpm run build:browser && pnpm run build:runtime",
+		"rebuild": "pnpm run clean && pnpm run build",
+		"clean": "del-cli lib",
 		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
 		"format:check": "prettier --check src",
 		"format:fix": "prettier --write src",
-		"build:browser": "tsc --build tsconfig.browser.json",
-		"build:runtime": "tsc --build tsconfig.runtime.json",
-		"build": "npm run build:browser && npm run build:runtime",
-		"rebuild": "npm run clean && npm run build",
-		"clean": "del-cli lib",
+		"check-types:browser": "tsc -p tsconfig.browser.json --noEmit",
+		"check-types:runtime": "tsc -p tsconfig.runtime.json --noEmit",
+		"check-types": "pnpm run check-types:browser && pnpm run check-types:runtime",
 		"test": "vitest run",
 		"test:watch": "vitest run --watch",
 		"test:cov": "vitest run --coverage",
@@ -68,8 +71,8 @@
 		"demo:node": "ts-node ./playground/demo.js",
 		"demo:bun": "bun ./playground/demo.js",
 		"demo:deno": "deno --allow-env ./playground/demo.js",
-		"preversion": "npm run rebuild && npm run format:check && npm run lint",
-		"postversion": "npm i",
-		"prepublishOnly": "npm run rebuild && npm run format:check && npm run lint"
+		"preversion": "pnpm run rebuild && pnpm run format:check && pnpm run lint",
+		"postversion": "pnpm install",
+		"prepublishOnly": "pnpm run rebuild && pnpm run format:check && pnpm run lint"
 	}
 }
