@@ -58,14 +58,14 @@ function parseLoggingEnv(value?: string): { rules: Rule[]; defaultLevel?: LogLev
 	return { rules, defaultLevel };
 }
 
-const { rules, defaultLevel } = parseLoggingEnv(env.LOGGING);
-
 function isPrefix(value: string[], prefix: string[]): boolean {
 	return prefix.length <= value.length && prefix.every((item, i) => item === value[i]);
 }
 
 /** @internal */
 export function getMinLogLevelFromEnv(name: string): LogLevel | undefined {
+	const { rules, defaultLevel } = parseLoggingEnv(env.LOGGING);
+
 	const parts = name
 		.split(':')
 		.map(part => part.trim())
