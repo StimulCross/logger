@@ -87,11 +87,11 @@ describe('NodeLoggerStrategy', () => {
 
 		const asStr = errorFn.mock.calls[0].map(v => String(v)).join(' ');
 		expect(asStr).toContain('[APP]');
-		expect(asStr).toContain(String(process.pid)); // pid включён
+		expect(asStr).toContain(String(process.pid));
 		expect(asStr).toContain('ERROR');
 		expect(asStr).toContain('[CTX]');
 		expect(asStr).toContain('msg');
-		expect(asStr).toContain('{ a: 1 }'); // inspect()
+		expect(asStr).toContain('{ a: 1 }');
 		expect(asStr).toContain('123');
 	});
 

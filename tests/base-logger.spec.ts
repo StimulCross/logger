@@ -203,12 +203,12 @@ describe('BaseLogger', () => {
 	describe('log', () => {
 		it('does nothing when _shouldLog returns false', () => {
 			const logger = createTestLogger();
-			logger.setMinLevel(LogLevel.ERROR); // ниже ERROR логировать нельзя
+			logger.setMinLevel(LogLevel.ERROR);
 
 			const shouldLogSpy = vi.spyOn<any, any>(logger as any, '_shouldLog');
 			const notifySpy = vi.spyOn(LoggerObserver, 'notify');
 			const formatterSpy = vi.spyOn((logger as any)._formatter as TestFormatter, 'formatToParts');
-			const consoleSpy = vi.spyOn(console, 'log'); // на случай, если INFO мапится на console.log
+			const consoleSpy = vi.spyOn(console, 'log');
 
 			logger.log(LogLevel.TRACE, 'ignored');
 
