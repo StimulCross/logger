@@ -1,3 +1,4 @@
+import { type LazyLogger } from './lazy-logger.js';
 import { type LoggerOptions } from './logger-options.js';
 import { type LogLevel } from '../enums/log-level.js';
 
@@ -17,6 +18,15 @@ export interface Logger {
 	 * The current minimum log level.
 	 */
 	get minLevel(): LogLevel;
+
+	/**
+	 * Accesses the lazy logger interface.
+	 *
+	 * Provides methods that accept a function (thunk) instead of pre-evaluated arguments.
+	 * Use this namespace to avoid expensive object cloning, formatting, or serialization
+	 * (e.g., `JSON.stringify`) for logs that might be discarded by the current log level.
+	 */
+	get lazy(): LazyLogger;
 
 	/**
 	 * Logs a message with the specified severity level.

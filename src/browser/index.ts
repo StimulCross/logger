@@ -1,7 +1,10 @@
 export { LogLevel } from '../common/enums/log-level.js';
 export type { Logger } from '../common/interfaces/logger.js';
+export type { LazyLogger } from '../common/interfaces/lazy-logger.js';
 export type { LoggerOptions } from '../common/interfaces/logger-options.js';
 export type { LoggerOverrideConfig } from '../common/interfaces/logger-override-config.js';
+export type { LazyLoggerOverrideConfig } from '../common/interfaces/lazy-logger-override-config.js';
+export type { LazyLogFn } from '../common/types/lazy-log-fn.js';
 export type { LogEntry } from '../common/interfaces/log-entry.js';
 export type { LoggerDateTimeFormatOptions } from '../common/interfaces/logger-date-time-format-options.js';
 export type { LoggerInspectOptions } from '../common/interfaces/logger-inspect-options.js';

@@ -1,22 +1,22 @@
-import { type LazyLoggerOverrideConfig } from './lazy-logger-override-config.js';
 import { type LogLevel } from '../enums/log-level.js';
+import { type LazyLogFn } from '../types/lazy-log-fn.js';
 
 /**
- * Configuration for a custom logger implementation.
+ * Configuration for a custom lazy logger implementation.
  *
  * @remarks
  * Provides hooks to override the default behavior of individual log methods.
- * At minimum, a custom logger must implement the generic `log` function.
+ * At minimum, a custom lazy logger must implement the generic `log` function.
  * All other methods are optional; if omitted, they fall back to using `log`.
  */
-export interface LoggerOverrideConfig {
+export interface LazyLoggerOverrideConfig {
 	/**
 	 * Handles a log message of the given severity.
 	 *
 	 * @param level The severity level.
 	 * @param args  Data to be logged.
 	 */
-	log: (level: LogLevel, ...args: unknown[]) => void;
+	log: (level: LogLevel, fn: LazyLogFn) => void;
 
 	/**
 	 * Handles fatal-level messages.
@@ -24,7 +24,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route fatal messages through `log`.
 	 */
-	fatal?: (...args: unknown[]) => void;
+	fatal?: (fn: LazyLogFn) => void;
 
 	/**
 	 * Handles error-level messages.
@@ -32,7 +32,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route error messages through `log`.
 	 */
-	error?: (...args: unknown[]) => void;
+	error?: (fn: LazyLogFn) => void;
 
 	/**
 	 * Handles warning-level messages.
@@ -40,7 +40,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route warnings through `log`.
 	 */
-	warn?: (...args: unknown[]) => void;
+	warn?: (fn: LazyLogFn) => void;
 
 	/**
 	 * Handles success-level messages.
@@ -48,15 +48,15 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route success messages through `log`.
 	 */
-	success?: (...args: unknown[]) => void;
+	success?: (fn: LazyLogFn) => void;
 
 	/**
-	 * Handles informational messages.
+	 * Handles info-level messages.
 	 *
 	 * @remarks
 	 * If omitted, the logger will route info messages through `log`.
 	 */
-	info?: (...args: unknown[]) => void;
+	info?: (fn: LazyLogFn) => void;
 
 	/**
 	 * Handles debug-level messages.
@@ -64,7 +64,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route debug messages through `log`.
 	 */
-	debug?: (...args: unknown[]) => void;
+	debug?: (fn: LazyLogFn) => void;
 
 	/**
 	 * Handles verbose-level messages.
@@ -72,7 +72,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route debug messages through `log`.
 	 */
-	verbose?: (...args: unknown[]) => void;
+	verbose?: (fn: LazyLogFn) => void;
 
 	/**
 	 * Handles trace-level messages.
@@ -80,12 +80,5 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route trace messages through `log`.
 	 */
-	trace?: (...args: unknown[]) => void;
-
-	/**
-	 * Lazy logger override configuration.
-	 *
-	 * @remarks If omitted, lazy logs will be evaluated and routed through the standard eager methods.
-	 */
-	lazy?: LazyLoggerOverrideConfig;
+	trace?: (fn: LazyLogFn) => void;
 }

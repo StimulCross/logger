@@ -205,4 +205,94 @@ describe('CustomLoggerStrategy', () => {
 			expect(baseLog).not.toHaveBeenCalled();
 		});
 	});
+
+	describe('lazy override', () => {
+		it('should not evaluate thunk if level is below minLevel', () => {
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.WARNING,
+				custom: baseLog as unknown as LoggerOverrideConfig,
+			});
+
+			const thunk = vi.fn(() => ['lazy']);
+			logger.lazy.info(thunk);
+
+			expect(thunk).not.toHaveBeenCalled();
+			expect(baseLog).not.toHaveBeenCalled();
+		});
+
+		it('should evaluate thunk and fallback to eager methods when lazy override is missing', () => {
+			const info = vi.fn();
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.TRACE,
+				custom: {
+					log: baseLog as (level: LogLevel, ...args: unknown[]) => void,
+					info,
+				},
+			});
+
+			const thunkInfo = vi.fn(() => ['lazy info']);
+			const thunkDebug = vi.fn(() => ['lazy debug']);
+
+			logger.lazy.info(thunkInfo);
+			logger.lazy.debug(thunkDebug);
+
+			expect(thunkInfo).toHaveBeenCalled();
+			expect(info).toHaveBeenCalledWith('lazy info');
+
+			expect(thunkDebug).toHaveBeenCalled();
+			expect(baseLog).toHaveBeenCalledWith(LogLevel.DEBUG, 'lazy debug');
+		});
+
+		it('should route to specific lazy override when explicitly provided', () => {
+			const lazyLog = vi.fn();
+			const lazyInfo = vi.fn();
+
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.TRACE,
+				custom: {
+					log: baseLog as (level: LogLevel, ...args: unknown[]) => void,
+					lazy: { log: lazyLog, info: lazyInfo },
+				},
+			});
+
+			const thunkInfo = () => ['info'];
+			const thunkDebug = () => ['debug'];
+
+			logger.lazy.info(thunkInfo);
+			logger.lazy.debug(thunkDebug);
+
+			expect(lazyInfo).toHaveBeenCalledWith(thunkInfo);
+			expect(lazyLog).toHaveBeenCalledWith(LogLevel.DEBUG, thunkDebug);
+
+			expect(baseLog).not.toHaveBeenCalled();
+		});
+
+		it('should catch thunk evaluation errors and fallback to eager error log', () => {
+			const error = vi.fn();
+			const logger = new CustomLoggerStrategy({
+				context: 'C',
+				minLevel: LogLevel.TRACE,
+				custom: {
+					log: baseLog as (level: LogLevel, ...args: unknown[]) => void,
+					error,
+				},
+			});
+
+			const badThunk = vi.fn(() => {
+				throw new Error('Boom');
+			});
+
+			expect(() => logger.lazy.info(badThunk)).not.toThrow();
+
+			expect(baseLog).toHaveBeenCalledTimes(1);
+			expect(baseLog).toHaveBeenCalledWith(
+				LogLevel.ERROR,
+				'[Logger Error: Lazy evaluation failed in custom strategy]',
+				expect.any(Error),
+			);
+		});
+	});
 });

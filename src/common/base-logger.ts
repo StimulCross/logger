@@ -1,9 +1,11 @@
 import { DEFAULT_OPTIONS } from './constants.js';
 import { LogLevel } from './enums/log-level.js';
 import { type LogFormatter } from './formatters/log-formatter.js';
+import { type LazyLogger } from './interfaces/lazy-logger.js';
 import { type LogEntry } from './interfaces/log-entry.js';
 import { type LoggerOptions } from './interfaces/logger-options.js';
 import { type Logger } from './interfaces/logger.js';
+import { LazyLoggerImpl } from './lazy-logger.impl.js';
 import { LoggerObserver } from './logger-observer.js';
 import { LoggerRuntime } from './logger-runtime.js';
 import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from './utils/log-level-map.js';
@@ -15,9 +17,10 @@ export abstract class BaseLogger implements Logger {
 	protected _lastLocalTimestamp: number = Date.now();
 
 	protected readonly _options: LoggerOptions;
-
 	protected abstract _formatter: LogFormatter;
 	protected abstract _minLevel: LogLevel;
+
+	private _lazy: LazyLogger | null = null;
 
 	constructor(options: LoggerOptions) {
 		this._options = { ...DEFAULT_OPTIONS, ...options };
@@ -29,6 +32,25 @@ export abstract class BaseLogger implements Logger {
 
 	public get minLevel(): LogLevel {
 		return this._minLevel;
+	}
+
+	public get lazy(): LazyLogger {
+		if (!this._lazy) {
+			return (this._lazy = new LazyLoggerImpl((level, fn) => {
+				if (!this._shouldLog(level)) {
+					return;
+				}
+
+				try {
+					const args = fn();
+					this._processLog(level, args);
+				} catch (e) {
+					this._processLog(level, ['[Logger Error: Lazy evaluation failed]', e]);
+				}
+			}));
+		}
+
+		return this._lazy;
 	}
 
 	public setContext(context: string): void {
@@ -44,14 +66,7 @@ export abstract class BaseLogger implements Logger {
 			return;
 		}
 
-		const entry = this._createLogEntry(level, args);
-
-		LoggerObserver.notify(entry);
-
-		const parts = this._formatter.formatToParts(entry);
-
-		const log = LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[level];
-		log(...parts);
+		this._processLog(level, args);
 	}
 
 	public fatal(...args: unknown[]): void {
@@ -137,6 +152,17 @@ export abstract class BaseLogger implements Logger {
 		BaseLogger._lastGlobalTimestamp = now;
 
 		return timeDiff;
+	}
+
+	private _processLog(level: LogLevel, args: unknown[]): void {
+		const entry = this._createLogEntry(level, args);
+
+		LoggerObserver.notify(entry);
+
+		const parts = this._formatter.formatToParts(entry);
+
+		const logConsole = LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[level];
+		logConsole(...parts);
 	}
 
 	private _mergeLoggerOptions(parent: LoggerOptions, child?: LoggerOptions): LoggerOptions {

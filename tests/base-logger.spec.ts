@@ -1,14 +1,13 @@
-/* eslint-disable import/order */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { LogLevel } from '../src/common/enums/log-level.js';
-import { type LoggerOptions } from '../src/common/interfaces/logger-options.js';
-import { BaseLogger } from '../src/common/base-logger.js';
-import { LoggerRuntime } from '../src/common/logger-runtime.js';
-import { type LogEntry } from '../src/common/interfaces/log-entry.js';
 import { process } from 'std-env';
-import { type Logger } from '../src/common/interfaces/logger.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BaseLogger } from '../src/common/base-logger.js';
+import { LogLevel } from '../src/common/enums/log-level.js';
 import { LogFormatter } from '../src/common/formatters/log-formatter.js';
+import { type LogEntry } from '../src/common/interfaces/log-entry.js';
+import { type LoggerOptions } from '../src/common/interfaces/logger-options.js';
+import { type Logger } from '../src/common/interfaces/logger.js';
 import { LoggerObserver } from '../src/common/logger-observer.js';
+import { LoggerRuntime } from '../src/common/logger-runtime.js';
 import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from '../src/common/utils/log-level-map.js';
 
 class TestFormatter extends LogFormatter {
@@ -272,6 +271,74 @@ describe('BaseLogger', () => {
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.DEBUG, 'f');
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.VERBOSE, 'g');
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.TRACE, 'h');
+		});
+	});
+
+	describe('lazy', () => {
+		it('evaluates thunk and processes log only when allowed by minLevel', () => {
+			const logger = createTestLogger();
+			logger.setMinLevel(LogLevel.INFO);
+
+			const thunkDebug = vi.fn(() => ['debug payload']);
+			const thunkInfo = vi.fn(() => ['info payload']);
+			const notifySpy = vi.spyOn(LoggerObserver, 'notify');
+
+			logger.lazy.debug(thunkDebug);
+			logger.lazy.info(thunkInfo);
+
+			expect(thunkDebug).not.toHaveBeenCalled();
+			expect(thunkInfo).toHaveBeenCalledTimes(1);
+
+			expect(notifySpy).toHaveBeenCalledTimes(1);
+			const [entryArg] = notifySpy.mock.calls[0] as [LogEntry];
+			expect(entryArg.level).toBe(LogLevel.INFO);
+			expect(entryArg.args).toEqual(['info payload']);
+		});
+
+		it('catches thunk errors and routes to failsafe error log', () => {
+			const logger = createTestLogger();
+			logger.setMinLevel(LogLevel.INFO);
+			const notifySpy = vi.spyOn(LoggerObserver, 'notify');
+
+			const badThunk = vi.fn(() => {
+				throw new Error('Thunk crash');
+			});
+
+			expect(() => logger.lazy.info(badThunk)).not.toThrow();
+
+			expect(notifySpy).toHaveBeenCalledTimes(1);
+
+			const [entryArg] = notifySpy.mock.calls[0] as [LogEntry];
+			expect(entryArg.level).toBe(LogLevel.INFO);
+			expect(entryArg.args[0]).toContain('Lazy evaluation failed');
+		});
+
+		it('level helpers forward to lazy core with correct level', () => {
+			const logger = createTestLogger();
+			const notifySpy = vi.spyOn(LoggerObserver, 'notify');
+
+			logger.lazy.fatal(() => ['a']);
+			logger.lazy.error(() => ['b']);
+			logger.lazy.warn(() => ['c']);
+			logger.lazy.success(() => ['d']);
+			logger.lazy.info(() => ['e']);
+			logger.lazy.debug(() => ['f']);
+			logger.lazy.verbose(() => ['g']);
+			logger.lazy.trace(() => ['h']);
+
+			expect(notifySpy).toHaveBeenCalledTimes(8);
+			const calls = notifySpy.mock.calls.map(call => [call[0].level, call[0].args[0]]);
+
+			expect(calls).toEqual([
+				[LogLevel.FATAL, 'a'],
+				[LogLevel.ERROR, 'b'],
+				[LogLevel.WARNING, 'c'],
+				[LogLevel.SUCCESS, 'd'],
+				[LogLevel.INFO, 'e'],
+				[LogLevel.DEBUG, 'f'],
+				[LogLevel.VERBOSE, 'g'],
+				[LogLevel.TRACE, 'h'],
+			]);
 		});
 	});
 

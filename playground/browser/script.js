@@ -230,5 +230,31 @@ const unsubscribe = LoggerRuntime.subscribe(logObserver);
 logger11.info('Log event test', true, 1, null, { foo: 'bar' });
 unsubscribe();
 
+// 12. LAZY LOGGING (Deferred Evaluation)
+sep('LAZY LOGGING');
+
+const logger12 = createLogger('LazyDemo', { minLevel: LogLevel.INFO });
+
+let expensiveOperationsCount = 0;
+
+logger12.info('Attempting to log a heavy DEBUG message (minLevel is INFO)...');
+
+// This will not be executed (I hope)
+logger12.lazy.debug(() => {
+	expensiveOperationsCount++;
+	const heavyPayload = Array(100000).fill('data').join(',');
+	return ['Heavy debug payload:', heavyPayload];
+});
+
+logger12.info('Attempting to log a heavy INFO message...');
+
+// This will be executed
+logger12.lazy.info(() => {
+	expensiveOperationsCount++;
+	return ['Lazy info payload executed successfully.'];
+});
+
+logger12.success(`Total expensive operations actually executed: ${expensiveOperationsCount} (Expected: 1)`);
+
 // END
 sep('DEMO COMPLETE');
