@@ -135,8 +135,8 @@ describe('BaseLogger', () => {
 			logger.setMinLevel(LogLevel.ERROR);
 			expect(logger.minLevel).toBe(LogLevel.ERROR);
 
-			logger.setMinLevel('TRACE');
-			expect(logger.minLevel).toBe(LogLevel.TRACE);
+			logger.setMinLevel('VERBOSE');
+			expect(logger.minLevel).toBe(LogLevel.VERBOSE);
 
 			logger.setMinLevel('warning');
 			expect(logger.minLevel).toBe(LogLevel.WARNING);
@@ -172,6 +172,7 @@ describe('BaseLogger', () => {
 			const logger = createTestLogger();
 			logger.setMinLevel(LogLevel.INFO);
 
+			expect(logger._callShouldLog(LogLevel.VERBOSE)).toBe(false);
 			expect(logger._callShouldLog(LogLevel.DEBUG)).toBe(false);
 			expect(logger._callShouldLog(LogLevel.INFO)).toBe(true);
 			expect(logger._callShouldLog(LogLevel.SUCCESS)).toBe(true);
@@ -193,8 +194,9 @@ describe('BaseLogger', () => {
 
 			LoggerRuntime.setGlobalMinLevel(LogLevel.WARNING);
 
-			expect(logger._callShouldLog(LogLevel.INFO)).toBe(false);
+			expect(logger._callShouldLog(LogLevel.VERBOSE)).toBe(false);
 			expect(logger._callShouldLog(LogLevel.DEBUG)).toBe(false);
+			expect(logger._callShouldLog(LogLevel.INFO)).toBe(false);
 			expect(logger._callShouldLog(LogLevel.WARNING)).toBe(true);
 			expect(logger._callShouldLog(LogLevel.ERROR)).toBe(true);
 		});
@@ -259,7 +261,8 @@ describe('BaseLogger', () => {
 			logger.success('d');
 			logger.info('e');
 			logger.debug('f');
-			logger.trace('g');
+			logger.verbose('g');
+			logger.trace('h');
 
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.FATAL, 'a');
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.ERROR, 'b');
@@ -267,7 +270,8 @@ describe('BaseLogger', () => {
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.SUCCESS, 'd');
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.INFO, 'e');
 			expect(logSpy).toHaveBeenCalledWith(LogLevel.DEBUG, 'f');
-			expect(logSpy).toHaveBeenCalledWith(LogLevel.TRACE, 'g');
+			expect(logSpy).toHaveBeenCalledWith(LogLevel.VERBOSE, 'g');
+			expect(logSpy).toHaveBeenCalledWith(LogLevel.TRACE, 'h');
 		});
 	});
 

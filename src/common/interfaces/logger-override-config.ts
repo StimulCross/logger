@@ -66,6 +66,14 @@ export interface LoggerOverrideConfig {
 	debug?: (...args: unknown[]) => void;
 
 	/**
+	 * Handles verbose-level messages.
+	 *
+	 * @remarks
+	 * If omitted, the logger will route debug messages through `log`.
+	 */
+	verbose?: (...args: unknown[]) => void;
+
+	/**
 	 * Handles trace-level messages.
 	 *
 	 * @remarks

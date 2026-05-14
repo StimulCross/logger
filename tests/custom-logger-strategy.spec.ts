@@ -139,8 +139,8 @@ describe('CustomLoggerStrategy', () => {
 
 			logger.fatal('f');
 			logger.error('e');
-			logger.info('i'); // should not call info()
-			logger.warn('w'); // fallback to log()
+			logger.info('i');
+			logger.warn('w');
 
 			expect(fatal).toHaveBeenCalledWith('f');
 			expect(error).toHaveBeenCalledWith('e');
@@ -200,7 +200,7 @@ describe('CustomLoggerStrategy', () => {
 
 			LoggerRuntime.setGlobalMinLevel(LogLevel.WARNING);
 
-			logger.info('i'); // blocked globally
+			logger.info('i');
 			expect(info).not.toHaveBeenCalled();
 			expect(baseLog).not.toHaveBeenCalled();
 		});

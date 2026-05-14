@@ -69,6 +69,13 @@ export interface Logger {
 	debug(...args: unknown[]): void;
 
 	/**
+	 * Logs debug-level messages intended for development and troubleshooting.
+	 *
+	 * @param args Data to be logged.
+	 */
+	verbose(...args: unknown[]): void;
+
+	/**
 	 * Logs highly verbose diagnostic information.
 	 *
 	 * @param args Data to be logged.

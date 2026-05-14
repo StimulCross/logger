@@ -9,6 +9,7 @@ export const COLORS = {
 	success: '#02b938',
 	info: '#1586ee',
 	debug: '#bb32de',
+	verbose: '#1098ad',
 	trace: '#1098ad',
 	accent: '#ff9806',
 	white: '#ffffff',
@@ -22,6 +23,7 @@ export const COLOR_STYLES = {
 	success: `color:${COLORS.success};`,
 	info: `color:${COLORS.info};`,
 	debug: `color:${COLORS.debug};`,
+	verbose: `color:${COLORS.verbose};`,
 	trace: `color:${COLORS.trace};`,
 	accent: `color:${COLORS.accent};`,
 	white: `color:${COLORS.white};`,
@@ -53,6 +55,7 @@ export const LOG_LEVEL_TO_TYPE_COLOR_MAP: LogLevelMap<string> = {
 	[LogLevel.SUCCESS]: `${COLOR_STYLES.success}${MODIFIER_STYLES.bold}`,
 	[LogLevel.INFO]: `${COLOR_STYLES.info}${MODIFIER_STYLES.bold}`,
 	[LogLevel.DEBUG]: `${COLOR_STYLES.debug}${MODIFIER_STYLES.bold}`,
+	[LogLevel.VERBOSE]: `${COLOR_STYLES.verbose}${MODIFIER_STYLES.bold}`,
 	[LogLevel.TRACE]: `${COLOR_STYLES.trace}${MODIFIER_STYLES.bold}`,
 };
 
@@ -64,6 +67,7 @@ export const LOG_LEVEL_TO_COLOR_MAP: LogLevelMap<string> = {
 	[LogLevel.SUCCESS]: COLOR_STYLES.success,
 	[LogLevel.INFO]: COLOR_STYLES.info,
 	[LogLevel.DEBUG]: COLOR_STYLES.debug,
+	[LogLevel.VERBOSE]: COLOR_STYLES.verbose,
 	[LogLevel.TRACE]: COLOR_STYLES.trace,
 };
 

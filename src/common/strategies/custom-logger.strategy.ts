@@ -88,6 +88,14 @@ export class CustomLoggerStrategy implements Logger {
 		}
 	}
 
+	public verbose(...args: unknown[]): void {
+		if (!this._override.verbose) {
+			this.log(LogLevel.VERBOSE, ...args);
+		} else if (this._shouldLog(LogLevel.VERBOSE)) {
+			this._override.verbose(...args);
+		}
+	}
+
 	public trace(...args: unknown[]): void {
 		if (!this._override.trace) {
 			this.log(LogLevel.TRACE, ...args);

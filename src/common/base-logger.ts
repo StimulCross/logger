@@ -78,6 +78,10 @@ export abstract class BaseLogger implements Logger {
 		this.log(LogLevel.DEBUG, ...args);
 	}
 
+	public verbose(...args: unknown[]): void {
+		this.log(LogLevel.VERBOSE, ...args);
+	}
+
 	public trace(...args: unknown[]): void {
 		this.log(LogLevel.TRACE, ...args);
 	}
