@@ -19,7 +19,7 @@ export interface Logger {
 	get minLevel(): LogLevel;
 
 	/**
-	 * Emits a log message.
+	 * Logs a message with the specified severity level.
 	 *
 	 * @param level The severity of the message. Messages below the current minimum log level are ignored.
 	 * @param args Data to be logged.
@@ -27,56 +27,80 @@ export interface Logger {
 	log(level: LogLevel, ...args: unknown[]): void;
 
 	/**
-	 * Logs a fatal error and indicates that the application cannot continue.
+	 * Logs a fatal failure message.
+	 *
+	 * Use this method for unrecoverable failures that make further application execution impossible
+	 * and usually happen immediately before process termination.
 	 *
 	 * @param args Data to be logged.
 	 */
 	fatal(...args: unknown[]): void;
 
 	/**
-	 * Logs an error indicating that an operation has failed.
+	 * Logs an error message.
+	 *
+	 * Use this method for failed operations that require attention or investigation, while the
+	 * application can still continue running.
 	 *
 	 * @param args Data to be logged.
 	 */
 	error(...args: unknown[]): void;
 
 	/**
-	 * Logs a warning about a potentially problematic situation.
+	 * Logs a warning message.
+	 *
+	 * Use this method for unexpected, suspicious, or potentially harmful situations that were handled
+	 * successfully but may indicate future errors or degraded behavior.
 	 *
 	 * @param args Data to be logged.
 	 */
 	warn(...args: unknown[]): void;
 
 	/**
-	 * Logs a message indicating successful completion of an operation.
+	 * Logs a success message.
+	 *
+	 * Use this method to highlight an important completed milestone or a successful operation that
+	 * should be clearly visible in normal console output.
 	 *
 	 * @param args Data to be logged.
 	 */
 	success(...args: unknown[]): void;
 
 	/**
-	 * Logs general informational messages.
+	 * Logs an informational message.
+	 *
+	 * Use this method for normal application lifecycle events, state transitions, and other
+	 * user-relevant messages that do not indicate a problem.
 	 *
 	 * @param args Data to be logged.
 	 */
 	info(...args: unknown[]): void;
 
 	/**
-	 * Logs debug-level messages intended for development and troubleshooting.
+	 * Logs a debug message.
+	 *
+	 * Use this method for high-level technical events that help developers understand control flow,
+	 * decisions, and subsystem interactions during troubleshooting.
 	 *
 	 * @param args Data to be logged.
 	 */
 	debug(...args: unknown[]): void;
 
 	/**
-	 * Logs debug-level messages intended for development and troubleshooting.
+	 * Logs a verbose diagnostic message.
+	 *
+	 * Use this method for detailed operational output, payload inspection, and intermediate values
+	 * that are useful during deep troubleshooting but too noisy for regular debug logs.
 	 *
 	 * @param args Data to be logged.
 	 */
 	verbose(...args: unknown[]): void;
 
 	/**
-	 * Logs highly verbose diagnostic information.
+	 * Logs a trace message.
+	 *
+	 * Use this method for the most detailed execution diagnostics, including step-by-step flow,
+	 * low-level operations, and data needed to reconstruct how a specific result was produced.
 	 *
 	 * @param args Data to be logged.
 	 */
