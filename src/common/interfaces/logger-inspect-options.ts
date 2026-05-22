@@ -4,7 +4,7 @@ export interface LoggerInspectOptions {
 	 * `WeakMap` and `WeakSet` entries are also included as well as user defined prototype properties (excluding method properties).
 	 * @default false
 	 */
-	showHidden?: boolean | undefined;
+	showHidden?: boolean | undefined
 
 	/**
 	 * Specifies the number of times to recurse while formatting object.
@@ -12,24 +12,24 @@ export interface LoggerInspectOptions {
 	 * To recurse up to the maximum call stack size pass `Infinity` or `null`.
 	 * @default 2
 	 */
-	depth?: number | null | undefined;
+	depth?: number | null | undefined
 
 	/**
 	 * If `true`, the output is styled with ANSI color codes. Colors are customizable.
 	 */
-	colors?: boolean | undefined;
+	colors?: boolean | undefined
 
 	/**
 	 * If `false`, `[util.inspect.custom](depth, opts, inspect)` functions are not invoked.
 	 * @default true
 	 */
-	customInspect?: boolean | undefined;
+	customInspect?: boolean | undefined
 
 	/**
 	 * If `true`, `Proxy` inspection includes the target and handler objects.
 	 * @default false
 	 */
-	showProxy?: boolean | undefined;
+	showProxy?: boolean | undefined
 
 	/**
 	 * Specifies the maximum number of `Array`, `TypedArray`, `WeakMap`, and `WeakSet` elements
@@ -37,7 +37,7 @@ export interface LoggerInspectOptions {
 	 * Set to `0` or negative to show no elements.
 	 * @default 100
 	 */
-	maxArrayLength?: number | null | undefined;
+	maxArrayLength?: number | null | undefined
 
 	/**
 	 * Specifies the maximum number of characters to
@@ -45,7 +45,7 @@ export interface LoggerInspectOptions {
 	 * Set to `0` or negative to show no characters.
 	 * @default 10000
 	 */
-	maxStringLength?: number | null | undefined;
+	maxStringLength?: number | null | undefined
 
 	/**
 	 * The length at which input values are split across multiple lines.
@@ -53,7 +53,7 @@ export interface LoggerInspectOptions {
 	 * (in combination with `compact` set to `true` or any number >= `1`).
 	 * @default 80
 	 */
-	breakLength?: number | undefined;
+	breakLength?: number | undefined
 
 	/**
 	 * Setting this to `false` causes each object key
@@ -65,7 +65,7 @@ export interface LoggerInspectOptions {
 	 * For more information, see the example below.
 	 * @default true
 	 */
-	compact?: boolean | number | undefined;
+	compact?: boolean | number | undefined
 
 	/**
 	 * If set to `true` or a function, all properties of an object, and `Set` and `Map`
@@ -73,7 +73,7 @@ export interface LoggerInspectOptions {
 	 * If set to `true` the default sort is used.
 	 * If set to a function, it is used as a compare function.
 	 */
-	sorted?: boolean | ((a: string, b: string) => number) | undefined;
+	sorted?: boolean | ((a: string, b: string) => number) | undefined
 
 	/**
 	 * If set to `true`, getters are going to be
@@ -83,11 +83,11 @@ export interface LoggerInspectOptions {
 	 * the getter function.
 	 * @default false
 	 */
-	getters?: 'get' | 'set' | boolean | undefined;
+	getters?: 'get' | 'set' | boolean | undefined
 
 	/**
 	 * If set to `true`, an underscore is used to separate every three digits in all bigints and numbers.
 	 * @default false
 	 */
-	numericSeparator?: boolean | undefined;
+	numericSeparator?: boolean | undefined
 }

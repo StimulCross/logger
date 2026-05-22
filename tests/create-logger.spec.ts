@@ -1,61 +1,64 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { type LogLevel } from '../src/runtime/index.js';
+import type { LogLevel } from '../src/runtime/index.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 describe('createLogger', () => {
 	beforeEach(() => {
-		vi.resetModules();
-	});
+		vi.resetModules()
+	})
 
 	it('should return CustomLoggerStrategy when custom provided', async () => {
-		const { createLogger } = await import('../src/runtime/create-logger.js');
+		const { createLogger } = await import('../src/runtime/create-logger.js')
 		const logger = createLogger({
 			context: 'CTX',
 			custom: (level: LogLevel, ...args: unknown[]) => void [level, args],
-		});
+		})
 
-		expect(logger.constructor.name).toBe('CustomLoggerStrategy');
-	});
+		expect(logger.constructor.name).toBe('CustomLoggerStrategy')
+	})
 
 	it('should return Browser strategy', async () => {
-		const { createLogger } = await import('../src/browser/create-logger.js');
-		const logger = createLogger('CTX', { colors: false, timestamps: false });
+		const { createLogger } = await import('../src/browser/create-logger.js')
+		const logger = createLogger('CTX', { colors: false, timestamps: false })
 
-		expect(logger.constructor.name).toBe('BrowserLoggerStrategy');
-	});
+		expect(logger.constructor.name).toBe('BrowserLoggerStrategy')
+	})
 
 	it('should select Deno strategy', async () => {
 		vi.doMock('../src/runtime/utils/detect-runtime.js', async () => {
-			const actual = await vi.importActual<any>('../src/runtime/utils/detect-runtime.js');
-			return { ...actual, detectRuntime: () => actual.Runtime.Deno };
-		});
+			const actual = await vi.importActual<any>('../src/runtime/utils/detect-runtime.js')
 
-		const { createLogger } = await import('../src/runtime/create-logger.js');
-		const logger = createLogger('CTX', { colors: false, timestamps: false });
+			return { ...actual, detectRuntime: () => actual.Runtime.Deno }
+		})
 
-		expect(logger.constructor.name).toBe('DenoLoggerStrategy');
-	});
+		const { createLogger } = await import('../src/runtime/create-logger.js')
+		const logger = createLogger('CTX', { colors: false, timestamps: false })
+
+		expect(logger.constructor.name).toBe('DenoLoggerStrategy')
+	})
 
 	it('should select Bun strategy', async () => {
 		vi.doMock('../src/runtime/utils/detect-runtime.js', async () => {
-			const actual = await vi.importActual<any>('../src/runtime/utils/detect-runtime.js');
-			return { ...actual, detectRuntime: () => actual.Runtime.Bun };
-		});
+			const actual = await vi.importActual<any>('../src/runtime/utils/detect-runtime.js')
 
-		const { createLogger } = await import('../src/runtime/create-logger.js');
-		const logger = createLogger('CTX', { colors: false, timestamps: false });
+			return { ...actual, detectRuntime: () => actual.Runtime.Bun }
+		})
 
-		expect(logger.constructor.name).toBe('BunLoggerStrategy');
-	});
+		const { createLogger } = await import('../src/runtime/create-logger.js')
+		const logger = createLogger('CTX', { colors: false, timestamps: false })
+
+		expect(logger.constructor.name).toBe('BunLoggerStrategy')
+	})
 
 	it('should default to Node strategy when runtime is null', async () => {
 		vi.doMock('../src/runtime/utils/detect-runtime.js', async () => {
-			const actual = await vi.importActual<any>('../src/runtime/utils/detect-runtime.js');
-			return { ...actual, detectRuntime: () => null };
-		});
+			const actual = await vi.importActual<any>('../src/runtime/utils/detect-runtime.js')
 
-		const { createLogger } = await import('../src/runtime/create-logger.js');
-		const logger = createLogger('CTX', { colors: false, timestamps: false });
+			return { ...actual, detectRuntime: () => null }
+		})
 
-		expect(logger.constructor.name).toBe('NodeLoggerStrategy');
-	});
-});
+		const { createLogger } = await import('../src/runtime/create-logger.js')
+		const logger = createLogger('CTX', { colors: false, timestamps: false })
+
+		expect(logger.constructor.name).toBe('NodeLoggerStrategy')
+	})
+})

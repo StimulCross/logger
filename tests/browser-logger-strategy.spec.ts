@@ -1,22 +1,23 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { BrowserLoggerStrategy } from '../src/browser/strategies/browser-logger.strategy.js';
-import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from '../src/common/utils/log-level-map.js';
-import { LogLevel, type LoggerOptions } from '../src/runtime/index.js';
+import type { LoggerOptions } from '../src/runtime/index.js'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { BrowserLoggerStrategy } from '../src/browser/strategies/browser-logger.strategy.js'
+import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from '../src/common/utils/log-level-map.js'
+import { LogLevel } from '../src/runtime/index.js'
 
-describe('BrowserLoggerStrategy', () => {
-	const originalFns = { ...LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP };
+describe('browserLoggerStrategy', () => {
+	const originalFns = { ...LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP }
 
-	let infoFn: ReturnType<typeof vi.fn<(...args: unknown[]) => void>>;
+	let infoFn: ReturnType<typeof vi.fn<(...args: unknown[]) => void>>
 
 	beforeEach(() => {
-		infoFn = vi.fn<(...args: unknown[]) => void>();
-		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO] = infoFn;
-	});
+		infoFn = vi.fn<(...args: unknown[]) => void>()
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO] = infoFn
+	})
 
 	afterEach(() => {
-		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO] = originalFns[LogLevel.INFO];
-		vi.restoreAllMocks();
-	});
+		LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[LogLevel.INFO] = originalFns[LogLevel.INFO]
+		vi.restoreAllMocks()
+	})
 
 	function createLogger(opts: Partial<LoggerOptions> = {}): BrowserLoggerStrategy {
 		return new BrowserLoggerStrategy({
@@ -25,15 +26,15 @@ describe('BrowserLoggerStrategy', () => {
 			timestamps: false,
 			timeDiff: undefined,
 			...opts,
-		});
+		})
 	}
 
 	it('should not log when below minLevel', () => {
-		const logger = createLogger({ minLevel: LogLevel.ERROR });
-		logger.log(LogLevel.INFO, 'nope');
+		const logger = createLogger({ minLevel: LogLevel.ERROR })
+		logger.log(LogLevel.INFO, 'nope')
 
-		expect(infoFn).not.toHaveBeenCalled();
-	});
+		expect(infoFn).not.toHaveBeenCalled()
+	})
 
 	it('should build template with app/context and objects/strings', () => {
 		const logger = createLogger({
@@ -41,64 +42,64 @@ describe('BrowserLoggerStrategy', () => {
 			applicationName: 'APP',
 			colors: false,
 			timestamps: false,
-		});
+		})
 
-		logger.log(LogLevel.INFO, 'msg', { a: 1 }, 123);
+		logger.log(LogLevel.INFO, 'msg', { a: 1 }, 123)
 
-		expect(infoFn).toHaveBeenCalledTimes(1);
+		expect(infoFn).toHaveBeenCalledTimes(1)
 
-		const [template, ...args] = infoFn.mock.calls[0];
-		expect(template).toBeTypeOf('string');
+		const [template, ...args] = infoFn.mock.calls[0]
+		expect(template).toBeTypeOf('string')
 
-		expect(String(template)).toContain('%s');
-		expect(String(template)).toContain('%o');
-		expect(args[0]).toBe('[APP]');
-		expect(String(args[1])).toContain('INFO');
-		expect(args[2]).toBe('[CTX]');
-		expect(args[3]).toBe('msg');
-		expect(args[4]).toEqual({ a: 1 });
-		expect(args[5]).toBe(123);
-	});
+		expect(String(template)).toContain('%s')
+		expect(String(template)).toContain('%o')
+		expect(args[0]).toBe('[APP]')
+		expect(String(args[1])).toContain('INFO')
+		expect(args[2]).toBe('[CTX]')
+		expect(args[3]).toBe('msg')
+		expect(args[4]).toEqual({ a: 1 })
+		expect(args[5]).toBe(123)
+	})
 
 	it('should include timestamps when enabled', () => {
 		const logger = createLogger({
 			minLevel: LogLevel.TRACE,
 			timestamps: true,
 			colors: false,
-		});
+		})
 
-		logger.log(LogLevel.INFO, 'x');
+		logger.log(LogLevel.INFO, 'x')
 
-		expect(infoFn).toHaveBeenCalledTimes(1);
-		const [, ...args] = infoFn.mock.calls[0];
+		expect(infoFn).toHaveBeenCalledTimes(1)
+		const [, ...args] = infoFn.mock.calls[0]
 
-		const maybeTimestamp = args.find(v => typeof v === 'string' && String(v).includes(':'));
-		expect(maybeTimestamp).toBeTruthy();
-	});
+		const maybeTimestamp = args.find(v => typeof v === 'string' && String(v).includes(':'))
+		expect(maybeTimestamp).toBeTruthy()
+	})
 
 	it('should include timeDiff when enabled', () => {
-		const nowSpy = vi.spyOn(Date, 'now');
-		nowSpy.mockReturnValue(1000);
+		const nowSpy = vi.spyOn(Date, 'now')
+		nowSpy.mockReturnValue(1000)
 
 		const logger = createLogger({
 			minLevel: LogLevel.TRACE,
 			timeDiff: 'local',
 			colors: false,
-		});
+		})
 
-		logger.log(LogLevel.INFO, 'first');
-		nowSpy.mockReturnValue(1200);
-		logger.log(LogLevel.INFO, 'second');
+		logger.log(LogLevel.INFO, 'first')
+		nowSpy.mockReturnValue(1200)
+		logger.log(LogLevel.INFO, 'second')
 
-		expect(infoFn).toHaveBeenCalledTimes(2);
-		const [, ...args2] = infoFn.mock.calls[1];
+		expect(infoFn).toHaveBeenCalledTimes(2)
+		const [, ...args2] = infoFn.mock.calls[1]
 
-		const diff = args2.at(-2);
-		const scope = args2.at(-1);
+		const diff = args2.at(-2)
+		const scope = args2.at(-1)
 
-		expect(diff).toMatch(/\+\d+ms/u);
-		expect(scope).toMatch(/\[L\]/u);
-	});
+		expect(diff).toMatch(/\+\d+ms/u)
+		expect(scope).toMatch(/\[L\]/u)
+	})
 
 	it('should work with colors enabled', () => {
 		const logger = createLogger({
@@ -106,14 +107,14 @@ describe('BrowserLoggerStrategy', () => {
 			colors: true,
 			timestamps: false,
 			applicationName: 'APP',
-		});
+		})
 
-		logger.log(LogLevel.INFO, 'hi');
+		logger.log(LogLevel.INFO, 'hi')
 
-		expect(infoFn).toHaveBeenCalledTimes(1);
-		const [template] = infoFn.mock.calls[0];
+		expect(infoFn).toHaveBeenCalledTimes(1)
+		const [template] = infoFn.mock.calls[0]
 
-		expect(String(template)).toContain('%s');
-		expect(String(template)).toContain('%c');
-	});
-});
+		expect(String(template)).toContain('%s')
+		expect(String(template)).toContain('%c')
+	})
+})

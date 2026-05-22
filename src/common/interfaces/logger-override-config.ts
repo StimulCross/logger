@@ -1,5 +1,5 @@
-import { type LazyLoggerOverrideConfig } from './lazy-logger-override-config.js';
-import { type LogLevel } from '../enums/log-level.js';
+import type { LogLevel } from '../enums/log-level.js'
+import type { LazyLoggerOverrideConfig } from './lazy-logger-override-config.js'
 
 /**
  * Configuration for a custom logger implementation.
@@ -16,7 +16,7 @@ export interface LoggerOverrideConfig {
 	 * @param level The severity level.
 	 * @param args  Data to be logged.
 	 */
-	log: (level: LogLevel, ...args: unknown[]) => void;
+	log: (level: LogLevel, ...args: unknown[]) => void
 
 	/**
 	 * Handles fatal-level messages.
@@ -24,7 +24,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route fatal messages through `log`.
 	 */
-	fatal?: (...args: unknown[]) => void;
+	fatal?: (...args: unknown[]) => void
 
 	/**
 	 * Handles error-level messages.
@@ -32,7 +32,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route error messages through `log`.
 	 */
-	error?: (...args: unknown[]) => void;
+	error?: (...args: unknown[]) => void
 
 	/**
 	 * Handles warning-level messages.
@@ -40,7 +40,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route warnings through `log`.
 	 */
-	warn?: (...args: unknown[]) => void;
+	warn?: (...args: unknown[]) => void
 
 	/**
 	 * Handles success-level messages.
@@ -48,7 +48,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route success messages through `log`.
 	 */
-	success?: (...args: unknown[]) => void;
+	success?: (...args: unknown[]) => void
 
 	/**
 	 * Handles informational messages.
@@ -56,7 +56,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route info messages through `log`.
 	 */
-	info?: (...args: unknown[]) => void;
+	info?: (...args: unknown[]) => void
 
 	/**
 	 * Handles debug-level messages.
@@ -64,7 +64,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route debug messages through `log`.
 	 */
-	debug?: (...args: unknown[]) => void;
+	debug?: (...args: unknown[]) => void
 
 	/**
 	 * Handles verbose-level messages.
@@ -72,7 +72,7 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route debug messages through `log`.
 	 */
-	verbose?: (...args: unknown[]) => void;
+	verbose?: (...args: unknown[]) => void
 
 	/**
 	 * Handles trace-level messages.
@@ -80,12 +80,12 @@ export interface LoggerOverrideConfig {
 	 * @remarks
 	 * If omitted, the logger will route trace messages through `log`.
 	 */
-	trace?: (...args: unknown[]) => void;
+	trace?: (...args: unknown[]) => void
 
 	/**
 	 * Lazy logger override configuration.
 	 *
 	 * @remarks If omitted, lazy logs will be evaluated and routed through the standard eager methods.
 	 */
-	lazy?: LazyLoggerOverrideConfig;
+	lazy?: LazyLoggerOverrideConfig
 }

@@ -1,7 +1,7 @@
-import { type LogLevel } from './enums/log-level.js';
-import { LoggerObserver } from './logger-observer.js';
-import { type LogObserver } from './types/log-observer.js';
-import { resolveLogLevel } from './utils/resolve-log-level.js';
+import type { LogLevel } from './enums/log-level.js'
+import type { LogObserver } from './types/log-observer.js'
+import { LoggerObserver } from './logger-observer.js'
+import { resolveLogLevel } from './utils/resolve-log-level.js'
 
 /**
  * A utility class for managing global logger runtime state.
@@ -10,8 +10,8 @@ import { resolveLogLevel } from './utils/resolve-log-level.js';
  * It allows globally enabling/disabling logging or enforcing a minimum log level.
  */
 export class LoggerRuntime {
-	private static _isEnabled: boolean = true;
-	private static _globalMinLevel: LogLevel | null = null;
+	private static _isEnabled: boolean = true
+	private static _globalMinLevel: LogLevel | null = null
 
 	/**
 	 * Indicates whether logging is globally enabled.
@@ -21,7 +21,7 @@ export class LoggerRuntime {
 	 * regardless of their individual configuration.
 	 */
 	public static get isEnabled(): boolean {
-		return this._isEnabled;
+		return this._isEnabled
 	}
 
 	/**
@@ -36,7 +36,7 @@ export class LoggerRuntime {
 	 * and individual logger configurations are used as-is.
 	 */
 	public static get globalMinLevel(): LogLevel | null {
-		return this._globalMinLevel;
+		return this._globalMinLevel
 	}
 
 	/**
@@ -51,7 +51,7 @@ export class LoggerRuntime {
 	 * The change takes effect immediately for all loggers.
 	 */
 	public static setEnabled(isEnabled: boolean): void {
-		this._isEnabled = isEnabled;
+		this._isEnabled = isEnabled
 	}
 
 	/**
@@ -74,7 +74,7 @@ export class LoggerRuntime {
 	public static setGlobalMinLevel(
 		level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel> | null,
 	): void {
-		this._globalMinLevel = level === null ? null : resolveLogLevel(level);
+		this._globalMinLevel = level === null ? null : resolveLogLevel(level)
 	}
 
 	/**
@@ -88,8 +88,8 @@ export class LoggerRuntime {
 	 * @returns A function that unsubscribes the observer.
 	 */
 	public static subscribe(observer: LogObserver): () => void {
-		LoggerObserver.add(observer);
+		LoggerObserver.add(observer)
 
-		return () => LoggerObserver.remove(observer);
+		return () => LoggerObserver.remove(observer)
 	}
 }

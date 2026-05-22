@@ -1,6 +1,6 @@
-import { LogLevel } from '../../common/enums/log-level.js';
-import { type Modifier } from '../../common/types/modifier.js';
-import { type LogLevelMap } from '../../common/utils/log-level-map.js';
+import type { Modifier } from '../../common/types/modifier.js'
+import type { LogLevelMap } from '../../common/utils/log-level-map.js'
+import { LogLevel } from '../../common/enums/log-level.js'
 
 /** @internal */
 export const COLORS = {
@@ -14,7 +14,7 @@ export const COLORS = {
 	accent: '#ff9806',
 	white: '#ffffff',
 	gray: '#909090',
-};
+}
 
 /** @internal */
 export const COLOR_STYLES = {
@@ -28,12 +28,12 @@ export const COLOR_STYLES = {
 	accent: `color:${COLORS.accent};`,
 	white: `color:${COLORS.white};`,
 	gray: `color:${COLORS.gray};`,
-};
+}
 
 /** @internal */
 export const BACKGROUND_COLOR_STYLES = {
 	fatal: `background-color:${COLORS.error};`,
-};
+}
 
 /** @internal */
 export const MODIFIER_STYLES: Record<Modifier, string> = {
@@ -45,7 +45,7 @@ export const MODIFIER_STYLES: Record<Modifier, string> = {
 	inverse: 'filter:invert(1);',
 	hidden: 'visibility:hidden;',
 	strikethrough: 'text-decoration:line-through;',
-};
+}
 
 /** @internal */
 export const LOG_LEVEL_TO_TYPE_COLOR_MAP: LogLevelMap<string> = {
@@ -57,7 +57,7 @@ export const LOG_LEVEL_TO_TYPE_COLOR_MAP: LogLevelMap<string> = {
 	[LogLevel.DEBUG]: `${COLOR_STYLES.debug}${MODIFIER_STYLES.bold}`,
 	[LogLevel.VERBOSE]: `${COLOR_STYLES.verbose}${MODIFIER_STYLES.bold}`,
 	[LogLevel.TRACE]: `${COLOR_STYLES.trace}${MODIFIER_STYLES.bold}`,
-};
+}
 
 /** @internal */
 export const LOG_LEVEL_TO_COLOR_MAP: LogLevelMap<string> = {
@@ -69,10 +69,10 @@ export const LOG_LEVEL_TO_COLOR_MAP: LogLevelMap<string> = {
 	[LogLevel.DEBUG]: COLOR_STYLES.debug,
 	[LogLevel.VERBOSE]: COLOR_STYLES.verbose,
 	[LogLevel.TRACE]: COLOR_STYLES.trace,
-};
+}
 
 /** @internal */
-export const ACCENT_COLOR = COLOR_STYLES.accent;
+export const ACCENT_COLOR = COLOR_STYLES.accent
 
 /** @internal */
-export const GRAY_COLOR = COLOR_STYLES.gray;
+export const GRAY_COLOR = COLOR_STYLES.gray

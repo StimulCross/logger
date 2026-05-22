@@ -9,5 +9,5 @@ export interface LoggerDateTimeFormatOptions extends Intl.DateTimeFormatOptions 
 	/**
 	 * The locale identifier for the desired locale.
 	 */
-	locale?: string;
+	locale?: string
 }

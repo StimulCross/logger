@@ -9,4 +9,4 @@
  *
  * @see {@link LoggerOptions.colors}
  */
-export type ColorVariant = 'standard' | 'bright';
+export type ColorVariant = 'standard' | 'bright'

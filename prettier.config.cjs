@@ -1,1 +1,1 @@
-module.exports = require('@stimulcross/prettier-config');
+module.exports = require('@stimulcross/prettier-config')

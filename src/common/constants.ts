@@ -1,5 +1,5 @@
-import { LogLevel } from './enums/log-level.js';
-import { type LoggerOptions } from './interfaces/logger-options.js';
+import type { LoggerOptions } from './interfaces/logger-options.js'
+import { LogLevel } from './enums/log-level.js'
 
 /** @internal */
 export const DEFAULT_OPTIONS = {
@@ -18,4 +18,4 @@ export const DEFAULT_OPTIONS = {
 		hour12: false,
 	},
 	inspectOptions: { depth: 5 },
-} as const satisfies Partial<LoggerOptions>;
+} as const satisfies Partial<LoggerOptions>

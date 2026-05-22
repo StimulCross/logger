@@ -1,10 +1,10 @@
-import { type LoggerDateTimeFormatOptions } from './logger-date-time-format-options.js';
-import { type LoggerInspectOptions } from './logger-inspect-options.js';
-import { type LogLevel } from '../enums/log-level.js';
-import { type ColorVariant } from '../types/color-variant.js';
-import { type LoggerDateTimeFormatter } from '../types/logger-date-time-formatter.js';
-import { type LoggerOverride } from '../types/logger-override.js';
-import { type LoggerTimeDiffScope } from '../types/logger-time-diff-scope.js';
+import type { LogLevel } from '../enums/log-level.js'
+import type { ColorVariant } from '../types/color-variant.js'
+import type { LoggerDateTimeFormatter } from '../types/logger-date-time-formatter.js'
+import type { LoggerOverride } from '../types/logger-override.js'
+import type { LoggerTimeDiffScope } from '../types/logger-time-diff-scope.js'
+import type { LoggerDateTimeFormatOptions } from './logger-date-time-format-options.js'
+import type { LoggerInspectOptions } from './logger-inspect-options.js'
 
 /**
  * Configuration options for the logger.
@@ -19,12 +19,12 @@ export interface LoggerOptions {
 	 * @remarks
 	 * Placed at the start of each log entry. Useful when multiple applications write to the same output.
 	 */
-	applicationName?: string;
+	applicationName?: string
 
 	/**
 	 * Logger context (e.g., module, subsystem, or service name).
 	 */
-	context: string;
+	context: string
 
 	/**
 	 * Minimum log level.
@@ -32,7 +32,7 @@ export interface LoggerOptions {
 	 *
 	 * @default SUCCESS
 	 */
-	minLevel?: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>;
+	minLevel?: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>
 
 	/**
 	 * Whether to include the process ID.
@@ -42,7 +42,7 @@ export interface LoggerOptions {
 	 *
 	 * @default true
 	 */
-	pid?: boolean;
+	pid?: boolean
 
 	/**
 	 * Enables colored output.
@@ -58,7 +58,7 @@ export interface LoggerOptions {
 	 *
 	 * @default standard
 	 */
-	colors?: ColorVariant | boolean;
+	colors?: ColorVariant | boolean
 
 	/**
 	 * Enables timestamp output.
@@ -69,7 +69,7 @@ export interface LoggerOptions {
 	 *
 	 * @default true
 	 */
-	timestamps?: boolean;
+	timestamps?: boolean
 
 	/**
 	 * Formatting options or a custom formatting function for timestamp output.
@@ -79,12 +79,12 @@ export interface LoggerOptions {
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
 	 */
-	dateTimeFormat?: LoggerDateTimeFormatter | LoggerDateTimeFormatOptions;
+	dateTimeFormat?: LoggerDateTimeFormatter | LoggerDateTimeFormatOptions
 
 	/**
 	 * Custom logger implementation that overrides default behavior.
 	 */
-	custom?: LoggerOverride;
+	custom?: LoggerOverride
 
 	/**
 	 * Specifies options for `inspect()` when formatting log arguments.
@@ -96,7 +96,7 @@ export interface LoggerOptions {
 	 *
 	 * @default { depth: null }
 	 */
-	inspectOptions?: LoggerInspectOptions;
+	inspectOptions?: LoggerInspectOptions
 
 	/**
 	 * Configures time-difference tracking between consecutive log entries.
@@ -106,5 +106,5 @@ export interface LoggerOptions {
 	 * keep measurements scoped to the current instance, mirroring the behavior popularized
 	 * by NestJS for bootstrap and operation timing.
 	 */
-	timeDiff?: LoggerTimeDiffScope;
+	timeDiff?: LoggerTimeDiffScope
 }

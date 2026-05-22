@@ -1,197 +1,194 @@
-import { DEFAULT_OPTIONS } from './constants.js';
-import { LogLevel } from './enums/log-level.js';
-import { type LogFormatter } from './formatters/log-formatter.js';
-import { type LazyLogger } from './interfaces/lazy-logger.js';
-import { type LogEntry } from './interfaces/log-entry.js';
-import { type LoggerOptions } from './interfaces/logger-options.js';
-import { type Logger } from './interfaces/logger.js';
-import { LazyLoggerImpl } from './lazy-logger.impl.js';
-import { LoggerObserver } from './logger-observer.js';
-import { LoggerRuntime } from './logger-runtime.js';
-import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from './utils/log-level-map.js';
-import { resolveLogLevel } from './utils/resolve-log-level.js';
+import type { LogFormatter } from './formatters/log-formatter.js'
+import type { LazyLogger } from './interfaces/lazy-logger.js'
+import type { LogEntry } from './interfaces/log-entry.js'
+import type { LoggerOptions } from './interfaces/logger-options.js'
+import type { Logger } from './interfaces/logger.js'
+import { DEFAULT_OPTIONS } from './constants.js'
+import { LogLevel } from './enums/log-level.js'
+import { LazyLoggerImpl } from './lazy-logger.impl.js'
+import { LoggerObserver } from './logger-observer.js'
+import { LoggerRuntime } from './logger-runtime.js'
+import { LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP } from './utils/log-level-map.js'
+import { resolveLogLevel } from './utils/resolve-log-level.js'
 
 /** @internal */
 export abstract class BaseLogger implements Logger {
-	protected static _lastGlobalTimestamp: number = Date.now();
-	protected _lastLocalTimestamp: number = Date.now();
+	protected static _lastGlobalTimestamp: number = Date.now()
+	protected _lastLocalTimestamp: number = Date.now()
 
-	protected readonly _options: LoggerOptions;
-	protected abstract _formatter: LogFormatter;
-	protected abstract _minLevel: LogLevel;
+	protected readonly _options: LoggerOptions
+	protected abstract _formatter: LogFormatter
+	protected abstract _minLevel: LogLevel
 
-	private _lazy: LazyLogger | null = null;
+	private _lazy: LazyLogger | null = null
 
 	constructor(options: LoggerOptions) {
-		this._options = { ...DEFAULT_OPTIONS, ...options };
+		this._options = { ...DEFAULT_OPTIONS, ...options }
 	}
 
 	public get context(): string {
-		return this._options.context;
+		return this._options.context
 	}
 
 	public get minLevel(): LogLevel {
-		return this._minLevel;
+		return this._minLevel
 	}
 
 	public get lazy(): LazyLogger {
 		if (!this._lazy) {
 			return (this._lazy = new LazyLoggerImpl((level, fn) => {
-				if (!this._shouldLog(level)) {
-					return;
-				}
+				if (!this._shouldLog(level))
+					return
 
 				try {
-					const args = fn();
-					this._processLog(level, args);
-				} catch (e) {
-					this._processLog(level, ['[Logger Error: Lazy evaluation failed]', e]);
+					const args = fn()
+					this._processLog(level, args)
 				}
-			}));
+				catch (e) {
+					this._processLog(level, ['[Logger Error: Lazy evaluation failed]', e])
+				}
+			}))
 		}
 
-		return this._lazy;
+		return this._lazy
 	}
 
 	public setContext(context: string): void {
-		this._options.context = context;
+		this._options.context = context
 	}
 
 	public setMinLevel(level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>): void {
-		this._minLevel = resolveLogLevel(level);
+		this._minLevel = resolveLogLevel(level)
 	}
 
 	public log(level: LogLevel, ...args: unknown[]): void {
-		if (!this._shouldLog(level)) {
-			return;
-		}
+		if (!this._shouldLog(level))
+			return
 
-		this._processLog(level, args);
+		this._processLog(level, args)
 	}
 
 	public fatal(...args: unknown[]): void {
-		this.log(LogLevel.FATAL, ...args);
+		this.log(LogLevel.FATAL, ...args)
 	}
 
 	public error(...args: unknown[]): void {
-		this.log(LogLevel.ERROR, ...args);
+		this.log(LogLevel.ERROR, ...args)
 	}
 
 	public warn(...args: unknown[]): void {
-		this.log(LogLevel.WARNING, ...args);
+		this.log(LogLevel.WARNING, ...args)
 	}
 
 	public success(...args: unknown[]): void {
-		this.log(LogLevel.SUCCESS, ...args);
+		this.log(LogLevel.SUCCESS, ...args)
 	}
 
 	public info(...args: unknown[]): void {
-		this.log(LogLevel.INFO, ...args);
+		this.log(LogLevel.INFO, ...args)
 	}
 
 	public debug(...args: unknown[]): void {
-		this.log(LogLevel.DEBUG, ...args);
+		this.log(LogLevel.DEBUG, ...args)
 	}
 
 	public verbose(...args: unknown[]): void {
-		this.log(LogLevel.VERBOSE, ...args);
+		this.log(LogLevel.VERBOSE, ...args)
 	}
 
 	public trace(...args: unknown[]): void {
-		this.log(LogLevel.TRACE, ...args);
+		this.log(LogLevel.TRACE, ...args)
 	}
 
-	public child(options: LoggerOptions): Logger;
-	public child(context: string, options?: Omit<LoggerOptions, 'context'>): Logger;
+	public child(options: LoggerOptions): Logger
+	public child(context: string, options?: Omit<LoggerOptions, 'context'>): Logger
 	public child(contextOrOptions?: string | LoggerOptions, options?: Omit<LoggerOptions, 'context'>): Logger {
-		let resolvedContext: string | undefined;
-		let resolvedOptions: Omit<LoggerOptions, 'context'> | undefined;
+		let resolvedContext: string | undefined
+		let resolvedOptions: Omit<LoggerOptions, 'context'> | undefined
 
 		if (typeof contextOrOptions === 'string') {
-			resolvedContext = contextOrOptions;
-			resolvedOptions = options;
-		} else if (typeof contextOrOptions === 'object') {
-			resolvedContext = contextOrOptions.context;
-			resolvedOptions = contextOrOptions;
+			resolvedContext = contextOrOptions
+			resolvedOptions = options
+		}
+		else if (typeof contextOrOptions === 'object') {
+			resolvedContext = contextOrOptions.context
+			resolvedOptions = contextOrOptions
 		}
 
-		if (!resolvedContext) {
-			throw new Error('child() requires a context string or LoggerOptions with a context property');
-		}
+		if (!resolvedContext)
+			throw new Error('child() requires a context string or LoggerOptions with a context property')
 
 		return this._createChildLogger(
 			this._mergeLoggerOptions(this._options, {
 				...resolvedOptions,
 				context: `${this._options.context}:${resolvedContext}`,
 			}),
-		);
+		)
 	}
 
-	protected abstract _createLogEntry(level: LogLevel, args: unknown[]): LogEntry;
+	protected abstract _createLogEntry(level: LogLevel, args: unknown[]): LogEntry
 
-	protected abstract _createChildLogger(options: LoggerOptions): Logger;
+	protected abstract _createChildLogger(options: LoggerOptions): Logger
 
 	protected _shouldLog(level: LogLevel): boolean {
-		if (
-			!LoggerRuntime.isEnabled ||
-			(LoggerRuntime.globalMinLevel !== null && LoggerRuntime.globalMinLevel < level)
-		) {
-			return false;
-		}
+		if (!LoggerRuntime.isEnabled || (LoggerRuntime.globalMinLevel !== null && LoggerRuntime.globalMinLevel < level))
+			return false
 
-		return this._minLevel >= level;
+		return this._minLevel >= level
 	}
 
 	protected _getTimeDiff(): number {
-		const now = Date.now();
+		const now = Date.now()
 
-		const isLocal = this._options.timeDiff === 'local';
-		const timeDiff = isLocal ? now - this._lastLocalTimestamp : now - BaseLogger._lastGlobalTimestamp;
+		const isLocal = this._options.timeDiff === 'local'
+		const timeDiff = isLocal ? now - this._lastLocalTimestamp : now - BaseLogger._lastGlobalTimestamp
 
-		this._lastLocalTimestamp = now;
-		BaseLogger._lastGlobalTimestamp = now;
+		this._lastLocalTimestamp = now
+		BaseLogger._lastGlobalTimestamp = now
 
-		return timeDiff;
+		return timeDiff
 	}
 
 	private _processLog(level: LogLevel, args: unknown[]): void {
-		const entry = this._createLogEntry(level, args);
+		const entry = this._createLogEntry(level, args)
 
-		LoggerObserver.notify(entry);
+		LoggerObserver.notify(entry)
 
-		const parts = this._formatter.formatToParts(entry);
+		const parts = this._formatter.formatToParts(entry)
 
-		const logConsole = LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[level];
-		logConsole(...parts);
+		const logConsole = LOG_LEVEL_TO_CONSOLE_FUNCTION_MAP[level]
+		logConsole(...parts)
 	}
 
 	private _mergeLoggerOptions(parent: LoggerOptions, child?: LoggerOptions): LoggerOptions {
 		const result: LoggerOptions = {
 			...parent,
 			...child,
-		};
+		}
 
 		if (parent.inspectOptions || child?.inspectOptions) {
 			result.inspectOptions = {
 				...parent.inspectOptions,
 				...child?.inspectOptions,
-			};
+			}
 		}
 
-		const parentDateTimeFormat = parent.dateTimeFormat;
-		const childDatetimeFormat = child?.dateTimeFormat;
+		const parentDateTimeFormat = parent.dateTimeFormat
+		const childDatetimeFormat = child?.dateTimeFormat
 
 		if (typeof childDatetimeFormat === 'function') {
-			result.dateTimeFormat = childDatetimeFormat;
-		} else if (typeof childDatetimeFormat === 'object') {
+			result.dateTimeFormat = childDatetimeFormat
+		}
+		else if (typeof childDatetimeFormat === 'object') {
 			result.dateTimeFormat = {
 				...(typeof parentDateTimeFormat === 'object' ? parentDateTimeFormat : {}),
 				...childDatetimeFormat,
-			};
-		} else {
-			result.dateTimeFormat = parentDateTimeFormat;
+			}
+		}
+		else {
+			result.dateTimeFormat = parentDateTimeFormat
 		}
 
-		return result;
+		return result
 	}
 }

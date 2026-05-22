@@ -1,6 +1,6 @@
-import { type LazyLogger } from './lazy-logger.js';
-import { type LoggerOptions } from './logger-options.js';
-import { type LogLevel } from '../enums/log-level.js';
+import type { LogLevel } from '../enums/log-level.js'
+import type { LazyLogger } from './lazy-logger.js'
+import type { LoggerOptions } from './logger-options.js'
 
 /**
  * Cross-environment logger interface.
@@ -12,12 +12,12 @@ export interface Logger {
 	/**
 	 * The current logger context.
 	 */
-	get context(): string;
+	get context(): string
 
 	/**
 	 * The current minimum log level.
 	 */
-	get minLevel(): LogLevel;
+	get minLevel(): LogLevel
 
 	/**
 	 * Accesses the lazy logger interface.
@@ -26,7 +26,7 @@ export interface Logger {
 	 * Use this namespace to avoid expensive object cloning, formatting, or serialization
 	 * (e.g., `JSON.stringify`) for logs that might be discarded by the current log level.
 	 */
-	get lazy(): LazyLogger;
+	get lazy(): LazyLogger
 
 	/**
 	 * Logs a message with the specified severity level.
@@ -34,7 +34,7 @@ export interface Logger {
 	 * @param level The severity of the message. Messages below the current minimum log level are ignored.
 	 * @param args Data to be logged.
 	 */
-	log(level: LogLevel, ...args: unknown[]): void;
+	log: (level: LogLevel, ...args: unknown[]) => void
 
 	/**
 	 * Logs a fatal failure message.
@@ -44,7 +44,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	fatal(...args: unknown[]): void;
+	fatal: (...args: unknown[]) => void
 
 	/**
 	 * Logs an error message.
@@ -54,7 +54,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	error(...args: unknown[]): void;
+	error: (...args: unknown[]) => void
 
 	/**
 	 * Logs a warning message.
@@ -64,7 +64,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	warn(...args: unknown[]): void;
+	warn: (...args: unknown[]) => void
 
 	/**
 	 * Logs a success message.
@@ -74,7 +74,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	success(...args: unknown[]): void;
+	success: (...args: unknown[]) => void
 
 	/**
 	 * Logs an informational message.
@@ -84,7 +84,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	info(...args: unknown[]): void;
+	info: (...args: unknown[]) => void
 
 	/**
 	 * Logs a debug message.
@@ -94,7 +94,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	debug(...args: unknown[]): void;
+	debug: (...args: unknown[]) => void
 
 	/**
 	 * Logs a verbose diagnostic message.
@@ -104,7 +104,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	verbose(...args: unknown[]): void;
+	verbose: (...args: unknown[]) => void
 
 	/**
 	 * Logs a trace message.
@@ -114,7 +114,7 @@ export interface Logger {
 	 *
 	 * @param args Data to be logged.
 	 */
-	trace(...args: unknown[]): void;
+	trace: (...args: unknown[]) => void
 
 	/**
 	 * Sets the current logger context, typically used to identify the source
@@ -122,14 +122,14 @@ export interface Logger {
 	 *
 	 * @param context The context label to apply.
 	 */
-	setContext(context: string): void;
+	setContext: (context: string) => void
 
 	/**
 	 * Sets the minimum log level. Messages below this level will be discarded.
 	 *
 	 * @param level The level to apply. Accepts a LogLevel value or its key.
 	 */
-	setMinLevel(level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>): void;
+	setMinLevel: (level: LogLevel | keyof typeof LogLevel | Lowercase<keyof typeof LogLevel>) => void
 
 	/**
 	 * Creates a child logger with the specified options.
@@ -139,17 +139,6 @@ export interface Logger {
 	 *
 	 * @throws Error if context is not set.
 	 */
-	child(options: LoggerOptions): Logger;
-
-	/**
-	 * Creates a child logger with the specified context and options.
-	 *
-	 * @param context The context label to apply.
-	 *                This context will be appended to the parent context: `parent:child`.
-	 * @param options The logger options to apply.
-	 *                These options will be merged with the parent options.
-	 *
-	 * @throws Error if context is not set.
-	 */
-	child(context: string, options?: Omit<LoggerOptions, 'context'>): Logger;
+	child: ((options: LoggerOptions) => Logger)
+		& ((context: string, options?: Omit<LoggerOptions, 'context'>) => Logger)
 }

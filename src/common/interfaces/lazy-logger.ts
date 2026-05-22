@@ -1,5 +1,5 @@
-import { type LogLevel } from '../enums/log-level.js';
-import { type LazyLogFn } from '../types/lazy-log-fn.js';
+import type { LogLevel } from '../enums/log-level.js'
+import type { LazyLogFn } from '../types/lazy-log-fn.js'
 
 /**
  * Provides lazy evaluation capabilities for logging.
@@ -15,7 +15,7 @@ export interface LazyLogger {
 	 * @param level The severity of the message. Messages below the current minimum log level are ignored.
 	 * @param fn A function returning the data to be logged. Executed only if the log level is met.
 	 */
-	log(level: LogLevel, fn: LazyLogFn): void;
+	log: (level: LogLevel, fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated fatal failure message.
@@ -25,7 +25,7 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	fatal(fn: LazyLogFn): void;
+	fatal: (fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated error message.
@@ -35,7 +35,7 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	error(fn: LazyLogFn): void;
+	error: (fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated warning message.
@@ -45,7 +45,7 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	warn(fn: LazyLogFn): void;
+	warn: (fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated success message.
@@ -55,7 +55,7 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	success(fn: LazyLogFn): void;
+	success: (fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated informational message.
@@ -65,7 +65,7 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	info(fn: LazyLogFn): void;
+	info: (fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated debug message.
@@ -75,7 +75,7 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	debug(fn: LazyLogFn): void;
+	debug: (fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated verbose diagnostic message.
@@ -85,7 +85,7 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	verbose(fn: LazyLogFn): void;
+	verbose: (fn: LazyLogFn) => void
 
 	/**
 	 * Logs a lazily evaluated trace message.
@@ -95,5 +95,5 @@ export interface LazyLogger {
 	 *
 	 * @param fn A function returning the data to be logged.
 	 */
-	trace(fn: LazyLogFn): void;
+	trace: (fn: LazyLogFn) => void
 }

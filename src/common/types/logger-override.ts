@@ -1,5 +1,5 @@
-import { type LogLevel } from '../enums/log-level.js';
-import { type LoggerOverrideConfig } from '../interfaces/logger-override-config.js';
+import type { LogLevel } from '../enums/log-level.js'
+import type { LoggerOverrideConfig } from '../interfaces/logger-override-config.js'
 
 /**
  * Custom logger override.
@@ -12,4 +12,4 @@ import { type LoggerOverrideConfig } from '../interfaces/logger-override-config.
  * When a function is provided, it receives the log level and all message arguments
  * and is responsible for handling every log call.
  */
-export type LoggerOverride = LoggerOverrideConfig | ((level: LogLevel, ...args: unknown[]) => void);
+export type LoggerOverride = LoggerOverrideConfig | ((level: LogLevel, ...args: unknown[]) => void)

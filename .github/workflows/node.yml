@@ -2,9 +2,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   checks:
@@ -26,9 +26,6 @@ jobs:
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
-
-      - name: Check formatting
-        run: pnpm run format:check
 
       - name: Check types
         run: pnpm run check-types
@@ -63,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 20, 22, 24 ]
+        node-version: [20, 22, 24]
 
     steps:
       - name: Checkout

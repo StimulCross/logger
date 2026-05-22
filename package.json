@@ -1,10 +1,13 @@
 {
 	"name": "@stimulcross/logger",
-	"version": "8.0.0",
-	"description": "A simple logger for Node and the browser.",
 	"type": "module",
-	"main": "lib",
-	"types": "lib",
+	"version": "8.0.0",
+	"packageManager": "pnpm@11.1.3",
+	"description": "A simple logger for Node and the browser.",
+	"author": "Stimul Cross <stimulcross@gmail.com>",
+	"license": "MIT",
+	"repository": "github:stimulcross/logger",
+	"sideEffects": false,
 	"exports": {
 		".": {
 			"types": "./lib/runtime/index.d.ts",
@@ -16,50 +19,25 @@
 			"default": "./lib/browser/index.js"
 		}
 	},
+	"main": "lib",
+	"types": "lib",
+	"files": [
+		"!lib/**/*.d.ts.map",
+		"LICENSE",
+		"README.md",
+		"lib"
+	],
 	"engines": {
 		"node": ">=20"
 	},
-	"packageManager": "pnpm@10.30.3",
-	"sideEffects": false,
-	"repository": "github:stimulcross/logger",
-	"author": "Stimul Cross <stimulcross@gmail.com>",
-	"license": "MIT",
-	"dependencies": {
-		"error-stack-parser": "^2.1.4",
-		"safe-stable-stringify": "^2.5.0",
-		"std-env": "^3.10.0"
-	},
-	"devDependencies": {
-		"@commitlint/cli": "^20.4.2",
-		"@stimulcross/commitlint-config": "^2.0.0",
-		"@stimulcross/eslint-config-node": "^2.0.0",
-		"@stimulcross/eslint-config-typescript": "^2.0.0",
-		"@stimulcross/prettier-config": "^2.0.0",
-		"@types/detect-node": "^2.0.2",
-		"@types/node": "^25.3.2",
-		"@vitest/coverage-v8": "^4.0.18",
-		"del-cli": "^7.0.0",
-		"eslint": "^9.39.3",
-		"husky": "9.1.7",
-		"lint-staged": "^16.2.7",
-		"prettier": "^3.8.1",
-		"typescript": "5.9.3",
-		"vitest": "^4.0.18"
-	},
-	"files": [
-		"LICENSE",
-		"README.md",
-		"lib",
-		"!lib/**/*.d.ts.map"
-	],
 	"scripts": {
 		"build:browser": "tsc --build tsconfig.browser.json",
 		"build:runtime": "tsc --build tsconfig.runtime.json",
 		"build": "pnpm run build:browser && pnpm run build:runtime",
 		"rebuild": "pnpm run clean && pnpm run build",
 		"clean": "del-cli lib",
-		"lint": "eslint src",
-		"lint:fix": "eslint src --fix",
+		"lint": "eslint",
+		"lint:fix": "eslint --fix",
 		"format:check": "prettier --check src",
 		"format:fix": "prettier --write src",
 		"check-types:browser": "tsc -p tsconfig.browser.json --noEmit",
@@ -72,8 +50,30 @@
 		"demo:node": "ts-node ./playground/demo.js",
 		"demo:bun": "bun ./playground/demo.js",
 		"demo:deno": "deno --allow-env ./playground/demo.js",
-		"preversion": "pnpm run rebuild && pnpm run format:check && pnpm run lint",
+		"preversion": "pnpm run rebuild && pnpm run lint:fix",
 		"postversion": "pnpm install",
-		"prepublishOnly": "pnpm run rebuild && pnpm run format:check && pnpm run lint"
+		"prepublishOnly": "pnpm run rebuild && pnpm run lint:fix"
+	},
+	"dependencies": {
+		"error-stack-parser": "^2.1.4",
+		"safe-stable-stringify": "^2.5.0",
+		"std-env": "^3.10.0"
+	},
+	"devDependencies": {
+		"@antfu/eslint-config": "^9.0.0",
+		"@commitlint/cli": "^21.0.1",
+		"@stimulcross/commitlint-config": "^2.0.0",
+		"@stimulcross/prettier-config": "^2.0.0",
+		"@types/detect-node": "^2.0.2",
+		"@types/node": "^25.9.1",
+		"@vitest/coverage-v8": "^4.1.7",
+		"del-cli": "^7.0.0",
+		"eslint": "^10.4.0",
+		"eslint-flat-config-utils": "^3.2.0",
+		"eslint-plugin-format": "^2.0.1",
+		"husky": "9.1.7",
+		"lint-staged": "^17.0.5",
+		"typescript": "6.0.3",
+		"vitest": "^4.1.7"
 	}
 }

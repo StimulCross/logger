@@ -1,6 +1,6 @@
-import { type BackgroundColor } from '../types/background-color.js';
-import { type Color } from '../types/color.js';
-import { type Modifier } from '../types/modifier.js';
+import type { BackgroundColor } from '../types/background-color.js'
+import type { Color } from '../types/color.js'
+import type { Modifier } from '../types/modifier.js'
 
 /** @internal */
 export const ANSI_MODIFIERS: Record<Modifier, [number, number]> = {
@@ -12,7 +12,7 @@ export const ANSI_MODIFIERS: Record<Modifier, [number, number]> = {
 	inverse: [7, 27],
 	hidden: [8, 28],
 	strikethrough: [9, 29],
-};
+}
 
 /** @internal */
 export const ANSI_COLORS: Record<Color, [number, number]> = {
@@ -33,7 +33,7 @@ export const ANSI_COLORS: Record<Color, [number, number]> = {
 	magentaBright: [95, 39],
 	cyanBright: [96, 39],
 	whiteBright: [97, 39],
-};
+}
 
 /** @internal */
 export const ANSI_BG_COLORS: Record<BackgroundColor, [number, number]> = {
@@ -54,4 +54,4 @@ export const ANSI_BG_COLORS: Record<BackgroundColor, [number, number]> = {
 	bgMagentaBright: [104, 49],
 	bgCyanBright: [105, 49],
 	bgWhiteBright: [106, 49],
-};
+}
