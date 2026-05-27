@@ -69,11 +69,13 @@
 		"@vitest/coverage-v8": "^4.1.7",
 		"del-cli": "^7.0.0",
 		"eslint": "^10.4.0",
-		"eslint-flat-config-utils": "^3.2.0",
 		"eslint-plugin-format": "^2.0.1",
 		"husky": "9.1.7",
-		"lint-staged": "^17.0.5",
+		"nano-staged": "^1.0.2",
 		"typescript": "6.0.3",
 		"vitest": "^4.1.7"
+	},
+	"nano-staged": {
+		"*": "eslint --fix"
 	}
 }
