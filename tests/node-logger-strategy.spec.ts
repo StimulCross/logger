@@ -85,7 +85,7 @@ describe('nodeLoggerStrategy', () => {
 
 		expect(errorFn).toHaveBeenCalledTimes(1)
 
-		const asStr = errorFn.mock.calls[0].map(v => String(v)).join(' ')
+		const asStr = errorFn.mock.calls[0].map(String).join(' ')
 		expect(asStr).toContain('[APP]')
 		expect(asStr).toContain(String(process.pid))
 		expect(asStr).toContain('ERROR')
@@ -100,7 +100,7 @@ describe('nodeLoggerStrategy', () => {
 		logger.log(LogLevel.ERROR, 'x')
 
 		expect(errorFn).toHaveBeenCalledTimes(1)
-		const asStr = errorFn.mock.calls[0].map(v => String(v)).join(' ')
+		const asStr = errorFn.mock.calls[0].map(String).join(' ')
 		expect(asStr).not.toContain(String(process.pid))
 	})
 
@@ -118,7 +118,7 @@ describe('nodeLoggerStrategy', () => {
 		expect(errorFn).toHaveBeenCalledTimes(1)
 		expect(formatter).toHaveBeenCalledTimes(1)
 
-		const asStr = errorFn.mock.calls[0].map(v => String(v)).join(' ')
+		const asStr = errorFn.mock.calls[0].map(String).join(' ')
 		expect(asStr).toContain('[TS]')
 	})
 
@@ -149,7 +149,7 @@ describe('nodeLoggerStrategy', () => {
 		loggerNoColors.log(LogLevel.ERROR, e1)
 
 		expect(errorFn).toHaveBeenCalledTimes(1)
-		const s1 = errorFn.mock.calls[0].map(v => String(v)).join(' ')
+		const s1 = errorFn.mock.calls[0].map(String).join(' ')
 		expect(s1).toContain('Error: boom')
 
 		vi.resetModules()
@@ -167,7 +167,7 @@ describe('nodeLoggerStrategy', () => {
 		loggerColors.log(LogLevel.ERROR, e2)
 
 		expect(errorFn).toHaveBeenCalledTimes(1)
-		const s2 = errorFn.mock.calls[0].map(v => String(v)).join('\n')
+		const s2 = errorFn.mock.calls[0].map(String).join('\n')
 		expect(s2).toContain('boom2')
 		expect(s2).toContain('\u001B[')
 		expect(s2).toContain('at')

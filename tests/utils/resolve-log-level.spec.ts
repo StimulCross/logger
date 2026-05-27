@@ -5,7 +5,7 @@ import { LogLevel } from '../../src/runtime/index.js'
 
 function getNumericEnumValues<E extends Record<string, string | number>>(e: E): number[] {
 	return Object.keys(e)
-		.map(k => Number(k))
+		.map(Number)
 		.filter(n => !Number.isNaN(n))
 		.sort((a, b) => a - b)
 }

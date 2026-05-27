@@ -32,28 +32,24 @@ export class CustomLoggerStrategy implements Logger {
 	}
 
 	public get lazy(): LazyLogger {
-		if (!this._lazy) {
-			return (this._lazy = new LazyLoggerImpl((level, fn) => {
-				if (!this._shouldLog(level))
-					return
+		return (this._lazy ??= new LazyLoggerImpl((level, fn) => {
+			if (!this._shouldLog(level))
+				return
 
-				if (this._override.lazy) {
-					this._routeToCustomLazy(level, fn)
+			if (this._override.lazy) {
+				this._routeToCustomLazy(level, fn)
 
-					return
-				}
+				return
+			}
 
-				try {
-					const args = fn()
-					this._routeToEagerFallback(level, args)
-				}
-				catch (e) {
-					this.log(LogLevel.ERROR, '[Logger Error: Lazy evaluation failed in custom strategy]', e)
-				}
-			}))
-		}
-
-		return this._lazy
+			try {
+				const args = fn()
+				this._routeToEagerFallback(level, args)
+			}
+			catch (err) {
+				this.log(LogLevel.ERROR, '[Logger Error: Lazy evaluation failed in custom strategy]', err)
+			}
+		}))
 	}
 
 	public setContext(context: string): void {
@@ -163,41 +159,32 @@ export class CustomLoggerStrategy implements Logger {
 
 	private _routeToEagerFallback(level: LogLevel, args: unknown[]): void {
 		switch (level) {
-			case LogLevel.FATAL: {
+			case LogLevel.FATAL:
 				return this.fatal(...args)
-			}
 
-			case LogLevel.ERROR: {
+			case LogLevel.ERROR:
 				return this.error(...args)
-			}
 
-			case LogLevel.WARNING: {
+			case LogLevel.WARNING:
 				return this.warn(...args)
-			}
 
-			case LogLevel.SUCCESS: {
+			case LogLevel.SUCCESS:
 				return this.success(...args)
-			}
 
-			case LogLevel.INFO: {
+			case LogLevel.INFO:
 				return this.info(...args)
-			}
 
-			case LogLevel.DEBUG: {
+			case LogLevel.DEBUG:
 				return this.debug(...args)
-			}
 
-			case LogLevel.VERBOSE: {
+			case LogLevel.VERBOSE:
 				return this.verbose(...args)
-			}
 
-			case LogLevel.TRACE: {
+			case LogLevel.TRACE:
 				return this.trace(...args)
-			}
 
-			default: {
+			default:
 				throw new Error(`Invalid log level: ${String(level)}`)
-			}
 		}
 	}
 
@@ -205,41 +192,32 @@ export class CustomLoggerStrategy implements Logger {
 		const lazyOverride = this._override.lazy!
 
 		switch (level) {
-			case LogLevel.FATAL: {
+			case LogLevel.FATAL:
 				return lazyOverride.fatal ? lazyOverride.fatal(fn) : lazyOverride.log(level, fn)
-			}
 
-			case LogLevel.ERROR: {
+			case LogLevel.ERROR:
 				return lazyOverride.error ? lazyOverride.error(fn) : lazyOverride.log(level, fn)
-			}
 
-			case LogLevel.WARNING: {
+			case LogLevel.WARNING:
 				return lazyOverride.warn ? lazyOverride.warn(fn) : lazyOverride.log(level, fn)
-			}
 
-			case LogLevel.SUCCESS: {
+			case LogLevel.SUCCESS:
 				return lazyOverride.success ? lazyOverride.success(fn) : lazyOverride.log(level, fn)
-			}
 
-			case LogLevel.INFO: {
+			case LogLevel.INFO:
 				return lazyOverride.info ? lazyOverride.info(fn) : lazyOverride.log(level, fn)
-			}
 
-			case LogLevel.DEBUG: {
+			case LogLevel.DEBUG:
 				return lazyOverride.debug ? lazyOverride.debug(fn) : lazyOverride.log(level, fn)
-			}
 
-			case LogLevel.VERBOSE: {
+			case LogLevel.VERBOSE:
 				return lazyOverride.verbose ? lazyOverride.verbose(fn) : lazyOverride.log(level, fn)
-			}
 
-			case LogLevel.TRACE: {
+			case LogLevel.TRACE:
 				return lazyOverride.trace ? lazyOverride.trace(fn) : lazyOverride.log(level, fn)
-			}
 
-			default: {
+			default:
 				throw new Error(`Invalid log level: ${String(level)}`)
-			}
 		}
 	}
 }

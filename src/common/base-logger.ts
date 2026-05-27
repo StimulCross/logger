@@ -35,22 +35,18 @@ export abstract class BaseLogger implements Logger {
 	}
 
 	public get lazy(): LazyLogger {
-		if (!this._lazy) {
-			return (this._lazy = new LazyLoggerImpl((level, fn) => {
-				if (!this._shouldLog(level))
-					return
+		return (this._lazy ??= new LazyLoggerImpl((level, fn) => {
+			if (!this._shouldLog(level))
+				return
 
-				try {
-					const args = fn()
-					this._processLog(level, args)
-				}
-				catch (e) {
-					this._processLog(level, ['[Logger Error: Lazy evaluation failed]', e])
-				}
-			}))
-		}
-
-		return this._lazy
+			try {
+				const args = fn()
+				this._processLog(level, args)
+			}
+			catch (err) {
+				this._processLog(level, ['[Logger Error: Lazy evaluation failed]', err])
+			}
+		}))
 	}
 
 	public setContext(context: string): void {

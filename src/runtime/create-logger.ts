@@ -43,16 +43,13 @@ export function createLogger(
 	const runtime = detectRuntime()
 
 	switch (runtime) {
-		case Runtime.Bun: {
+		case Runtime.Bun:
 			return new BunLoggerStrategy(opts)
-		}
 
-		case Runtime.Deno: {
+		case Runtime.Deno:
 			return new DenoLoggerStrategy(opts)
-		}
 
-		default: {
+		default:
 			return new NodeLoggerStrategy(opts)
-		}
 	}
 }

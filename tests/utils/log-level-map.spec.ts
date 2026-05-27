@@ -11,7 +11,7 @@ describe('log-level-map', () => {
 	})
 
 	async function importMap() {
-		return import('../../src/common/utils/log-level-map.js')
+		return await import('../../src/common/utils/log-level-map.js')
 	}
 
 	it('logLevelToConsoleFunction should call proper console methods', async () => {

@@ -158,8 +158,8 @@ const logger8 = createLogger('ErrorDemo', { minLevel: LogLevel.INFO })
 try {
 	throw new TypeError('Something went wrong')
 }
-catch (e) {
-	logger8.error('Caught error:', e)
+catch (err) {
+	logger8.error('Caught error:', err)
 }
 
 function faultyFunc() {
@@ -169,8 +169,8 @@ function faultyFunc() {
 try {
 	faultyFunc()
 }
-catch (e) {
-	logger8.error('Stack example from nested function:', e)
+catch (err) {
+	logger8.error('Stack example from nested function:', err)
 }
 
 // 8. CUSTOM LOGGER OVERRIDE
@@ -258,7 +258,7 @@ logger12.info('Attempting to log a heavy DEBUG message (minLevel is INFO)...')
 // This will not be executed (I hope)
 logger12.lazy.debug(() => {
 	expensiveOperationsCount++
-	const heavyPayload = Array.from({ length: 100000 }).fill('data').join(',')
+	const heavyPayload = Array.from({ length: 100_000 }).fill('data').join(',')
 
 	return ['Heavy debug payload:', heavyPayload]
 })

@@ -19,7 +19,7 @@ export abstract class ConsoleRuntimeLogger extends BaseLogger {
 
 		this._minLevel
 			= options.minLevel === undefined
-				? (getMinLogLevelFromEnv(this._options.context) ?? DEFAULT_OPTIONS.minLevel)
+				? getMinLogLevelFromEnv(this._options.context) ?? DEFAULT_OPTIONS.minLevel
 				: resolveLogLevel(options.minLevel)
 
 		this._pid = options.pid ?? true

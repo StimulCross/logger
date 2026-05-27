@@ -1,0 +1,6 @@
+minimumReleaseAgeExclude:
+  - '@stimulcross/eslint-config@0.0.1'
+
+shellEmulator: true
+# eslint-disable-next-line pnpm/yaml-enforce-settings
+trustPolicy: off

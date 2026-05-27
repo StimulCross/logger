@@ -11,7 +11,7 @@ describe('getMinLogLevelFromEnv', () => {
 	})
 
 	async function getUtil() {
-		return import('../../src/runtime/utils/get-min-log-level-from-env.js')
+		return await import('../../src/runtime/utils/get-min-log-level-from-env.js')
 	}
 
 	it('returns undefined if LOGGING env is not set', async () => {

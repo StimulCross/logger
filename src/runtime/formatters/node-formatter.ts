@@ -7,6 +7,7 @@ import { createColorWrapper, createModifierWrapper } from '../../common/utils/st
 import { RuntimeFormatter } from './runtime-formatter.js'
 
 const stackFrameWrapper = createColorWrapper('cyan', createModifierWrapper('bold', createModifierWrapper('italic')))
+
 const stackFrameBrightWrapper = createColorWrapper(
 	'cyanBright',
 	createModifierWrapper('bold', createModifierWrapper('italic')),

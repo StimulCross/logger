@@ -34,13 +34,13 @@ export function colorizeType(str: string, level: LogLevel, color?: ColorVariant)
 
 /** @internal */
 export function colorizeWithAccent(str: string, color?: ColorVariant): string {
-	return color ? (color === 'bright' ? accentBrightWrapper(str) : accentWrapper(str)) : str
+	return color ? color === 'bright' ? accentBrightWrapper(str) : accentWrapper(str) : str
 }
 
 /** @internal */
-export const colorizeWithGray = (str: string, color?: ColorVariant): string => (color ? grayWrapper(str) : str)
+export const colorizeWithGray = (str: string, color?: ColorVariant): string => color ? grayWrapper(str) : str
 
 /** @internal */
 export function colorizeError(str: string, color?: ColorVariant): string {
-	return color ? (color === 'bright' ? errorWrapperBright(str) : errorWrapper(str)) : str
+	return color ? color === 'bright' ? errorWrapperBright(str) : errorWrapper(str) : str
 }
